@@ -31,7 +31,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn",
-		MarkdownDescription: "Message VPNs (Virtual Private Networks) allow for the segregation of topic space and clients. They also group clients connecting to a network of message brokers, such that messages published within a particular group are only visible to that group's clients.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nauthenticationOauthDefaultProviderName|||x|\nbridgingTlsServerCertEnforceTrustedCommonNameEnabled|||x|\ndistributedCacheManagementEnabled|||x|\nmsgVpnName|x|||\npreferIpVersion|||x|\nreplicationBridgeAuthenticationBasicPassword||x||x\nreplicationBridgeAuthenticationClientCertContent||x||x\nreplicationBridgeAuthenticationClientCertPassword||x||\nreplicationEnabledQueueBehavior||x||\nrestTlsServerCertEnforceTrustedCommonNameEnabled|||x|\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.0.",
+		MarkdownDescription: "Message VPNs (Virtual Private Networks) allow for the segregation of topic space and clients. They also group clients connecting to a network of message brokers, such that messages published within a particular group are only visible to that group's clients.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nauthentication_oauth_default_provider_name|||x|\nbridging_tls_server_cert_enforce_trusted_common_name_enabled|||x|\ndistributed_cache_management_enabled|||x|\nmsg_vpn_name|x|||\nprefer_ip_version|||x|\nreplication_bridge_authentication_basic_password||x||x\nreplication_bridge_authentication_client_cert_content||x||x\nreplication_bridge_authentication_client_cert_password||x||\nreplication_enabled_queue_behavior||x||\nrest_tls_server_cert_enforce_trusted_common_name_enabled|||x|\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.0.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}",
 		Version:             0,
@@ -204,7 +204,7 @@ func init() {
 			{
 				SempName:            "authenticationOauthDefaultProviderName",
 				TerraformName:       "authentication_oauth_default_provider_name",
-				MarkdownDescription: "The name of the provider to use when the client does not supply a provider name. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Deprecated since 2.25. authenticationOauthDefaultProviderName and authenticationOauthProviders replaced by authenticationOauthDefaultProfileName and authenticationOauthProfiles.",
+				MarkdownDescription: "The name of the provider to use when the client does not supply a provider name. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Deprecated since 2.25. authentication_oauth_default_provider_name and authenticationOauthProviders replaced by authentication_oauth_default_profile_name and authenticationoauth_profiles.",
 				Deprecated:          true,
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
@@ -2121,7 +2121,7 @@ func init() {
 			{
 				SempName:            "serviceAmqpPlainTextListenPort",
 				TerraformName:       "service_amqp_plain_text_listen_port",
-				MarkdownDescription: "The port number for plain-text AMQP clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceAmqpPlainTextEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.8.",
+				MarkdownDescription: "The port number for plain-text AMQP clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_amqp_plain_text_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.8.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2142,7 +2142,7 @@ func init() {
 			{
 				SempName:            "serviceAmqpTlsListenPort",
 				TerraformName:       "service_amqp_tls_listen_port",
-				MarkdownDescription: "The port number for AMQP clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceAmqpTlsEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.8.",
+				MarkdownDescription: "The port number for AMQP clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_amqp_tls_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.8.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2186,7 +2186,7 @@ func init() {
 			{
 				SempName:            "serviceMqttPlainTextListenPort",
 				TerraformName:       "service_mqtt_plain_text_listen_port",
-				MarkdownDescription: "The port number for plain-text MQTT clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceMqttPlainTextEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
+				MarkdownDescription: "The port number for plain-text MQTT clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_mqtt_plain_text_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2207,7 +2207,7 @@ func init() {
 			{
 				SempName:            "serviceMqttTlsListenPort",
 				TerraformName:       "service_mqtt_tls_listen_port",
-				MarkdownDescription: "The port number for MQTT clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceMqttTlsEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
+				MarkdownDescription: "The port number for MQTT clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_mqtt_tls_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2228,7 +2228,7 @@ func init() {
 			{
 				SempName:            "serviceMqttTlsWebSocketListenPort",
 				TerraformName:       "service_mqtt_tls_web_socket_listen_port",
-				MarkdownDescription: "The port number for MQTT clients that connect to the Message VPN using WebSocket over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceMqttTlsWebSocketEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
+				MarkdownDescription: "The port number for MQTT clients that connect to the Message VPN using WebSocket over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_mqtt_tls_web_socket_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2249,7 +2249,7 @@ func init() {
 			{
 				SempName:            "serviceMqttWebSocketListenPort",
 				TerraformName:       "service_mqtt_web_socket_listen_port",
-				MarkdownDescription: "The port number for plain-text MQTT clients that connect to the Message VPN using WebSocket. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceMqttWebSocketEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
+				MarkdownDescription: "The port number for plain-text MQTT clients that connect to the Message VPN using WebSocket. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_mqtt_web_socket_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`. Available since 2.4.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2305,7 +2305,7 @@ func init() {
 			{
 				SempName:            "serviceRestIncomingPlainTextListenPort",
 				TerraformName:       "service_rest_incoming_plain_text_listen_port",
-				MarkdownDescription: "The port number for incoming plain-text REST clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceRestIncomingPlainTextEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`.",
+				MarkdownDescription: "The port number for incoming plain-text REST clients that connect to the Message VPN. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_rest_incoming_plain_text_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -2326,7 +2326,7 @@ func init() {
 			{
 				SempName:            "serviceRestIncomingTlsListenPort",
 				TerraformName:       "service_rest_incoming_tls_listen_port",
-				MarkdownDescription: "The port number for incoming REST clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as serviceRestIncomingTlsEnabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`.",
+				MarkdownDescription: "The port number for incoming REST clients that connect to the Message VPN over TLS. The port must be unique across the message backbone. A value of 0 means that the listen-port is unassigned and cannot be enabled. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as service_rest_incoming_tls_enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
