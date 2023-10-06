@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,24 +17,34 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_bridge_remote_msg_vpn",
-		MarkdownDescription: "The Remote Message VPN is the Message VPN that the Bridge connects to.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nbridge_name|x|||\nbridge_virtual_router|x|||\nmsg_vpn_name|x|||\npassword||x||x\nremote_msg_vpn_interface|x|||\nremote_msg_vpn_location|x|||\nremote_msg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.0.",
+		MarkdownDescription: "The Remote Message VPN is the Message VPN that the Bridge connects to.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nbridge_name|x|||\nbridge_virtual_router|x|||\nmsg_vpn_name|x|||\npassword||x||x\nremote_msg_vpn_interface|x|||\nremote_msg_vpn_location|x|||\nremote_msg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.0.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/bridges/{bridgeName},{bridgeVirtualRouter}/remoteMsgVpns/{remoteMsgVpnName},{remoteMsgVpnLocation},{remoteMsgVpnInterface}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "bridgeName",
@@ -113,7 +123,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "egressFlowWindowSize",
 				TerraformName:       "egress_flow_window_size",
-				MarkdownDescription: "The number of outstanding guaranteed messages that can be transmitted over the remote Message VPN connection before an acknowledgement is received. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `255`.",
+				MarkdownDescription: "The number of outstanding guaranteed messages that can be transmitted over the remote Message VPN connection before an acknowledgment is received. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `255`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -153,7 +163,7 @@ func init() {
 				BaseType:            broker.String,
 				SempName:            "password",
 				TerraformName:       "password",
-				MarkdownDescription: "The password for the Client Username. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`.",
+				MarkdownDescription: "The password for the Client Username. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4 (refer to the `Notes` section in the SEMP API `Config reference`). Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`.",
 				Sensitive:           true,
 				Requires:            []string{"client_username"},
 				Type:                types.StringType,
@@ -242,7 +252,7 @@ func init() {
 				BaseType:            broker.String,
 				SempName:            "unidirectionalClientProfile",
 				TerraformName:       "unidirectional_client_profile",
-				MarkdownDescription: "The Client Profile for the unidirectional Bridge of the remote Message VPN. The Client Profile must exist in the local Message VPN, and it is used only for the TCP parameters. Note that the default client profile has a TCP maximum window size of 2MB. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"#client-profile\"`.",
+				MarkdownDescription: "The Client Profile for the unidirectional Bridge of the remote Message VPN. The Client Profile must exist in the local Message VPN, and it is used only for the TCP parameters. Note that the default client profile has a TCP maximum window size of 2 MB. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"#client-profile\"`.",
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},

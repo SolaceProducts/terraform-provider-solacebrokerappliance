@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,23 +17,33 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_authentication_oauth_profile_resource_server_required_claim",
-		MarkdownDescription: "Additional claims to be verified in the access token.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\noauth_profile_name|x|||\nresource_server_required_claim_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.25.",
+		MarkdownDescription: "Additional claims to be verified in the access token.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\noauth_profile_name|x|||\nresource_server_required_claim_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.25.",
 		ObjectType:          broker.ReplaceOnlyObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/authenticationOauthProfiles/{oauthProfileName}/resourceServerRequiredClaims/{resourceServerRequiredClaimName}",
 		PostPathTemplate:    "/msgVpns/{msgVpnName}/authenticationOauthProfiles/{oauthProfileName}/resourceServerRequiredClaims",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "msgVpnName",
@@ -65,6 +75,7 @@ func init() {
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
 				StringValidators: []validator.String{
 					stringvalidator.LengthBetween(1, 32),
+					stringvalidator.RegexMatches(regexp.MustCompile("^[A-Za-z0-9_]+$"), ""),
 				},
 			},
 			{

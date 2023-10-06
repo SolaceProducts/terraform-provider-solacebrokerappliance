@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,22 +17,32 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "oauth_profile_default_msg_vpn_access_level_exception",
-		MarkdownDescription: "Default message VPN access-level exceptions.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\noauth_profile_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since 2.24.",
+		MarkdownDescription: "Default message VPN access-level exceptions.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\noauth_profile_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.24.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/oauthProfiles/{oauthProfileName}/defaultMsgVpnAccessLevelExceptions/{msgVpnName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "accessLevel",
@@ -76,6 +86,7 @@ func init() {
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
 				StringValidators: []validator.String{
 					stringvalidator.LengthBetween(1, 32),
+					stringvalidator.RegexMatches(regexp.MustCompile("^[A-Za-z0-9_]+$"), ""),
 				},
 			},
 		},

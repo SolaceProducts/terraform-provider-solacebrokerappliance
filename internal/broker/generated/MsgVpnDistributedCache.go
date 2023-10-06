@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,24 +17,34 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_distributed_cache",
-		MarkdownDescription: "A Distributed Cache is a collection of one or more Cache Clusters that belong to the same Message VPN. Each Cache Cluster in a Distributed Cache is configured to subscribe to a different set of topics. This effectively divides up the configured topic space, to provide scaling to very large topic spaces or very high cached message throughput.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\ncache_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.11.",
+		MarkdownDescription: "A Distributed Cache is a collection of one or more Cache Clusters that belong to the same Message VPN. Each Cache Cluster in a Distributed Cache is configured to subscribe to a different set of topics. This effectively divides up the configured topic space, to provide scaling to very large topic spaces or very high cached message throughput.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\ncache_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.11.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/distributedCaches/{cacheName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "cacheName",
@@ -55,7 +65,7 @@ func init() {
 				BaseType:            broker.String,
 				SempName:            "cacheVirtualRouter",
 				TerraformName:       "cache_virtual_router",
-				MarkdownDescription: "The virtual router of the Distributed Cache. The default value is `\"auto\"`. The allowed values and their meaning are:\n\n<pre>\n\"primary\" - The Distributed Cache is used for the primary virtual router.\n\"backup\" - The Distributed Cache is used for the backup virtual router.\n\"auto\" - The Distributed Cache is automatically assigned a virtual router at creation, depending on the broker's active-standby role.\n</pre>\n Available since 2.28.",
+				MarkdownDescription: "The virtual router of the Distributed Cache. The default value is `\"auto\"`. The allowed values and their meaning are:\n\n<pre>\n\"primary\" - The Distributed Cache is used for the primary virtual router.\n\"backup\" - The Distributed Cache is used for the backup virtual router.\n\"auto\" - The Distributed Cache is automatically assigned a virtual router at creation, depending on the broker's active-standby role.\n</pre>\n Available since SEMP API version 2.28.",
 				RequiresReplace:     true,
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,

@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -19,5 +19,5 @@
 package main
 
 func debugRun(debugRun, address string) {
-	panic("not implemented")
+	// panic("not implemented")
 }

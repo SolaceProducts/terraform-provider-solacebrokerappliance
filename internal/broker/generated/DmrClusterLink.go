@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,29 +17,39 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "dmr_cluster_link",
-		MarkdownDescription: "A Link connects nodes (either within a Cluster or between two different Clusters) and allows them to exchange topology information, subscriptions and data.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nauthentication_basic_password||x||x\ndmr_cluster_name|x|||\nremote_node_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since 2.11.",
+		MarkdownDescription: "A Link connects nodes (either within a Cluster or between two different Clusters) and allows them to exchange topology information, subscriptions and data.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nauthentication_basic_password||x||x\ndmr_cluster_name|x|||\nremote_node_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.11.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/dmrClusters/{dmrClusterName}/links/{remoteNodeName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
 			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
+			{
 				BaseType:            broker.String,
 				SempName:            "authenticationBasicPassword",
 				TerraformName:       "authentication_basic_password",
-				MarkdownDescription: "The password used to authenticate with the remote node when using basic internal authentication. If this per-Link password is not configured, the Cluster's password is used instead. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `\"\"`.",
+				MarkdownDescription: "The password used to authenticate with the remote node when using basic internal authentication. If this per-Link password is not configured, the Cluster's password is used instead. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4 (refer to the `Notes` section in the SEMP API `Config reference`). Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `\"\"`.",
 				Sensitive:           true,
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
@@ -235,7 +245,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "clientProfileTcpKeepaliveInterval",
 				TerraformName:       "client_profile_tcp_keepalive_interval",
-				MarkdownDescription: "The amount of time between TCP keepalive retransmissions when no acknowledgement is received, in seconds. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `1`.",
+				MarkdownDescription: "The amount of time between TCP keepalive retransmissions when no acknowledgment is received, in seconds. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `1`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -261,7 +271,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "clientProfileTcpMaxWindowSize",
 				TerraformName:       "client_profile_tcp_max_window_size",
-				MarkdownDescription: "The TCP maximum window size, in kilobytes. Changes are applied to all existing connections. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `256`.",
+				MarkdownDescription: "The TCP maximum window size, in kilobytes. Changes are applied to all existing connections. This setting is ignored on the software broker. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `256`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -290,7 +300,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "egressFlowWindowSize",
 				TerraformName:       "egress_flow_window_size",
-				MarkdownDescription: "The number of outstanding guaranteed messages that can be sent over the Link before acknowledgement is received by the sender. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `255`.",
+				MarkdownDescription: "The number of outstanding guaranteed messages that can be sent over the Link before acknowledgment is received by the sender. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `255`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -362,6 +372,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 1,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -404,6 +415,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 2,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -484,12 +496,12 @@ func init() {
 				BaseType:            broker.String,
 				SempName:            "queueRejectMsgToSenderOnDiscardBehavior",
 				TerraformName:       "queue_reject_msg_to_sender_on_discard_behavior",
-				MarkdownDescription: "Determines when to return negative acknowledgements (NACKs) to sending clients on message discards. Note that NACKs cause the message to not be delivered to any destination and Transacted Session commits to fail. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `\"always\"`. The allowed values and their meaning are:\n\n<pre>\n\"always\" - Always return a negative acknowledgment (NACK) to the sending client on message discard.\n\"when-queue-enabled\" - Only return a negative acknowledgment (NACK) to the sending client on message discard when the Queue is enabled.\n\"never\" - Never return a negative acknowledgment (NACK) to the sending client on message discard.\n</pre>\n",
+				MarkdownDescription: "Determines when to return negative acknowledgments (NACKs) to sending clients on message discards. Note that NACKs cause the message to not be delivered to any destination and Transacted Session commits to fail. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `\"always\"`. The allowed values and their meaning are:\n\n<pre>\n\"never\" - Silently discard messages.\n\"when-queue-enabled\" - NACK each message discard back to the client, except messages that are discarded because an endpoint is administratively disabled.\n\"always\" - NACK each message discard back to the client, including messages that are discarded because an endpoint is administratively disabled.\n</pre>\n",
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
 				StringValidators: []validator.String{
-					stringvalidator.OneOf("always", "when-queue-enabled", "never"),
+					stringvalidator.OneOf("never", "when-queue-enabled", "always"),
 				},
 				Default: "always",
 			},

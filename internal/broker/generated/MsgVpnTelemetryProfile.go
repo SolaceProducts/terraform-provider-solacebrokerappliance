@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,24 +17,34 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_telemetry_profile",
-		MarkdownDescription: "Using the Telemetry Profile allows trace spans to be generated as messages are processed by the broker. The generated spans are stored persistently on the broker and may be consumed by the Solace receiver component of an OpenTelemetry Collector.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\ntelemetry_profile_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.31.",
+		MarkdownDescription: "Using the Telemetry Profile allows trace spans to be generated as messages are processed by the broker. The generated spans are stored persistently on the broker and may be consumed by the Solace receiver component of an OpenTelemetry Collector.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\ntelemetry_profile_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.31.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/telemetryProfiles/{telemetryProfileName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "msgVpnName",
@@ -78,6 +88,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -120,6 +131,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -313,6 +325,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -355,6 +368,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -434,7 +448,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "receiverTcpKeepaliveInterval",
 				TerraformName:       "receiver_tcp_keepalive_interval",
-				MarkdownDescription: "The amount of time between TCP keepalive retransmissions to a client using the Client Profile when no acknowledgement is received, in seconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1`.",
+				MarkdownDescription: "The amount of time between TCP keepalive retransmissions to a client using the Client Profile when no acknowledgment is received, in seconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -460,7 +474,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "receiverTcpMaxWindowSize",
 				TerraformName:       "receiver_tcp_max_window_size",
-				MarkdownDescription: "The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`.",
+				MarkdownDescription: "The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. This setting is ignored on the software broker. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -494,6 +508,16 @@ func init() {
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
 				Default:             false,
+			},
+			{
+				BaseType:            broker.Bool,
+				SempName:            "traceSendSpanGenerationEnabled",
+				TerraformName:       "trace_send_span_generation_enabled",
+				MarkdownDescription: "Enable or disable generation of send spans. For the most complete view of broker message processing, this should be enabled. If the information provided by send spans are not needed, send spans can be disabled to reduce the performance impact of tracing. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.36.",
+				Type:                types.BoolType,
+				TerraformType:       tftypes.Bool,
+				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
+				Default:             true,
 			},
 		},
 	}

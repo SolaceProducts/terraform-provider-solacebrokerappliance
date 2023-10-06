@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,23 +17,33 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_jndi_connection_factory",
-		MarkdownDescription: "The message broker provides an internal JNDI store for provisioned Connection Factory objects that clients can access through JNDI lookups.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nconnection_factory_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.4.",
+		MarkdownDescription: "The message broker provides an internal JNDI store for provisioned Connection Factory objects that clients can access through JNDI lookups.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nconnection_factory_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/jndiConnectionFactories/{connectionFactoryName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.Bool,
 				SempName:            "allowDuplicateClientIdEnabled",
@@ -53,7 +63,7 @@ func init() {
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
 				StringValidators: []validator.String{
-					stringvalidator.LengthBetween(0, 256),
+					stringvalidator.LengthBetween(0, 255),
 				},
 				Default: "",
 			},
@@ -66,7 +76,7 @@ func init() {
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
 				StringValidators: []validator.String{
-					stringvalidator.LengthBetween(0, 256),
+					stringvalidator.LengthBetween(0, 250),
 				},
 				Default: "",
 			},
@@ -156,7 +166,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "guaranteedReceiveAckTimeout",
 				TerraformName:       "guaranteed_receive_ack_timeout",
-				MarkdownDescription: "The timeout for sending the acknowledgement (ACK) for guaranteed messages received by the Subscriber (Consumer), in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1000`.",
+				MarkdownDescription: "The timeout for sending the acknowledgment (ACK) for guaranteed messages received by the Subscriber (Consumer), in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1000`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -169,7 +179,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "guaranteedReceiveReconnectRetryCount",
 				TerraformName:       "guaranteed_receive_reconnect_retry_count",
-				MarkdownDescription: "The maximum number of attempts to reconnect to the host or list of hosts after the guaranteed  messaging connection has been lost. The value \"-1\" means to retry forever. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `-1`. Available since 2.14.",
+				MarkdownDescription: "The maximum number of attempts to reconnect to the host or list of hosts after the guaranteed  messaging connection has been lost. The value \"-1\" means to retry forever. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `-1`. Available since SEMP API version 2.14.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -182,7 +192,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "guaranteedReceiveReconnectRetryWait",
 				TerraformName:       "guaranteed_receive_reconnect_retry_wait",
-				MarkdownDescription: "The amount of time to wait before making another attempt to connect or reconnect to the host after the guaranteed messaging connection has been lost, in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `3000`. Available since 2.14.",
+				MarkdownDescription: "The amount of time to wait before making another attempt to connect or reconnect to the host after the guaranteed messaging connection has been lost, in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `3000`. Available since SEMP API version 2.14.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -208,7 +218,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "guaranteedReceiveWindowSizeAckThreshold",
 				TerraformName:       "guaranteed_receive_window_size_ack_threshold",
-				MarkdownDescription: "The threshold for sending the acknowledgement (ACK) for guaranteed messages received by the Subscriber (Consumer) as a percentage of `guaranteed_receive_window_size`. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `60`.",
+				MarkdownDescription: "The threshold for sending the acknowledgment (ACK) for guaranteed messages received by the Subscriber (Consumer) as a percentage of `guaranteed_receive_window_size`. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `60`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -221,7 +231,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "guaranteedSendAckTimeout",
 				TerraformName:       "guaranteed_send_ack_timeout",
-				MarkdownDescription: "The timeout for receiving the acknowledgement (ACK) for guaranteed messages sent by the Publisher (Producer), in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `2000`.",
+				MarkdownDescription: "The timeout for receiving the acknowledgment (ACK) for guaranteed messages sent by the Publisher (Producer), in milliseconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `2000`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},

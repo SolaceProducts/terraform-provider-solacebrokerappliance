@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -16,4 +16,4 @@
 
 package main
 
-const version = "0.2.33"
+const version = "0.5.0"

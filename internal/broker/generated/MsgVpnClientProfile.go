@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,24 +17,34 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_client_profile",
-		MarkdownDescription: "Client Profiles are used to assign common configuration properties to clients that have been successfully authorized.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nallow_cut_through_forwarding_enabled|||x|\napi_queue_management_copy_from_on_create_name|||x|\napi_topic_endpoint_management_copy_from_on_create_name|||x|\nclient_profile_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.0.",
+		MarkdownDescription: "Client Profiles are used to assign common configuration properties to clients that have been successfully authorized.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nallow_cut_through_forwarding_enabled|||x|\napi_queue_management_copy_from_on_create_name|||x|\napi_topic_endpoint_management_copy_from_on_create_name|||x|\nclient_profile_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.0.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/clientProfiles/{clientProfileName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.Bool,
 				SempName:            "allowBridgeConnectionsEnabled",
@@ -46,21 +56,10 @@ func init() {
 				Default:             false,
 			},
 			{
-				BaseType:            broker.Bool,
-				SempName:            "allowCutThroughForwardingEnabled",
-				TerraformName:       "allow_cut_through_forwarding_enabled",
-				MarkdownDescription: "Enable or disable allowing clients using the Client Profile to bind to endpoints with the cut-through forwarding delivery mode. Changing this value does not affect existing client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Deprecated since 2.22. This attribute has been deprecated. Please visit the Solace Product Lifecycle Policy web page for details on deprecated features.",
-				Deprecated:          true,
-				Type:                types.BoolType,
-				TerraformType:       tftypes.Bool,
-				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             false,
-			},
-			{
 				BaseType:            broker.String,
 				SempName:            "allowGuaranteedEndpointCreateDurability",
 				TerraformName:       "allow_guaranteed_endpoint_create_durability",
-				MarkdownDescription: "The types of Queues and Topic Endpoints that clients using the client-profile can create. Changing this value does not affect existing client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"all\"`. The allowed values and their meaning are:\n\n<pre>\n\"all\" - Client can create any type of endpoint.\n\"durable\" - Client can create only durable endpoints.\n\"non-durable\" - Client can create only non-durable endpoints.\n</pre>\n Available since 2.14.",
+				MarkdownDescription: "The types of Queues and Topic Endpoints that clients using the client-profile can create. Changing this value does not affect existing client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"all\"`. The allowed values and their meaning are:\n\n<pre>\n\"all\" - Client can create any type of endpoint.\n\"durable\" - Client can create only durable endpoints.\n\"non-durable\" - Client can create only non-durable endpoints.\n</pre>\n Available since SEMP API version 2.14.",
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
@@ -73,7 +72,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "allowGuaranteedEndpointCreateEnabled",
 				TerraformName:       "allow_guaranteed_endpoint_create_enabled",
-				MarkdownDescription: "Enable or disable allowing clients using the Client Profile to create topic endponts or queues. Changing this value does not affect existing client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.",
+				MarkdownDescription: "Enable or disable allowing clients using the Client Profile to create topic endpoints or queues. Changing this value does not affect existing client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -103,7 +102,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "allowSharedSubscriptionsEnabled",
 				TerraformName:       "allow_shared_subscriptions_enabled",
-				MarkdownDescription: "Enable or disable allowing shared subscriptions. Changing this setting does not affect existing subscriptions. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Available since 2.11.",
+				MarkdownDescription: "Enable or disable allowing shared subscriptions. Changing this setting does not affect existing subscriptions. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Available since SEMP API version 2.11.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -121,24 +120,9 @@ func init() {
 			},
 			{
 				BaseType:            broker.String,
-				SempName:            "apiQueueManagementCopyFromOnCreateName",
-				TerraformName:       "api_queue_management_copy_from_on_create_name",
-				MarkdownDescription: "The name of a queue to copy settings from when a new queue is created by a client using the Client Profile. The referenced queue must exist in the Message VPN. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Deprecated since 2.14. This attribute has been replaced with `api_queue_management_copy_from_on_create_template_name`.",
-				Deprecated:          true,
-				Type:                types.StringType,
-				TerraformType:       tftypes.String,
-				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
-				StringValidators: []validator.String{
-					stringvalidator.LengthBetween(0, 200),
-					stringvalidator.RegexMatches(regexp.MustCompile("^[^*?'<>&;]*$"), ""),
-				},
-				Default: "",
-			},
-			{
-				BaseType:            broker.String,
 				SempName:            "apiQueueManagementCopyFromOnCreateTemplateName",
 				TerraformName:       "api_queue_management_copy_from_on_create_template_name",
-				MarkdownDescription: "The name of a queue template to copy settings from when a new queue is created by a client using the Client Profile. If the referenced queue template does not exist, queue creation will fail when it tries to resolve this template. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Available since 2.14.",
+				MarkdownDescription: "The name of a queue template to copy settings from when a new queue is created by a client using the Client Profile. If the referenced queue template does not exist, queue creation will fail when it tries to resolve this template. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Available since SEMP API version 2.14.",
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
@@ -150,23 +134,9 @@ func init() {
 			},
 			{
 				BaseType:            broker.String,
-				SempName:            "apiTopicEndpointManagementCopyFromOnCreateName",
-				TerraformName:       "api_topic_endpoint_management_copy_from_on_create_name",
-				MarkdownDescription: "The name of a topic endpoint to copy settings from when a new topic endpoint is created by a client using the Client Profile. The referenced topic endpoint must exist in the Message VPN. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Deprecated since 2.14. This attribute has been replaced with `api_topic_endpoint_management_copy_from_on_create_template_name`.",
-				Deprecated:          true,
-				Type:                types.StringType,
-				TerraformType:       tftypes.String,
-				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
-				StringValidators: []validator.String{
-					stringvalidator.LengthBetween(0, 200),
-				},
-				Default: "",
-			},
-			{
-				BaseType:            broker.String,
 				SempName:            "apiTopicEndpointManagementCopyFromOnCreateTemplateName",
 				TerraformName:       "api_topic_endpoint_management_copy_from_on_create_template_name",
-				MarkdownDescription: "The name of a topic endpoint template to copy settings from when a new topic endpoint is created by a client using the Client Profile. If the referenced topic endpoint template does not exist, topic endpoint creation will fail when it tries to resolve this template. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Available since 2.14.",
+				MarkdownDescription: "The name of a topic endpoint template to copy settings from when a new topic endpoint is created by a client using the Client Profile. If the referenced topic endpoint template does not exist, topic endpoint creation will fail when it tries to resolve this template. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `\"\"`. Available since SEMP API version 2.14.",
 				Type:                types.StringType,
 				TerraformType:       tftypes.String,
 				Converter:           broker.SimpleConverter[string]{TerraformType: tftypes.String},
@@ -196,7 +166,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "compressionEnabled",
 				TerraformName:       "compression_enabled",
-				MarkdownDescription: "Enable or disable allowing clients using the Client Profile to use compression. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since 2.10.",
+				MarkdownDescription: "Enable or disable allowing clients using the Client Profile to use compression. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.10.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -306,6 +276,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -348,6 +319,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -398,6 +370,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -440,6 +413,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -490,6 +464,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -532,6 +507,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -582,6 +558,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -624,6 +601,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -674,6 +652,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -716,6 +695,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -766,6 +746,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -808,6 +789,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -858,6 +840,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -900,6 +883,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -950,6 +934,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -992,6 +977,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -1042,6 +1028,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -1084,6 +1071,7 @@ func init() {
 								path.MatchRelative().AtParent().AtName("set_value"),
 							),
 						},
+						Default: 80,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -1163,7 +1151,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "maxMsgsPerTransaction",
 				TerraformName:       "max_msgs_per_transaction",
-				MarkdownDescription: "The maximum number of publisher and consumer messages combined that is allowed within a transaction for each client associated with this client-profile. Exceeding this limit will result in a transaction prepare or commit failure. Changing this value during operation will not affect existing sessions. It is only validated at transaction creation time. Large transactions consume more resources and are more likely to require retrieving messages from the ADB or from disk to process the transaction prepare or commit requests. The transaction processing rate may diminish if a large number of messages must be retrieved from the ADB or from disk. Care should be taken to not use excessively large transactions needlessly to avoid exceeding resource limits and to avoid reducing the overall broker performance. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`. Available since 2.20.",
+				MarkdownDescription: "The maximum number of publisher and consumer messages combined that is allowed within a transaction for each client associated with this client-profile. Exceeding this limit will result in a transaction prepare or commit failure. Changing this value during operation will not affect existing sessions. It is only validated at transaction creation time. Large transactions consume more resources and are more likely to require retrieving messages from the ADB or from disk to process the transaction prepare or commit requests. The transaction processing rate may diminish if a large number of messages must be retrieved from the ADB or from disk. Care should be taken to not use excessively large transactions needlessly to avoid exceeding resource limits and to avoid reducing the overall broker performance. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`. Available since SEMP API version 2.20.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -1360,7 +1348,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "rejectMsgToSenderOnNoSubscriptionMatchEnabled",
 				TerraformName:       "reject_msg_to_sender_on_no_subscription_match_enabled",
-				MarkdownDescription: "Enable or disable the sending of a negative acknowledgement (NACK) to a client using the Client Profile when discarding a guaranteed message due to no matching subscription found. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.",
+				MarkdownDescription: "Enable or disable the sending of a negative acknowledgment (NACK) to a client using the Client Profile when discarding a guaranteed message due to no matching subscription found. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -1380,7 +1368,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "serviceMinKeepaliveTimeout",
 				TerraformName:       "service_min_keepalive_timeout",
-				MarkdownDescription: "The minimum client keepalive timeout which will be enforced for client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `30`. Available since 2.19.",
+				MarkdownDescription: "The minimum client keepalive timeout which will be enforced for client connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `30`. Available since SEMP API version 2.19.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -1405,7 +1393,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "serviceSmfMinKeepaliveEnabled",
 				TerraformName:       "service_smf_min_keepalive_enabled",
-				MarkdownDescription: "Enable or disable the enforcement of a minimum keepalive timeout for SMF clients. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Available since 2.19.",
+				MarkdownDescription: "Enable or disable the enforcement of a minimum keepalive timeout for SMF clients. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Available since SEMP API version 2.19.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -1492,7 +1480,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "tcpKeepaliveInterval",
 				TerraformName:       "tcp_keepalive_interval",
-				MarkdownDescription: "The amount of time between TCP keepalive retransmissions to a client using the Client Profile when no acknowledgement is received, in seconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1`.",
+				MarkdownDescription: "The amount of time between TCP keepalive retransmissions to a client using the Client Profile when no acknowledgment is received, in seconds. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `1`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -1518,7 +1506,7 @@ func init() {
 				BaseType:            broker.Int64,
 				SempName:            "tcpMaxWindowSize",
 				TerraformName:       "tcp_max_window_size",
-				MarkdownDescription: "The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`.",
+				MarkdownDescription: "The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. This setting is ignored on the software broker. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`.",
 				Type:                types.Int64Type,
 				TerraformType:       tftypes.Number,
 				Converter:           broker.IntegerConverter{},
@@ -1531,7 +1519,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "tlsAllowDowngradeToPlainTextEnabled",
 				TerraformName:       "tls_allow_downgrade_to_plain_text_enabled",
-				MarkdownDescription: "Enable or disable allowing a client using the Client Profile to downgrade an encrypted connection to plain text. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since 2.8.",
+				MarkdownDescription: "Enable or disable allowing a client using the Client Profile to downgrade an encrypted connection to plain text. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.8.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},

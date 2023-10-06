@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -18,9 +18,10 @@ package broker
 
 import (
 	"fmt"
+	"reflect"
+
 	dschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	rschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"reflect"
 )
 
 var resourceToDataSourceTypes = map[reflect.Type]reflect.Type{
@@ -70,14 +71,11 @@ func copyMatchingFields(prefix string, in reflect.Value, out reflect.Value) {
 						iIn := vIn.Interface()
 						tvIn := reflect.TypeOf(iIn)
 						tvOut := resourceToDataSourceTypes[tvIn]
-						if tvOut == nil {
-						}
 						vOut := reflect.New(tvOut).Elem()
 						copyMatchingFields(fmt.Sprintf("%v.%v", prefix, k), reflect.ValueOf(iIn), vOut)
 						fOut.SetMapIndex(k, vOut)
 
 					}
-				} else {
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -85,7 +85,6 @@ func debugRun(debugRun, address string) {
 			},
 		},
 	})
-	//fmt.Printf("debug run computed TF_REATTACH_PROVIDERS=%s\n", data)
 	cmd.Env = append(
 		[]string{"TF_REATTACH_PROVIDERS=" + string(data)},
 		os.Environ()...)

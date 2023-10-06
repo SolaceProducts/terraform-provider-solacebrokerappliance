@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,23 +17,33 @@
 package generated
 
 import (
+	"regexp"
+	"terraform-provider-solacebrokerappliance/internal/broker"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"regexp"
-	"terraform-provider-solacebroker/internal/broker"
 )
 
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_cert_matching_rule_condition",
-		MarkdownDescription: "A Cert Matching Rule Condition compares data extracted from a certificate to a username attribute or an expression.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\nrule_name|x|||\nsource|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.27.",
+		MarkdownDescription: "A Cert Matching Rule Condition compares data extracted from a certificate to a username attribute or an expression.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\nrule_name|x|||\nsource|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.27.",
 		ObjectType:          broker.ReplaceOnlyObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/certMatchingRules/{ruleName}/conditions/{source}",
 		PostPathTemplate:    "/msgVpns/{msgVpnName}/certMatchingRules/{ruleName}/conditions",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "attribute",
@@ -100,7 +110,7 @@ func init() {
 				BaseType:            broker.String,
 				SempName:            "source",
 				TerraformName:       "source",
-				MarkdownDescription: "Certificate field to be compared with the Attribute. The allowed values and their meaning are:\n\n<pre>\n\"certificate-thumbprint\" - The attribute is computed as the SHA-1 hash over the entire DER-encoded contents of the client certificate.\n\"common-name\" - The attribute is extracted from the certificate's first instance of the Common Name attribute in the Subject DN.\n\"common-name-last\" - The attribute is extracted from the certificate's last instance of the Common Name attribute in the Subject DN.\n\"subject-alternate-name-msupn\" - The attribute is extracted from the certificate's Other Name type of the Subject Alternative Name and must have the msUPN signature.\n\"uid\" - The attribute is extracted from the certificate's first instance of the User Identifier attribute in the Subject DN.\n\"uid-last\" - The attribute is extracted from the certificate's last instance of the User Identifier attribute in the Subject DN.\n\"org-unit\" - The attribute is extracted from the certificate's first instance of the Org Unit attribute in the Subject DN.\n\"org-unit-last\" - The attribute is extracted from the certificate's last instance of the Org Unit attribute in the Subject DN.\n\"issuer\" - The attribute is extracted from the certificate's Issuer DN.\n\"subject\" - The attribute is extracted from the certificate's Subject DN.\n\"serial-number\" - The attribute is extracted from the certificate's Serial Number.\n\"dns-name\" - The attribute is extracted from the certificate's Subject Alt Name DNSName.\n\"ip-address\" - The attribute is extracted from the certificate's Subject Alt Name IPAddress.\n</pre>\n",
+				MarkdownDescription: "Certificate field to be compared with the Attribute. The allowed values and their meaning are:\n\n<pre>\n\"certificate-thumbprint\" - The attribute is computed as the SHA-1 hash over the entire DER-encoded contents of the client certificate.\n\"common-name\" - The attribute is extracted from the certificate's first instance of the Common Name attribute in the Subject DN.\n\"common-name-last\" - The attribute is extracted from the certificate's last instance of the Common Name attribute in the Subject DN.\n\"subject-alternate-name-msupn\" - The attribute is extracted from the certificate's Other Name type of the Subject Alternative Name and must have the msUPN signature.\n\"uid\" - The attribute is extracted from the certificate's first instance of the User Identifier attribute in the Subject DN.\n\"uid-last\" - The attribute is extracted from the certificate's last instance of the User Identifier attribute in the Subject DN.\n\"org-unit\" - The attribute is extracted from the certificate's first instance of the Org Unit attribute in the Subject DN.\n\"org-unit-last\" - The attribute is extracted from the certificate's last instance of the Org Unit attribute in the Subject DN.\n\"issuer\" - The attribute is extracted from the certificate's Issuer DN.\n\"subject\" - The attribute is extracted from the certificate's Subject DN.\n\"serial-number\" - The attribute is extracted from the certificate's Serial Number.\n\"dns-name\" - The attribute is extracted from the certificate's Subject Alt Name DNS Name.\n\"ip-address\" - The attribute is extracted from the certificate's Subject Alt Name IP Address.\n</pre>\n",
 				Identifying:         true,
 				Required:            true,
 				RequiresReplace:     true,

@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,6 +17,9 @@
 package broker
 
 import (
+	"sort"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -26,11 +29,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"sort"
-	"strings"
 )
 
 var DataSources []func() datasource.DataSource
+
+var Entities []EntityInputs
 
 func RegisterDataSource(inputs EntityInputs) {
 	DataSources = append(DataSources, newBrokerDataSourceGenerator(inputs))
@@ -40,6 +43,16 @@ var Resources []func() resource.Resource
 
 func RegisterResource(inputs EntityInputs) {
 	Resources = append(Resources, newBrokerResourceGenerator(inputs))
+	Entities = append(Entities, inputs)
+}
+
+var SempDetail SempVersionDetail
+
+func RegisterSempVersionDetails(sempAPIBasePath string, sempVersion string) {
+	SempDetail = SempVersionDetail{
+		BasePath:    sempAPIBasePath,
+		SempVersion: sempVersion,
+	}
 }
 
 func addObjectConverters(attributes []*AttributeInfo) {
@@ -62,6 +75,24 @@ func modifiers[T any](requiresReplace bool, f func() T) []T {
 func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, requiresReplace bool) map[string]schema.Attribute {
 	tfAttributes := map[string]schema.Attribute{}
 	for _, attr := range attributes {
+		if attr.TerraformName == "id" {
+			// Handle the id attribute for each object, required by the acceptance test framework
+			if isResource {
+				tfAttributes["id"] = schema.StringAttribute{
+					Description: "Identifier attribute, for internal use only.",
+					Computed:    true,
+				}
+			} else {
+				tfAttributes["id"] = schema.StringAttribute{
+					Description: "Identifier attribute, for internal use only.",
+					Computed:    true,
+					PlanModifiers: []planmodifier.String{
+						stringplanmodifier.UseStateForUnknown(),
+					},
+				}
+			}
+			continue
+		}
 		if attr.Sensitive && !isResource {
 			// write-only attributes can't be retrieved so we don't expose them in the datasource
 			continue
@@ -179,6 +210,7 @@ func newBrokerEntity(inputs EntityInputs, isResource bool) brokerEntity[schema.S
 			pathTemplate:          inputs.PathTemplate,
 			postPathTemplate:      inputs.PostPathTemplate,
 			terraformName:         inputs.TerraformName,
+			objectType:            inputs.ObjectType,
 			identifyingAttributes: identifyingAttributes,
 			attributes:            inputs.Attributes,
 			converter:             NewObjectConverter(inputs.TerraformName, inputs.Attributes),

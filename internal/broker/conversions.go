@@ -1,4 +1,4 @@
-// terraform-provider-solacebroker
+// terraform-provider-solacebrokerappliance
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -18,8 +18,9 @@ package broker
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"math/big"
+
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 type Converter interface {
@@ -136,6 +137,9 @@ func (c *ObjectConverter) FromTerraform(v tftypes.Value) (any, error) {
 		return nil, err
 	}
 	for _, attr := range c.attributes {
+		if attr.TerraformName == "id" {
+			continue
+		}
 		v, ok := tfAttributes[attr.TerraformName]
 		if ok && v.IsKnown() && !v.IsNull() {
 			v, err := attr.Converter.FromTerraform(v)
