@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -19,9 +19,9 @@ import (
 	"net/http/cookiejar"
 	"os"
 	"strings"
-	terraform "terraform-provider-solacebrokerappliance/cmd/command"
-	"terraform-provider-solacebrokerappliance/internal/broker"
-	"terraform-provider-solacebrokerappliance/internal/semp"
+	terraform "terraform-provider-solacebroker/cmd/command"
+	"terraform-provider-solacebroker/internal/broker"
+	"terraform-provider-solacebroker/internal/semp"
 	"time"
 )
 

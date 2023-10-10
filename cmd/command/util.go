@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -27,7 +27,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"terraform-provider-solacebrokerappliance/internal/broker"
+	"terraform-provider-solacebroker/internal/broker"
 	"text/tabwriter"
 	"time"
 )

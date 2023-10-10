@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,13 +17,13 @@
 package cmd
 
 import (
-	terraform "terraform-provider-solacebrokerappliance/cmd/command"
+	terraform "terraform-provider-solacebroker/cmd/command"
 
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "terraform-provider-solacebrokerappliance",
+	Use:   "terraform-provider-solacebroker",
 	Short: "",
 	Long: `Terraform provider for the Solace PubSubPlus Software Event Broker.
 This binary is both a plugin for Terraform CLI and it also provides command-line options when invoked as standalone.

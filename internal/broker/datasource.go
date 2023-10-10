@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -27,7 +27,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	"terraform-provider-solacebrokerappliance/internal/semp"
+	"terraform-provider-solacebroker/internal/semp"
 )
 
 func newBrokerDataSource(inputs EntityInputs) brokerEntity[schema.Schema] {

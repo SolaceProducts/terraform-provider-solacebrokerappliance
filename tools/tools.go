@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //

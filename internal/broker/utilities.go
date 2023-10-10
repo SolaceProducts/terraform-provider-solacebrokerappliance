@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -22,7 +22,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"terraform-provider-solacebrokerappliance/internal/semp"
+	"terraform-provider-solacebroker/internal/semp"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"

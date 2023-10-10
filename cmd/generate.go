@@ -1,4 +1,4 @@
-// Package cmd terraform-provider-solacebrokerappliance
+// Package cmd terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -21,9 +21,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"terraform-provider-solacebrokerappliance/cmd/broker"
-	command "terraform-provider-solacebrokerappliance/cmd/command"
-	"terraform-provider-solacebrokerappliance/internal/semp"
+	"terraform-provider-solacebroker/cmd/broker"
+	command "terraform-provider-solacebroker/cmd/command"
+	"terraform-provider-solacebroker/internal/semp"
 
 	"github.com/hashicorp/go-version"
 	"github.com/spf13/cobra"
@@ -46,7 +46,7 @@ This is not a Terraform command. One can download the provider binary and can ex
 	<filename> is the desirable name of the generated filename.
 
 For example:
-  terraform-provider-solacebrokerappliance generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf
+  terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf
 
 This command would create a file my-messagevpn.tf that contains a resource definition for the default message VPN and any child objects, assuming the appropriate broker credentials were set in environment variables.`,
 

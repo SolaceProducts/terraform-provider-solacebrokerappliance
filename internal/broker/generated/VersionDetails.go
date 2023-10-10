@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -16,7 +16,7 @@
 
 package generated
 
-import "terraform-provider-solacebrokerappliance/internal/broker"
+import "terraform-provider-solacebroker/internal/broker"
 
 const BasePath = "/SEMP/v2/config"
 const SempVersion = "2.36"

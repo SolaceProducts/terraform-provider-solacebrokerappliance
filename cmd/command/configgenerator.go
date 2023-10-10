@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -23,9 +23,9 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	internalbroker "terraform-provider-solacebrokerappliance/internal/broker"
-	"terraform-provider-solacebrokerappliance/internal/broker/generated"
-	"terraform-provider-solacebrokerappliance/internal/semp"
+	internalbroker "terraform-provider-solacebroker/internal/broker"
+	"terraform-provider-solacebroker/internal/broker/generated"
+	"terraform-provider-solacebroker/internal/semp"
 
 	"golang.org/x/exp/slices"
 )

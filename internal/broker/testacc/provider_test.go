@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -18,7 +18,7 @@ package acctest
 
 import (
 	"os"
-	"terraform-provider-solacebrokerappliance/internal/broker"
+	"terraform-provider-solacebroker/internal/broker"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
@@ -29,7 +29,7 @@ import (
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 
-	_ "terraform-provider-solacebrokerappliance/internal/broker/generated"
+	_ "terraform-provider-solacebroker/internal/broker/generated"
 )
 
 var ProviderConfig string

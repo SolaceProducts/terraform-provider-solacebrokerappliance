@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,8 +17,8 @@ package cmd
 
 import (
 	"fmt"
-	"terraform-provider-solacebrokerappliance/internal/broker"
-	"terraform-provider-solacebrokerappliance/internal/broker/generated"
+	"terraform-provider-solacebroker/internal/broker"
+	"terraform-provider-solacebroker/internal/broker/generated"
 
 	"github.com/spf13/cobra"
 )

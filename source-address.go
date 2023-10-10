@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -17,5 +17,5 @@
 package main
 
 const providerNamespace = "solaceproducts"
-const providerSimpleType = "solacebrokerappliance"
+const providerSimpleType = "solacebroker"
 const providerType = providerSimpleType

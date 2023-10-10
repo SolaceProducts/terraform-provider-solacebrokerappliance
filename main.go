@@ -1,4 +1,4 @@
-// terraform-provider-solacebrokerappliance
+// terraform-provider-solacebroker
 //
 // Copyright 2023 Solace Corporation. All rights reserved.
 //
@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"terraform-provider-solacebrokerappliance/cmd"
-	"terraform-provider-solacebrokerappliance/internal/broker"
-	_ "terraform-provider-solacebrokerappliance/internal/broker/generated"
+	"terraform-provider-solacebroker/cmd"
+	"terraform-provider-solacebroker/internal/broker"
+	_ "terraform-provider-solacebroker/internal/broker/generated"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
