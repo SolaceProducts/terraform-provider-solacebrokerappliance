@@ -1,4 +1,4 @@
-module terraform-provider-solacebrokerappliance
+module terraform-provider-solacebroker
 
 go 1.20
 
