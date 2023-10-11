@@ -17,5 +17,5 @@
 package main
 
 const providerNamespace = "solaceproducts"
-const providerSimpleType = "solacebroker"
+const providerSimpleType = "solacebrokerappliance"
 const providerType = providerSimpleType
