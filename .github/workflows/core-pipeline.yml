@@ -56,8 +56,8 @@ jobs:
         run: |
           go mod tidy
           go install .
-          ~/go/bin/terraform-provider-solacebrokerappliance version
-          ~/go/bin/terraform-provider-solacebrokerappliance help
+          ~/go/bin/terraform-provider-solacebroker version
+          ~/go/bin/terraform-provider-solacebroker help
 
           
       - name: Check changed files
