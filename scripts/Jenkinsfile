@@ -9,6 +9,7 @@ node(label: 'master') {
     job = build job: 'publish-broker-terraform-provider', propagate: true, parameters:
     [
       string(name: 'TERRAFORM_BRANCH', value: TERRAFORM_BRANCH),
+      string(name: 'TERRAFORM_PROVIDER', value: 'appliance')
     ]
   }
 }
