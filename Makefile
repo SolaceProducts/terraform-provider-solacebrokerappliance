@@ -35,7 +35,8 @@ build: dep ## Build the binary file
 
 .PHONY:
 install: dep ## Install the provider for dev use
-	@go install -a
+	@go install .
+	@mv `go env GOPATH`/bin/terraform-provider-solacebroker `go env GOPATH`/bin/terraform-provider-solacebrokerappliance
 
 .PHONY:
 clean: ## Remove previous build

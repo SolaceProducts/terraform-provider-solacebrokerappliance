@@ -1,7 +1,6 @@
-name: Terraform Provider Pipeline
+name: Provider Test Pipeline
 
 on: workflow_call
-
 
 jobs:
   test:
@@ -31,7 +30,7 @@ jobs:
           echo "
           provider_installation {
             dev_overrides {
-              \"registry.terraform.io/solaceproducts/solacebroker\" = \"${HOME}/go/bin\"
+              \"registry.terraform.io/solaceproducts/solacebrokerappliance\" = \"${HOME}/go/bin\"
             }
             direct {}
           }" > ~/.terraformrc

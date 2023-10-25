@@ -1,7 +1,7 @@
 terraform {
  required_providers {
    solacebroker = {
-     source = "registry.terraform.io/solaceproducts/solacebroker"
+    source = "registry.terraform.io/solaceproducts/solacebrokerappliance"
    }
  }
 }
