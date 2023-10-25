@@ -40,7 +40,7 @@ jobs:
           go mod tidy
           make install
           ls ~/go/bin
-          terraform-provider-solacebrokerapplianceappliance -h
+          terraform-provider-solacebrokerappliance -h
 
       - name: Failure to  Generate sample Terraform due to Missing Username for  Broker
         run: |
