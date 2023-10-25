@@ -35,36 +35,10 @@ jobs:
             direct {}
           }" > ~/.terraformrc
 
-      - name: Checkout generator
-        uses: actions/checkout@v3
-        with:
-          repository: SolaceDev/broker-terraform-provider-generator
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: broker-terraform-provider-generator
-          ref: "v0.1.0"
-
-      - name: Build and install generator
-        run: |
-          pushd broker-terraform-provider-generator
-          go mod tidy
-          go install .
-          ls ~/go/bin
-          popd
-
-      - name: Generate provider code
-        run: |
-          SWAGGER_SPEC_NAME=`ls ci/swagger_spec`
-          echo "Generating code using spec $SWAGGER_SPEC_NAME"
-          BASE=`pwd`
-          pushd internal/broker/generated
-          rm ./*
-          SEMP_V2_SWAGGER_CONFIG_EXTENDED_JSON="$BASE/ci/swagger_spec/$SWAGGER_SPEC_NAME" ~/go/bin/broker-terraform-provider-generator all
-          popd
-
       - name: Build provider
         run: |
           go mod tidy
-          go install .
+          make install
           ls ~/go/bin
 
       - name: Check provider available

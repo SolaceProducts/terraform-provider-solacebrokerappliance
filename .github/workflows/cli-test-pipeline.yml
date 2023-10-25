@@ -35,42 +35,16 @@ jobs:
             direct {}
           }" > ~/.terraformrc
 
-      - name: Checkout generator
-        uses: actions/checkout@v3
-        with:
-          repository: SolaceDev/broker-terraform-provider-generator
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: broker-terraform-provider-generator
-          ref: "v0.1.0"
-
-      - name: Build and install generator
-        run: |
-          pushd broker-terraform-provider-generator
-          go mod tidy
-          go install .
-          ls ~/go/bin
-          popd
-
-      - name: Generate provider code
-        run: |
-          SWAGGER_SPEC_NAME=`ls ci/swagger_spec`
-          echo "Generating code using spec $SWAGGER_SPEC_NAME"
-          BASE=`pwd`
-          pushd internal/broker/generated
-          rm ./*
-          SEMP_V2_SWAGGER_CONFIG_EXTENDED_JSON="$BASE/ci/swagger_spec/$SWAGGER_SPEC_NAME" ~/go/bin/broker-terraform-provider-generator all
-          popd
-
       - name: Build provider
         run: |
           go mod tidy
           make install
           ls ~/go/bin
-          terraform-provider-solacebrokerappliance -h
+          terraform-provider-solacebrokerapplianceappliance -h
 
       - name: Failure to  Generate sample Terraform due to Missing Username for  Broker
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 msgVpn solace_broker gha_test.tf || error_code=$?
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 msgVpn solace_broker gha_test.tf || error_code=$?
           if [ $error_code -eq 1 ]; then
             echo "\nExpected failure accurate"
             exit 0
@@ -79,7 +53,7 @@ jobs:
 
       - name: Failure to  Generate sample Terraform due to Authentication wrong for  Broker
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=wrongpassword terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=wrongpassword terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
           if [ $error_code -eq 1 ]; then
             echo "\nExpected failure accurate"
             exit 0
@@ -88,7 +62,7 @@ jobs:
 
       - name: Failure to Generate sample Terraform due to Password and Bearer Token Not Present
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
           if [ $error_code -eq 1 ]; then
             echo "\nExpected failure accurate"
             exit 0
@@ -97,7 +71,7 @@ jobs:
 
       - name: Failure to Generate sample Terraform due to invalid provider specific identifiers
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.default default/msg_vpn gha_test.tf || error_code=$?
           if [ $error_code -eq 1 ]; then
             echo "\nExpected failure accurate"
             exit 0
@@ -106,12 +80,12 @@ jobs:
 
       - name: Generate sample Terraform for message vpn client
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn_rest_delivery_point.my-rdp default messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn_rest_delivery_point.my-rdp default messageVpn.tf
           cat messageVpn.tf
 
       - name: Generate sample Terraform for message vpn
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.default default messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.default default messageVpn.tf
           cat messageVpn.tf
 
       - name: Test generated terraform on broker
@@ -134,7 +108,7 @@ jobs:
 
       - name: Confirm all 21 queues are present with paging (Paging Test)
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.qn another messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.qn another messageVpn.tf
           cat messageVpn.tf
           grep -o 'solacebroker_msg_vpn_queue ' messageVpn.tf | wc -l |  grep 21
 
@@ -149,10 +123,10 @@ jobs:
 
       - name: Generate complete large config file for custom messageVPN file
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn.test test messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.test test messageVpn.tf
           cat messageVpn.tf
 
       - name: Generate some resources( only msg_vpn_queue) for custom messageVPN file
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=http://localhost:8080 solacebroker_msg_vpn_queue.q test/test messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn_queue.q test/test messageVpn.tf
           cat messageVpn.tf
