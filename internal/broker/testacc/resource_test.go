@@ -34,6 +34,9 @@ resource "solacebroker_msg_vpn" "test" {
 		msg_vpn_name = "test"
 		enabled      = true
 		max_msg_spool_usage = 5
+		max_egress_flow_count = 997
+		max_endpoint_count = 998
+		max_ingress_flow_count = 999
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -48,6 +51,9 @@ resource "solacebroker_msg_vpn" "test" {
 		msg_vpn_name = "test"
 		enabled      = true
 		max_msg_spool_usage = 10
+		max_egress_flow_count = 997
+		max_endpoint_count = 998
+		max_ingress_flow_count = 999
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -63,9 +69,6 @@ resource "solacebroker_msg_vpn" "test" {
 				ImportStateVerifyIgnore: []string{
 					// These attributes need to be ignored from the test as they have broker-defaults and cannot be imported so that state will be null
 					"max_connection_count",
-					"max_egress_flow_count",
-					"max_endpoint_count",
-					"max_ingress_flow_count",
 					"max_subscription_count",
 					"max_transacted_session_count",
 					"max_transaction_count",
