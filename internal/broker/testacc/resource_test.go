@@ -63,6 +63,9 @@ resource "solacebroker_msg_vpn" "test" {
 				ImportStateVerifyIgnore: []string{
 					// These attributes need to be ignored from the test as they have broker-defaults and cannot be imported so that state will be null
 					"max_connection_count",
+					"max_egress_flow_count",
+					"max_endpoint_count",
+					"max_ingress_flow_count",
 					"max_subscription_count",
 					"max_transacted_session_count",
 					"max_transaction_count",
@@ -73,9 +76,6 @@ resource "solacebroker_msg_vpn" "test" {
 					"service_smf_max_connection_count",
 					"service_web_max_connection_count",
 					"authentication_basic_profile_name",
-					"max_egress_flow_count",
-					"max_endpoint_count",
-					"max_ingress_flow_count",
 				},
 			},
 			// Delete testing automatically occurs in TestCase
