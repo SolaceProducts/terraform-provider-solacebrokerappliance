@@ -5,7 +5,7 @@
 
 This provider, maintained by Solace, is a plugin for Terraform that enables you to configure PubSub+ Event Broker Appliances.
 
-The provider is available from the [Terraform Providers Registry](https://registry.terraform.io/providers/solaceproducts/solacebroker/latest).
+The provider is available from the [Terraform Providers Registry](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest).
 
 The minimum required PubSub+ Event Broker Appliance version is 10.4.
 
@@ -18,11 +18,11 @@ The minimum required PubSub+ Event Broker Appliance version is 10.4.
 5. Open the `url` link in your browser to access the broker's web management UI. The credentials are the same as used in the Terraform config. Observe the new objects created: a new Message VPN and a messaging queue under that Message VPN.
 6. Run `terraform destroy` from your command line and observe that the Message VPN is deleted.
    
-Note that the provider also offers the unique ability to generate a config file from an already configured broker. For more information, refer to the [full documentation](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest/docs).
+Note that the provider also offers the unique ability to generate a config file from an already configured broker. For more information, refer to the [full documentation](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs).
 
 ## Documentation
 
-Full documentation is available on the [Terraform Providers Registry website](https://registry.terraform.io/providers/solaceproducts/solacebroker/latest/docs).
+Full documentation is available on the [Terraform Providers Registry website](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs).
 
 It is recommended to familiarize yourself with Solace technology and broker management, refer to the [Resources section](#resources).
 
@@ -49,7 +49,7 @@ Create or update your `${HOME}/.terraformrc` (Unix) / `%APPDATA%\terraform.rc` (
 ```hcl
 provider_installation {
   dev_overrides {
-    "registry.terraform.io/solaceproducts/solacebroker" = "${GOBIN}" //< replace `${GOBIN}` with the actual path on your system
+    "registry.terraform.io/solaceproducts/solacebrokerappliance" = "${GOBIN}" //< replace `${GOBIN}` with the actual path on your system
   }
 
   direct {}
