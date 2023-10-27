@@ -18,10 +18,9 @@ package broker
 
 import (
 	"fmt"
-	"reflect"
-
 	dschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	rschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"reflect"
 )
 
 var resourceToDataSourceTypes = map[reflect.Type]reflect.Type{

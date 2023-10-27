@@ -17,9 +17,8 @@
 package cmd
 
 import (
-	terraform "terraform-provider-solacebroker/cmd/command"
-
 	"github.com/spf13/cobra"
+	terraform "terraform-provider-solacebroker/cmd/command"
 )
 
 var rootCmd = &cobra.Command{

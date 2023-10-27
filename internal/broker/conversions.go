@@ -18,9 +18,8 @@ package broker
 
 import (
 	"fmt"
-	"math/big"
-
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	"math/big"
 )
 
 type Converter interface {

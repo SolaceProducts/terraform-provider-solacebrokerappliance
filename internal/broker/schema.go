@@ -17,9 +17,6 @@
 package broker
 
 import (
-	"sort"
-	"strings"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -29,6 +26,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	"sort"
+	"strings"
 )
 
 var DataSources []func() datasource.DataSource
@@ -50,8 +49,8 @@ var SempDetail SempVersionDetail
 
 func RegisterSempVersionDetails(sempAPIBasePath string, sempVersion string) {
 	SempDetail = SempVersionDetail{
-		BasePath:    sempAPIBasePath,
-		SempVersion: sempVersion,
+		BasePath: sempAPIBasePath,
+		SempVersion:  sempVersion,
 	}
 }
 
@@ -81,12 +80,12 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 				tfAttributes["id"] = schema.StringAttribute{
 					Description: "Identifier attribute, for internal use only.",
 					Computed:    true,
-				}
+					}
 			} else {
 				tfAttributes["id"] = schema.StringAttribute{
 					Description: "Identifier attribute, for internal use only.",
 					Computed:    true,
-					PlanModifiers: []planmodifier.String{
+					PlanModifiers:       []planmodifier.String{
 						stringplanmodifier.UseStateForUnknown(),
 					},
 				}

@@ -69,7 +69,7 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		}
 		providerSpecificIdentifier := cmd.Flags().Arg(1)
 		if len(providerSpecificIdentifier) == 0 {
-			command.LogCLIError("Broker object  not provided")
+			command.LogCLIError("Broker object not provided")
 			_ = cmd.Help()
 			os.Exit(1)
 		}
@@ -108,7 +108,8 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		brokerObjectInstanceName := strings.ToLower(brokerObjectType)
 		if strings.Contains(brokerObjectType, ".") {
 			brokerObjectTypeName = strings.Split(brokerObjectType, ".")[0]
-			brokerObjectInstanceName = strings.Split(brokerObjectType, ".")[1]
+			//sanitize name
+			brokerObjectInstanceName = command.SanitizeHclIdentifierName(strings.Split(brokerObjectType, ".")[1])
 		}
 
 		brokerObjectTerraformName := strings.ReplaceAll(brokerObjectTypeName, "solacebroker_", "")
