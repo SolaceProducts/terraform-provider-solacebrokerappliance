@@ -19,7 +19,7 @@ import (
 	"net/http/cookiejar"
 	"os"
 	"strings"
-	terraform "terraform-provider-solacebroker/cmd/command"
+	"terraform-provider-solacebroker/cmd/command"
 	"terraform-provider-solacebroker/internal/broker"
 	"terraform-provider-solacebroker/internal/semp"
 	"time"

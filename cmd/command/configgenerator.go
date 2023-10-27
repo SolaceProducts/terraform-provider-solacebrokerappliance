@@ -19,6 +19,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"net/http"
 	"os"
 	"regexp"
@@ -26,8 +27,6 @@ import (
 	internalbroker "terraform-provider-solacebroker/internal/broker"
 	"terraform-provider-solacebroker/internal/broker/generated"
 	"terraform-provider-solacebroker/internal/semp"
-
-	"golang.org/x/exp/slices"
 )
 
 type BrokerObjectType string
@@ -211,16 +210,11 @@ func GetNameForResource(resourceTerraformName string, attributeResourceTerraform
 					}
 					if found {
 						//sanitize name
-						value = strings.ReplaceAll(value, " ", "_")
-						value = strings.ReplaceAll(value, "#", "_")
-						value = strings.ReplaceAll(value, "\\", "_")
-						value = strings.ReplaceAll(value, "/", "_")
-						value = strings.ReplaceAll(value, "\"", "")
 						resourceName = "_" + value
 					}
 				}
 			}
 		}
 	}
-	return resourceName
+	return SanitizeHclIdentifierName(resourceName)
 }

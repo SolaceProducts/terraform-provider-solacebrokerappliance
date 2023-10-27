@@ -37,7 +37,7 @@ import (
 )
 
 const (
-	defaults          = "defaults"
+	defaults = "defaults"
 	defaultObjectName = "default"
 )
 
@@ -413,18 +413,18 @@ func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequ
 		return
 	}
 	// don't actually do anything if the object is a default object
-	if toId(path) == defaultObjectName {
+  if toId(path) == defaultObjectName {
 		switch r.terraformName {
-		case
-			"msg_vpn",
-			"msg_vpn_client_profile",
-			"msg_vpn_acl_profile",
-			"msg_vpn_client_username":
-			addWarningToDiagnostics(&response.Diagnostics, fmt.Sprintf("Associated state will be removed but default object %s, \"%s\" cannot be deleted", r.terraformName, toId(path)), ErrDeleteSingletonOrDefaultsNotAllowed)
-			return
+			case
+				"msg_vpn",
+				"msg_vpn_client_profile",
+				"msg_vpn_acl_profile",
+				"msg_vpn_client_username":
+				addWarningToDiagnostics(&response.Diagnostics, fmt.Sprintf("Associated state will be removed but default object %s, \"%s\" cannot be deleted", r.terraformName, toId(path)), ErrDeleteSingletonOrDefaultsNotAllowed)
+				return
 		}
 	}
-	// request delete
+  // request delete
 	client, d := client(r.providerData)
 	if d != nil {
 		response.Diagnostics.Append(d)
