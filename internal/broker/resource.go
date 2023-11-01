@@ -26,6 +26,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -37,7 +38,7 @@ import (
 )
 
 const (
-	defaults = "defaults"
+	defaults          = "defaults"
 	defaultObjectName = "default"
 )
 
@@ -68,6 +69,37 @@ var (
 )
 
 type brokerResource brokerEntity[schema.Schema]
+
+var brokerAlreadyChecked = false
+
+const (
+	minRequiredBrokerSempApiVersion = "2.33" // Shipped with broker version 10.3
+)
+
+func resetBrokerRequirementsCheck() {
+	brokerAlreadyChecked = false
+}
+
+func checkBrokerRequirements(ctx context.Context, client *semp.Client) error {
+	if !brokerAlreadyChecked {
+		path := "/about/api"
+		result, err := client.RequestWithoutBody(ctx, http.MethodGet, path)
+		if err != nil {
+			return err
+		}
+		// To support broker developer versions ignore "+" in the returned version
+		brokerSempVersion, err := version.NewVersion(strings.Replace(result["sempVersion"].(string), "+", "", -1))
+		if err != nil {
+			return err
+		}
+		minSempVersion, _ := version.NewVersion(minRequiredBrokerSempApiVersion)
+		if brokerSempVersion.LessThan(minSempVersion) {
+			return fmt.Errorf("Broker SEMP API version %s does not meet provider required minimum SEMP API version: %s", brokerSempVersion, minSempVersion)
+		}
+		brokerAlreadyChecked = true
+	}
+	return nil
+}
 
 // Compares the value with the attribute default value. Must take care of type conversions.
 func isValueEqualsAttrDefault(attr *AttributeInfo, response tftypes.Value, brokerDefault tftypes.Value) (bool, error) {
@@ -233,6 +265,10 @@ func (r *brokerResource) Create(ctx context.Context, request resource.CreateRequ
 			return
 		}
 	}
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
+		return
+	}
 
 	sempData, err := r.converter.FromTerraform(request.Plan.Raw)
 	if err != nil {
@@ -298,6 +334,10 @@ func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest,
 			return
 		}
 	}
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
+		return
+	}
 	sempPath, err := resolveSempPath(r.pathTemplate, r.identifyingAttributes, request.State.Raw)
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Error generating SEMP path", err)
@@ -357,6 +397,10 @@ func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequ
 			return
 		}
 	}
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
+		return
+	}
 	sempData, err := r.converter.FromTerraform(request.Plan.Raw)
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Error converting data", err)
@@ -402,6 +446,17 @@ func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequ
 }
 
 func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	client, d := client(r.providerData)
+	if d != nil {
+		response.Diagnostics.Append(d)
+		if response.Diagnostics.HasError() {
+			return
+		}
+	}
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
+		return
+	}
 	// don't actually do anything if the object is a singleton
 	if r.objectType == SingletonObject {
 		addWarningToDiagnostics(&response.Diagnostics, fmt.Sprintf("Associated state will be removed but singleton object %s cannot be deleted", r.terraformName), ErrDeleteSingletonOrDefaultsNotAllowed)
@@ -413,25 +468,18 @@ func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequ
 		return
 	}
 	// don't actually do anything if the object is a default object
-  if toId(path) == defaultObjectName {
+	if toId(path) == defaultObjectName {
 		switch r.terraformName {
-			case
-				"msg_vpn",
-				"msg_vpn_client_profile",
-				"msg_vpn_acl_profile",
-				"msg_vpn_client_username":
-				addWarningToDiagnostics(&response.Diagnostics, fmt.Sprintf("Associated state will be removed but default object %s, \"%s\" cannot be deleted", r.terraformName, toId(path)), ErrDeleteSingletonOrDefaultsNotAllowed)
-				return
-		}
-	}
-  // request delete
-	client, d := client(r.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
+		case
+			"msg_vpn",
+			"msg_vpn_client_profile",
+			"msg_vpn_acl_profile",
+			"msg_vpn_client_username":
+			addWarningToDiagnostics(&response.Diagnostics, fmt.Sprintf("Associated state will be removed but default object %s, \"%s\" cannot be deleted", r.terraformName, toId(path)), ErrDeleteSingletonOrDefaultsNotAllowed)
 			return
 		}
 	}
+	// request delete
 	_, err = client.RequestWithoutBody(ctx, http.MethodDelete, path)
 	if err != nil {
 		if err == semp.ErrAPIUnreachable {

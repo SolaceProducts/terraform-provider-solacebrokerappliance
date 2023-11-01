@@ -18,12 +18,9 @@ package broker
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 	"net/http/cookiejar"
 	"strings"
 
-	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -31,8 +28,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
-
-const minRequiredBrokerSempApiVersion = "2.33" // Shipped with broker version 10.3
 
 var _ provider.Provider = &BrokerProvider{}
 var ProviderVersion string
@@ -109,38 +104,11 @@ func (p *BrokerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	ctx = tflog.SetField(ctx, "solacebroker_url", strings.Trim(config.Url.String(), "\""))
 	ctx = tflog.SetField(ctx, "solacebroker_provider_version", p.Version)
-	tflog.Debug(ctx, "Configuring solacebroker provider client")
-
-	client, d := client(&config)
-	if d != nil {
-		resp.Diagnostics.Append(d)
-		if resp.Diagnostics.HasError() {
-			return
-		}
-	}
-
-	path := "/about/api"
-	result, err := client.RequestWithoutBody(ctx, http.MethodGet, path)
-	if err != nil {
-		addErrorToDiagnostics(&resp.Diagnostics, "SEMP call failed", err)
-		return
-	}
-	brokerSempVersion, err := version.NewVersion(result["sempVersion"].(string))
-	if err != nil {
-		addErrorToDiagnostics(&resp.Diagnostics, "unable to parse SEMP version returned from \"/about/api\"", err)
-		return
-	}
-	minSempVersion, _ := version.NewVersion(minRequiredBrokerSempApiVersion)
-	if brokerSempVersion.LessThan(minSempVersion) {
-		err := fmt.Errorf("BrokerSempVersion %s is less than required %s", brokerSempVersion, minSempVersion)
-		addErrorToDiagnostics(&resp.Diagnostics, "Broker does not meet minimum SEMP API version", err)
-		return
-	}
-
 	tflog.Info(ctx, "Solacebroker provider client config success")
 
 	resp.ResourceData = &config
 	resp.DataSourceData = &config
+	resetBrokerRequirementsCheck()
 }
 
 func (p *BrokerProvider) Resources(_ context.Context) []func() resource.Resource {
