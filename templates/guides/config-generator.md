@@ -70,14 +70,15 @@ would be:
 
 `SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=password`
 
-- `bearer_token`, (String, Sensitive, Mandatory if `password` will not be provided)
+- `bearer_token`, (String, Sensitive, Mandatory if `password` not provided)
 - `insecure_skip_verify` (Boolean) Disable validation of server SSL certificates, accept/ignore self-signed.
-- `password` (String, Sensitive, Mandatory is `bearer_token` will not be provided)
+- `password` (String, Sensitive, Mandatory if `bearer_token` not provided)
 - `request_min_interval` (String)
 - `request_timeout_duration` (String)
 - `retries` (Number)
 - `retry_max_interval` (String)
 - `retry_min_interval` (String)
+- `skip_api_check` (String) Disable validation of the broker SEMP API for supported platform and minimum version.
 - `username` (String, Mandatory) The username for the broker request.
 
 ## Troubleshooting

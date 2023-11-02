@@ -88,6 +88,10 @@ func (p *BrokerProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				MarkdownDescription: "Disable validation of server SSL certificates, accept/ignore self-signed. The default value is false.",
 				Optional:            true,
 			},
+			"skip_api_check": schema.BoolAttribute{
+				MarkdownDescription: "Disable validation of the broker SEMP API for supported platform and minimum version. The default value is false.",
+				Optional:            true,
+			},
 		},
 		MarkdownDescription: "",
 	}
@@ -130,6 +134,7 @@ type providerData struct {
 	RequestTimeoutDuration types.String `tfsdk:"request_timeout_duration"`
 	RequestMinInterval     types.String `tfsdk:"request_min_interval"`
 	InsecureSkipVerify     types.Bool   `tfsdk:"insecure_skip_verify"`
+	SkipApiCheck           types.Bool   `tfsdk:"skip_api_check"`
 }
 
 func New(version string) func() provider.Provider {

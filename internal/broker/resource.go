@@ -37,13 +37,32 @@ import (
 	"terraform-provider-solacebroker/internal/semp"
 )
 
+type brokerResource brokerEntity[schema.Schema]
+
 const (
-	defaults          = "defaults"
-	defaultObjectName = "default"
+	defaults                        = "defaults"
+	defaultObjectName               = "default"
+	minRequiredBrokerSempApiVersion = "2.33" // Shipped with broker version 10.3
 )
 
 var (
-	ErrDeleteSingletonOrDefaultsNotAllowed = errors.New("Deleting singleton or default objects are not allowed from the broker")
+	ErrDeleteSingletonOrDefaultsNotAllowed = errors.New("deleting singleton or default objects are not allowed from the broker")
+	BrokerPlatformName                     = map[string]string{
+		"VMR":       "Software Event Broker",
+		"Appliance": "Appliance",
+	}
+)
+
+var (
+	_ resource.ResourceWithConfigure        = &brokerResource{}
+	_ resource.ResourceWithConfigValidators = &brokerResource{}
+	_ resource.ResourceWithImportState      = &brokerResource{}
+	_ resource.ResourceWithUpgradeState     = &brokerResource{}
+)
+
+var (
+	skipApiCheck         = false
+	apiAlreadyChecked = false
 )
 
 func newBrokerResource(inputs EntityInputs) brokerEntity[schema.Schema] {
@@ -61,27 +80,12 @@ func newBrokerResourceClosure(templateEntity brokerEntity[schema.Schema]) func()
 	}
 }
 
-var (
-	_ resource.ResourceWithConfigure        = &brokerResource{}
-	_ resource.ResourceWithConfigValidators = &brokerResource{}
-	_ resource.ResourceWithImportState      = &brokerResource{}
-	_ resource.ResourceWithUpgradeState     = &brokerResource{}
-)
-
-type brokerResource brokerEntity[schema.Schema]
-
-var brokerAlreadyChecked = false
-
-const (
-	minRequiredBrokerSempApiVersion = "2.33" // Shipped with broker version 10.3
-)
-
 func forceBrokerRequirementsCheck() {
-	brokerAlreadyChecked = false
+	apiAlreadyChecked = false
 }
 
 func checkBrokerRequirements(ctx context.Context, client *semp.Client) error {
-	if !brokerAlreadyChecked {
+	if !skipApiCheck && !apiAlreadyChecked {
 		path := "/about/api"
 		result, err := client.RequestWithoutBody(ctx, http.MethodGet, path)
 		if err != nil {
@@ -94,9 +98,13 @@ func checkBrokerRequirements(ctx context.Context, client *semp.Client) error {
 		}
 		minSempVersion, _ := version.NewVersion(minRequiredBrokerSempApiVersion)
 		if brokerSempVersion.LessThan(minSempVersion) {
-			return fmt.Errorf("Broker SEMP API version %s does not meet provider required minimum SEMP API version: %s", brokerSempVersion, minSempVersion)
+			return fmt.Errorf("broker SEMP API version %s does not meet provider required minimum SEMP API version: %s", brokerSempVersion, minSempVersion)
 		}
-		brokerAlreadyChecked = true
+		brokerPlatform := result["platform"].(string)
+		if brokerPlatform != SempDetail.Platform {
+			return fmt.Errorf("broker platform \"%s\" does not meet provider supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[SempDetail.Platform])
+		}
+		apiAlreadyChecked = true
 	}
 	return nil
 }

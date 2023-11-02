@@ -29,8 +29,8 @@ import (
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 
-    _ "terraform-provider-solacebroker/internal/broker/generated"
-
+	"terraform-provider-solacebroker/internal/broker/generated"
+	_ "terraform-provider-solacebroker/internal/broker/generated"
 )
 
 var ProviderConfig string
@@ -92,12 +92,18 @@ url      = "http://` + endpoint + `"
         panic(err)
     }
 
-    if err = os.Setenv("SOLACEBROKER_USERNAME", password); err != nil {
+    if err = os.Setenv("SOLACEBROKER_USERNAME", user); err != nil {
         panic(err)
     }
 
     if err = os.Setenv("SOLACEBROKER_PASSWORD", password); err != nil {
         panic(err)
+    }
+
+    if generated.Platform == "Appliance" {
+        if err = os.Setenv("SOLACEBROKER_SKIP_API_CHECK", "true"); err != nil {
+            panic(err)
+        }
     }
 }
 

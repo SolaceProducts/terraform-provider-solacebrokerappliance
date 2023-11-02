@@ -18,10 +18,12 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"terraform-provider-solacebroker/cmd/broker"
 	command "terraform-provider-solacebroker/cmd/command"
+	"terraform-provider-solacebroker/internal/broker/generated"
 	"terraform-provider-solacebroker/internal/semp"
 
 	"github.com/spf13/cobra"
@@ -31,9 +33,9 @@ import (
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate --url=<terraform resource address> <provider-specific identifier> <filename>",
-	Short: "Generates a Terraform configuration file for a specified PubSubPlus Broker object and all child objects known to the provider",
+	Short: "Generates a Terraform configuration file for a specified PubSub+ Broker object and all child objects known to the provider",
 	Long: `The generate command on the provider binary generates a Terraform configuration file for the specified object and all child objects known to the provider.
-This is not a Terraform command. One can download the provider binary and can execute that binary with the "generate" command to generate a Terraform configuration file from the current configuration of a PubSubPlus event broker.
+This is not a Terraform command. One can download the provider binary and can execute that binary with the "generate" command to generate a Terraform configuration file from the current configuration of a PubSub+ event broker.
 
  <binary> generate <terraform resource address> <provider-specific identifier> <filename>
 
@@ -82,6 +84,27 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		if !strings.HasSuffix(fileName, ".tf") {
 			fileName = fileName + ".tf"
 		}
+
+		skipApiCheck, err := command.BooleanWithDefaultFromEnv("skip_api_check", false, false)
+		if err != nil {
+			command.LogCLIError("\nError: Unable to parse provider attribute. " + err.Error())
+			os.Exit(1)
+		}
+		//Confirm SEMP version and connection via client
+		aboutPath := "/about/api"
+		result, err := client.RequestWithoutBody(cmd.Context(), http.MethodGet, aboutPath)
+		if err != nil {
+			command.LogCLIError("SEMP call failed. " + err.Error())
+			os.Exit(1)
+		}
+		brokerSempVersion := result["sempVersion"].(string)
+		brokerPlatform := result["platform"].(string)
+		if !skipApiCheck && brokerPlatform != generated.Platform {
+			command.LogCLIError(fmt.Sprintf("Broker platform \"%s\" does not meet generator supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[generated.Platform]))
+			os.Exit(1)
+		}
+		command.LogCLIInfo("Connection successful")
+		command.LogCLIInfo("Broker SEMP version is " + brokerSempVersion)
 
 		command.LogCLIInfo("Attempt generation for broker object: " + brokerObjectType + " of " + providerSpecificIdentifier + " in file " + fileName)
 

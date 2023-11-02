@@ -6,11 +6,11 @@ terraform {
   }
 }
 
-# Configure the   provider
+# Configure the provider
 provider "solacebroker" {
   username = "admin"
   password = "admin"
-  url      = "http://localhost:8080"
+  url      = "http://appliance_url:80"
 }
 
 # Create a message-vpn on the event broker
@@ -20,7 +20,7 @@ resource "solacebroker_msg_vpn" "test" {
   max_msg_spool_usage = 10
 }
 
-# Create a messaging queue
+# Create a messaging queue - notice the dependency on message-vpn
 resource "solacebroker_msg_vpn_queue" "q" {
   msg_vpn_name    = solacebroker_msg_vpn.test.msg_vpn_name
   queue_name      = "green"
