@@ -18,14 +18,12 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 	"terraform-provider-solacebroker/cmd/broker"
 	command "terraform-provider-solacebroker/cmd/command"
 	"terraform-provider-solacebroker/internal/semp"
 
-	"github.com/hashicorp/go-version"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
 )
@@ -84,21 +82,6 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		if !strings.HasSuffix(fileName, ".tf") {
 			fileName = fileName + ".tf"
 		}
-
-		//Confirm SEMP version and connection via client
-		aboutPath := "/about/api"
-		result, err := client.RequestWithoutBody(cmd.Context(), http.MethodGet, aboutPath)
-		if err != nil {
-			command.LogCLIError("SEMP call failed. " + err.Error())
-			os.Exit(1)
-		}
-		brokerSempVersion, err := version.NewVersion(result["sempVersion"].(string))
-		if err != nil {
-			command.LogCLIError("Unable to parse SEMP version from API")
-			os.Exit(1)
-		}
-		command.LogCLIInfo("Connection successful")
-		command.LogCLIInfo("Broker SEMP version is " + brokerSempVersion.String())
 
 		command.LogCLIInfo("Attempt generation for broker object: " + brokerObjectType + " of " + providerSpecificIdentifier + " in file " + fileName)
 

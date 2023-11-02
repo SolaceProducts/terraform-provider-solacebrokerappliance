@@ -76,7 +76,7 @@ const (
 	minRequiredBrokerSempApiVersion = "2.33" // Shipped with broker version 10.3
 )
 
-func resetBrokerRequirementsCheck() {
+func forceBrokerRequirementsCheck() {
 	brokerAlreadyChecked = false
 }
 

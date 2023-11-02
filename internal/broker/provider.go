@@ -108,7 +108,7 @@ func (p *BrokerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	resp.ResourceData = &config
 	resp.DataSourceData = &config
-	resetBrokerRequirementsCheck()
+	forceBrokerRequirementsCheck()
 }
 
 func (p *BrokerProvider) Resources(_ context.Context) []func() resource.Resource {
