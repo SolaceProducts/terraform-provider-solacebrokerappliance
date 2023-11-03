@@ -8,9 +8,9 @@ on:
 
 
 jobs:
-  build_web:
+  build:
+    name: Prep release
     runs-on: ubuntu-latest
-
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3
