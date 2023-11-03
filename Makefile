@@ -12,6 +12,10 @@ vet: ## Run go vet
 	@go vet ${PKG_LIST}
 
 .PHONY:
+fmt: ## Run gofmt
+	@gofmt -w -l .
+
+.PHONY:
 test: ## Run unit tests
 	@go test -short ${PKG_LIST}
 

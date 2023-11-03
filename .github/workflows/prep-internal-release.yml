@@ -1,0 +1,46 @@
+on:
+  workflow_dispatch:
+    inputs:
+      release_branch_name:
+        description: 'Release branch name'
+        required: true
+        default: 'v0.1.0-rc.1'
+
+
+jobs:
+  build_web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20
+
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Check code has been formatted
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+
+      - name: Check go mod tidy has nothing to do
+        run: if [ "$(go mod tidy | wc -l)" -gt 0 ]; then exit 1; fi
+
+      - name: Check code builds
+        run: make install
+
+      - name: Check version in code reflects branch version, then prep product release for Whitesource
+        run: |
+          VERSION=$(cat version.go | grep version | cut -d'=' -f2 | xargs)
+          if [ "v${VERSION}" != "${{ github.event.inputs.release_tag }}" ]; then exit 1; fi
+          sed -i "s/productVersion=.*$/productVersion=v${VERSION}/g" ci/whitesource/whitesource-agent.config
+          cat ci/whitesource/whitesource-agent.config | grep productVersion
+
+      - name: Run Whitesource Action to update licenses
+        uses: SolaceDev/Mend-Scan-GHA@v1.0.0
+        with:
+          wssURL: https://saas.whitesourcesoftware.com/agent
+          apiKey: ${{ secrets.WSS_API_KEY }}
+          productName: ${{ github.event.repository.name }}
+          projectName: ${{ github.event.repository.name }}
+          configFile: 'ci/whitesource/whitesource-agent.config'
