@@ -20,6 +20,8 @@ You can run the provider binary directly with the `generate` command to generate
 - `<filename>` is the desirable name of the generated filename.
 - There are also supported options, which mirror the configuration options for the provider object. These can be found [here](#supported-options).
 
+This generator supports configuring appliances and will fail if applied against a software event broker. This check may be overridden by setting the `SOLACEBROKER_SKIP_API_CHECK=true` environment variable.
+
 ## Important notes
 
 The generated configuration shoud be reviewed for followings:

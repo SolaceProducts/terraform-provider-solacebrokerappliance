@@ -6,23 +6,28 @@ description: |-
 
 # Solace PubSub+ Event Broker Appliance (solacebrokerappliance) Provider
 
+This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+
 The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/appliance/)
 efficiently streams event-driven information between applications, IoT devices and user interfaces running in cloud, on-premises, and hybrid environments 
 using open APIs and protocols like AMQP, JMS, MQTT, REST and WebSocket.
 
-It can be installed into a variety of public and private clouds, PaaS, and on-premises environments, 
-and brokers in multiple locations can be linked together in an [Event Mesh](https://solace.com/what-is-an-event-mesh/) 
+Appliances in multiple locations can be linked together in an [Event Mesh](https://solace.com/what-is-an-event-mesh/) 
 to dynamically share events across the distributed enterprise.
 
 ## Overview
 
 The _solacebrokerappliance_ provider enables you to configure a PubSub+ Event Broker Appliance using Terraform.
 
-This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured event broker.
+-> This _solacebrokerappliance_ provider uses the same [preferred local name](https://developer.hashicorp.com/terraform/language/providers/requirements#local-names) `"solacebroker"` as 
+the [_solacebroker_ provider](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+This allows Terraform modules to be written that can target either provider. Note that such modules must only use features that are available in both providers.
+
+This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured appliance.
 
 Use the navigation to the left for more information in the guides and for the available provider resources and data sources.
 
-## Minimum broker version
+## Minimum appliance version
 
 The minimum required PubSub+ Event Broker Appliance version is 10.4.
 
