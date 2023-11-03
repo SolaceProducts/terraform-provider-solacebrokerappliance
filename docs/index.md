@@ -6,7 +6,7 @@ description: |-
 
 # Solace PubSub+ Event Broker Appliance (solacebrokerappliance) Provider
 
-The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/software/) 
+The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/appliance/)
 efficiently streams event-driven information between applications, IoT devices and user interfaces running in cloud, on-premises, and hybrid environments 
 using open APIs and protocols like AMQP, JMS, MQTT, REST and WebSocket.
 
@@ -37,11 +37,11 @@ terraform {
   }
 }
 
-# Configure the   provider
+# Configure the provider
 provider "solacebroker" {
   username = "admin"
   password = "admin"
-  url      = "http://localhost:8080"
+  url      = "http://appliance_url:80"
 }
 
 # Create a message-vpn on the event broker
@@ -51,7 +51,7 @@ resource "solacebroker_msg_vpn" "test" {
   max_msg_spool_usage = 10
 }
 
-# Create a messaging queue
+# Create a messaging queue - notice the dependency on message-vpn
 resource "solacebroker_msg_vpn_queue" "q" {
   msg_vpn_name    = solacebroker_msg_vpn.test.msg_vpn_name
   queue_name      = "green"
@@ -77,6 +77,7 @@ resource "solacebroker_msg_vpn_queue" "q" {
 - `retries` (Number) The number of retries for a SEMP call. The default value is 10.
 - `retry_max_interval` (String) A [duration](https://pkg.go.dev/maze.io/x/duration#ParseDuration) string indicating the maximum retry interval. The default value is 30s.
 - `retry_min_interval` (String) A [duration](https://pkg.go.dev/maze.io/x/duration#ParseDuration) string indicating how long to wait after an initial failed request before the first retry.  Exponential backoff is used, up to the limit set by retry_max_interval. The default value is 3s.
+- `skip_api_check` (Boolean) Disable validation of the broker SEMP API for supported platform and minimum version. The default value is false.
 - `username` (String) The username to connect to the broker with.  Requires password and conflicts with bearer_token.
 
 -> All provider configuration values can also be set as environment variables with the same name but uppercase and with the `SOLACEBROKER_` prefix.
