@@ -100,7 +100,7 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		brokerSempVersion := result["sempVersion"].(string)
 		brokerPlatform := result["platform"].(string)
 		if !skipApiCheck && brokerPlatform != generated.Platform {
-			command.LogCLIError(fmt.Sprintf("Broker platform \"%s\" does not meet generator supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[generated.Platform]))
+			command.LogCLIError(fmt.Sprintf("Broker platform \"%s\" does not match generator supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[generated.Platform]))
 			os.Exit(1)
 		}
 		command.LogCLIInfo("Connection successful")

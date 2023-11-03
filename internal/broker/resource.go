@@ -102,7 +102,7 @@ func checkBrokerRequirements(ctx context.Context, client *semp.Client) error {
 		}
 		brokerPlatform := result["platform"].(string)
 		if brokerPlatform != SempDetail.Platform {
-			return fmt.Errorf("broker platform \"%s\" does not meet provider supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[SempDetail.Platform])
+			return fmt.Errorf("broker platform \"%s\" does not match provider supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[SempDetail.Platform])
 		}
 		apiAlreadyChecked = true
 	}

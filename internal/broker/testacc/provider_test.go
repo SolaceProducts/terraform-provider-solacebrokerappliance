@@ -30,7 +30,6 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 
 	"terraform-provider-solacebroker/internal/broker/generated"
-	_ "terraform-provider-solacebroker/internal/broker/generated"
 )
 
 var ProviderConfig string
