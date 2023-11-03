@@ -20,6 +20,8 @@ You can run the provider binary directly with the `generate` command to generate
 - `<filename>` is the desirable name of the generated filename.
 - There are also supported options, which mirror the configuration options for the provider object. These can be found [here](#supported-options).
 
+This generator supports configuring appliances and will fail if applied against a software event broker. This check may be overridden by setting the `SOLACEBROKER_SKIP_API_CHECK=true` environment variable.
+
 ## Important notes
 
 The generated configuration shoud be reviewed for followings:
@@ -63,22 +65,23 @@ Message VPN, `default`, assuming a msg_vpn_queue resource called `test` exists f
 
 ### Supported Options
 
-The following parameters can be set as ENVIRONMENT VARIABLES. When used as environment variables
+The following parameters can be set as ENVIRONMENT VARIABLES. When used as environment variable,
 each parameter must be preceded with _SOLACEBROKER__. For example for a PubSub+ broker using username and password
 _**admin/password**_
 would be:
 
 `SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=password`
 
-- `bearer_token`, (String, Sensitive, Mandatory if `password` will not be provided)
-- `insecure_skip_verify` (Boolean) Disable validation of server SSL certificates, accept/ignore self-signed.
-- `password` (String, Sensitive, Mandatory is `bearer_token` will not be provided)
-- `request_min_interval` (String)
-- `request_timeout_duration` (String)
-- `retries` (Number)
-- `retry_max_interval` (String)
-- `retry_min_interval` (String)
-- `username` (String, Mandatory) The username for the broker request.
+- `SOLACEBROKER_BEARER_TOKEN` (String, Sensitive, Mandatory if `password` not provided)
+- `SOLACEBROKER_INSECURE_SKIP_VERIFY` (Boolean) Disable validation of server SSL certificates, accept/ignore self-signed.
+- `SOLACEBROKER_PASSWORD` (String, Sensitive, Mandatory if `bearer_token` not provided)
+- `SOLACEBROKER_REQUEST_MIN_INTERVAL` (String)
+- `SOLACEBROKER_REQUEST_TIMEOUT_DURATION` (String)
+- `SOLACEBROKER_RETRIES` (Number)
+- `SOLACEBROKER_RETRY_MAX_INTERVAL` (String)
+- `SOLACEBROKER_RETRY_MIN_INTERVAL` (String)
+- `SOLACEBROKER_SKIP_API_CHECK` (String) Disable validation of the broker SEMP API for supported platform and minimum version.
+- `SOLACEBROKER_USERNAME` (String, Mandatory) The username for the broker request.
 
 ## Troubleshooting
 
@@ -108,3 +111,8 @@ The following issues may arise while using the generator.
 |-----------------|------------------------------------------------------------------------------------------------------------|
 | Explanation     | This indicates the resource by name _xxx_ is not recognized by the generator.                              |
 | Possible Action | Ensure the resource name used is available as a Terraform resource for the version of the provider in use. |
+
+| Error           | Error: Broker check failed                                                                                  |
+|-----------------|-------------------------------------------------------------------------------------------------------------|
+| Explanation     | This indicates that broker platform does not match provider supported platform                              |
+| Possible Action | Ensure that an appliance provider is used against an appliance platform and not a software broker platform. |

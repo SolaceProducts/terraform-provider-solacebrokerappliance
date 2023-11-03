@@ -6,23 +6,28 @@ description: |-
 
 # Solace PubSub+ Event Broker Appliance (solacebrokerappliance) Provider
 
-The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/software/) 
+This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+
+The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/appliance/)
 efficiently streams event-driven information between applications, IoT devices and user interfaces running in cloud, on-premises, and hybrid environments 
 using open APIs and protocols like AMQP, JMS, MQTT, REST and WebSocket.
 
-It can be installed into a variety of public and private clouds, PaaS, and on-premises environments, 
-and brokers in multiple locations can be linked together in an [Event Mesh](https://solace.com/what-is-an-event-mesh/) 
+Appliances in multiple locations can be linked together in an [Event Mesh](https://solace.com/what-is-an-event-mesh/) 
 to dynamically share events across the distributed enterprise.
 
 ## Overview
 
 The _solacebrokerappliance_ provider enables you to configure a PubSub+ Event Broker Appliance using Terraform.
 
-This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured event broker.
+-> This _solacebrokerappliance_ provider uses the same [preferred local name](https://developer.hashicorp.com/terraform/language/providers/requirements#local-names) `"solacebroker"` as 
+the [_solacebroker_ provider](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+This allows Terraform modules to be written that can target either provider. Note that such modules must only use features that are available in both providers.
+
+This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured appliance.
 
 Use the navigation to the left for more information in the guides and for the available provider resources and data sources.
 
-## Minimum broker version
+## Minimum appliance version
 
 The minimum required PubSub+ Event Broker Appliance version is 10.4.
 
@@ -37,11 +42,11 @@ terraform {
   }
 }
 
-# Configure the   provider
+# Configure the provider
 provider "solacebroker" {
   username = "admin"
   password = "admin"
-  url      = "http://localhost:8080"
+  url      = "http://appliance_url:80"
 }
 
 # Create a message-vpn on the event broker
@@ -51,7 +56,7 @@ resource "solacebroker_msg_vpn" "test" {
   max_msg_spool_usage = 10
 }
 
-# Create a messaging queue
+# Create a messaging queue - notice the dependency on message-vpn
 resource "solacebroker_msg_vpn_queue" "q" {
   msg_vpn_name    = solacebroker_msg_vpn.test.msg_vpn_name
   queue_name      = "green"
@@ -77,6 +82,7 @@ resource "solacebroker_msg_vpn_queue" "q" {
 - `retries` (Number) The number of retries for a SEMP call. The default value is 10.
 - `retry_max_interval` (String) A [duration](https://pkg.go.dev/maze.io/x/duration#ParseDuration) string indicating the maximum retry interval. The default value is 30s.
 - `retry_min_interval` (String) A [duration](https://pkg.go.dev/maze.io/x/duration#ParseDuration) string indicating how long to wait after an initial failed request before the first retry.  Exponential backoff is used, up to the limit set by retry_max_interval. The default value is 3s.
+- `skip_api_check` (Boolean) Disable validation of the broker SEMP API for supported platform and minimum version. The default value is false.
 - `username` (String) The username to connect to the broker with.  Requires password and conflicts with bearer_token.
 
 -> All provider configuration values can also be set as environment variables with the same name but uppercase and with the `SOLACEBROKER_` prefix.
