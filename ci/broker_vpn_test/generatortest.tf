@@ -10,6 +10,7 @@ provider "solacebroker" {
   username = "admin"
   password = "admin"
   url      = "http://localhost:8080"
+  skip_api_check  = true
 }
 
 resource "solacebroker_msg_vpn" "msg_vpn" {

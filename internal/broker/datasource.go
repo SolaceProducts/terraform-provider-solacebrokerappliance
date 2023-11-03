@@ -81,6 +81,10 @@ func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadReq
 			return
 		}
 	}
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
+		return
+	}
 	sempPath, err := resolveSempPath(ds.pathTemplate, ds.identifyingAttributes, request.Config.Raw)
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Error generating SEMP path", err)

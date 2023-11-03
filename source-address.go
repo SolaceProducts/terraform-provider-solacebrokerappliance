@@ -18,4 +18,5 @@ package main
 
 const providerNamespace = "solaceproducts"
 const providerSimpleType = "solacebroker"
-const providerType = providerSimpleType
+const providerType = providerSimpleType + "appliance"
+const expectedPlatform = "Appliance"
