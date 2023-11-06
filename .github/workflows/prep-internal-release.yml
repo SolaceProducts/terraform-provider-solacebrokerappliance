@@ -107,7 +107,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: "env.NEXT_DEV_VERSION"
+          branch: ${{ env.NEXT_DEV_VERSION }}
 
       - name: Delete last dev branch
         uses: dawidd6/action-delete-branch@v3
