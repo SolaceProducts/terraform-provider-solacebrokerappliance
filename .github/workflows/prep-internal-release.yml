@@ -55,7 +55,6 @@ jobs:
           committer_name: GitHub Actions
           committer_email: actions@github.com
           message: 'Updating release candidate [skip ci]'
-          add: 'internal/broker/generated/*.go'
           new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
 
       - name: Create pull request if needed, then break here because manual approval of the changes is required
