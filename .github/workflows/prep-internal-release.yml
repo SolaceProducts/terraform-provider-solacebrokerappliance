@@ -81,6 +81,8 @@ jobs:
         run: |
           VERSION=$(cat version.go | grep version | cut -d'=' -f2 | xargs)
           sed -i "s/productVersion=.*$/productVersion=v${VERSION}/g" ci/whitesource/whitesource-agent.config
+          sed -i "s/productName=.*$/productName=${{ github.event.repository.name }}/g" ci/whitesource/whitesource-agent.config
+          sed -i "s/productName=.*$/projectName=${{ github.event.repository.name }}/g" ci/whitesource/whitesource-agent.config
           cat ci/whitesource/whitesource-agent.config | grep productVersion
 
       - name: Run Whitesource Action to update licenses
