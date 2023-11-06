@@ -17,7 +17,6 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.27.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/spf13/cobra v1.7.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
 	google.golang.org/appengine v1.6.7 // indirect

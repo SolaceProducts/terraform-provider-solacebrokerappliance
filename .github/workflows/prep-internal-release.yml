@@ -20,13 +20,13 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Check code has been formatted
-        run: gofmt -s -l .
+      - name: Code format, dependencies, checks
+        run: |
+          make fmt
+          make dep
+          make vet
 
-      - name: Check go mod tidy has nothing to do
-        run: go mod tidy
-
-      - name: Check code builds and passed acceptance test
+      - name: Check code builds and pass acceptance test
         run: |
           make install
           make testacc
@@ -36,7 +36,7 @@ jobs:
 
       - name: Ensure version reflects release candidate version
         run: |
-          VERSION=$(echo "${{ github.event.inputs.release_tag }}" | cut -d'v' -f2)
+          VERSION=$(echo "${{ github.event.inputs.release_branch_name }}" | cut -d'v' -f2)
           sed -i "s/version =.*$/version = \"${VERSION}\"/g" version.go
 
       - name: Check changed files
