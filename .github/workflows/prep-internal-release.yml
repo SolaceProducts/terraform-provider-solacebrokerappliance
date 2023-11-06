@@ -27,8 +27,9 @@ jobs:
         run: go mod tidy
 
       - name: Check code builds and passed acceptance test
-        run: make install
-        run: make testacc
+        run: |
+          make install
+          make testacc
 
       - name: Ensure all docs have been generated
         run: make generate-docs
