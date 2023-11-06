@@ -21,26 +21,63 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check code has been formatted
-        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+        run: gofmt -s -l .
 
       - name: Check go mod tidy has nothing to do
-        run: if [ "$(go mod tidy | wc -l)" -gt 0 ]; then exit 1; fi
+        run: go mod tidy
 
-      - name: Check code builds
+      - name: Check code builds and passed acceptance test
         run: make install
+        run: make testacc
 
-      - name: Check version in code reflects branch version, then prep product release for Whitesource
+      - name: Ensure all docs have been generated
+        run: make generate-docs
+
+      - name: Ensure version reflects release candidate version
         run: |
-          VERSION=$(cat version.go | grep version | cut -d'=' -f2 | xargs)
-          if [ "v${VERSION}" != "${{ github.event.inputs.release_tag }}" ]; then exit 1; fi
-          sed -i "s/productVersion=.*$/productVersion=v${VERSION}/g" ci/whitesource/whitesource-agent.config
-          cat ci/whitesource/whitesource-agent.config | grep productVersion
+          VERSION=$(echo "${{ github.event.inputs.release_tag }}" | cut -d'v' -f2)
+          sed -i "s/version =.*$/version = \"${VERSION}\"/g" version.go
 
-      - name: Run Whitesource Action to update licenses
-        uses: SolaceDev/Mend-Scan-GHA@v1.0.0
+      - name: Check changed files
+        uses: tj-actions/verify-changed-files@v14
+        id: check-changed-files
+
+      - name: Run step only when any of the files change
+        if: steps.check-changed-files.outputs.files_changed == 'true'
+        run: |
+          echo "Changed files: ${{ steps.check-changed-files.outputs.changed_files }}"
+
+      - name: Commit back updates when any of the files change
+        if: steps.check-changed-files.outputs.files_changed == 'true'
+        uses: EndBug/add-and-commit@v9
         with:
-          wssURL: https://saas.whitesourcesoftware.com/agent
-          apiKey: ${{ secrets.WSS_API_KEY }}
-          productName: ${{ github.event.repository.name }}
-          projectName: ${{ github.event.repository.name }}
-          configFile: 'ci/whitesource/whitesource-agent.config'
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          message: 'Updating release candidate [skip ci]'
+          add: 'internal/broker/generated/*.go'
+          new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
+
+      - name: Create pull request if needed, then break here because manual approval of the changes is required
+        if: steps.check-changed-files.outputs.files_changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_BRANCH=${GITHUB_REF_NAME}
+          gh pr create -B ${CURRENT_BRANCH} -H "GeneratedSourceUpdates-${CURRENT_BRANCH}" --title "Merge generated source updates into release candidate ${CURRENT_BRANCH}" --body 'Created by Github action'
+          echo Review and approve PR before release can continue
+          exit 1 // force actions fail here
+
+      # - name: Prep product release for Whitesource
+      #   run: |
+      #     VERSION=$(cat version.go | grep version | cut -d'=' -f2 | xargs)
+      #     sed -i "s/productVersion=.*$/productVersion=v${VERSION}/g" ci/whitesource/whitesource-agent.config
+      #     cat ci/whitesource/whitesource-agent.config | grep productVersion
+
+      # - name: Run Whitesource Action to update licenses
+      #   uses: SolaceDev/Mend-Scan-GHA@v1.0.0
+      #   with:
+      #     wssURL: https://saas.whitesourcesoftware.com/agent
+      #     apiKey: ${{ secrets.WSS_API_KEY }}
+      #     productName: ${{ github.event.repository.name }}
+      #     projectName: ${{ github.event.repository.name }}
+      #     configFile: 'ci/whitesource/whitesource-agent.config'
