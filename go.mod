@@ -75,7 +75,10 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 )
 
-require github.com/testcontainers/testcontainers-go v0.24.1
+require (
+	github.com/spf13/cobra v1.8.0
+	github.com/testcontainers/testcontainers-go v0.24.1
+)
 
 require (
 	dario.cat/mergo v1.0.0 // indirect

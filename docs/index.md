@@ -72,10 +72,6 @@ resource "solacebroker_msg_vpn_queue" "q" {
 
 - `url` (String) The base URL of the event broker, for example `https://mybroker.example.org:1943/`. The trailing / can be omitted.
 
-
-
-
-
 ### Optional
 
 - `bearer_token` (String, Sensitive) A bearer token that will be sent in the Authorization header of SEMP requests. Requires TLS transport enabled. Conflicts with username and password.
