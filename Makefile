@@ -5,11 +5,14 @@ PKG_LIST := $(shell go list ./... | grep -v /vendor/)
 .PHONY:
 dep: ## Get the dependencies
 	@go mod tidy
-	@go mod vendor
 
 .PHONY:
 vet: ## Run go vet
 	@go vet ${PKG_LIST}
+
+.PHONY:
+fmt: ## Run gofmt
+	@gofmt -w -l .
 
 .PHONY:
 test: ## Run unit tests

@@ -61,7 +61,7 @@ var (
 )
 
 var (
-	skipApiCheck         = false
+	skipApiCheck      = false
 	apiAlreadyChecked = false
 )
 

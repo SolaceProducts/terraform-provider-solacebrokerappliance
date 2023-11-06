@@ -49,9 +49,9 @@ var SempDetail SempVersionDetail
 
 func RegisterSempVersionDetails(sempAPIBasePath string, sempVersion string, platform string) {
 	SempDetail = SempVersionDetail{
-		BasePath: sempAPIBasePath,
-		SempVersion:  sempVersion,
-		Platform: platform,
+		BasePath:    sempAPIBasePath,
+		SempVersion: sempVersion,
+		Platform:    platform,
 	}
 }
 
@@ -81,12 +81,12 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 				tfAttributes["id"] = schema.StringAttribute{
 					Description: "Identifier attribute, for internal use only.",
 					Computed:    true,
-					}
+				}
 			} else {
 				tfAttributes["id"] = schema.StringAttribute{
 					Description: "Identifier attribute, for internal use only.",
 					Computed:    true,
-					PlanModifiers:       []planmodifier.String{
+					PlanModifiers: []planmodifier.String{
 						stringplanmodifier.UseStateForUnknown(),
 					},
 				}
