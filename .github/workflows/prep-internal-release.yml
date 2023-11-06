@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       release_branch_name:
-        description: 'Release branch name'
+        description: 'Release branch name, must start with v'
         required: true
         default: 'v0.1.0-rc.1'
 
@@ -23,7 +23,7 @@ jobs:
       - name: Check release version and set next version
         run: |
           if ! echo "${{ github.event.inputs.release_branch_name }}" | grep ^v ; then
-            echo "Release branch must start with 'v'" ; exit 1
+            echo "Incorrect release branch name ${{ github.event.inputs.release_branch_name }}, must start with 'v'" ; exit 1
           fi
           if echo "${{ github.ref_name }}" | grep ^dev ; then
             # set next dev version GH env, otherwise set it empty
@@ -82,7 +82,7 @@ jobs:
           VERSION=$(cat version.go | grep version | cut -d'=' -f2 | xargs)
           sed -i "s/productVersion=.*$/productVersion=v${VERSION}/g" ci/whitesource/whitesource-agent.config
           sed -i "s/productName=.*$/productName=${{ github.event.repository.name }}/g" ci/whitesource/whitesource-agent.config
-          sed -i "s/productName=.*$/projectName=${{ github.event.repository.name }}/g" ci/whitesource/whitesource-agent.config
+          sed -i "s/projectName=.*$/projectName=${{ github.event.repository.name }}/g" ci/whitesource/whitesource-agent.config
           cat ci/whitesource/whitesource-agent.config | grep productVersion
 
       - name: Run Whitesource Action to update licenses
@@ -94,12 +94,12 @@ jobs:
           projectName: ${{ github.event.repository.name }}
           configFile: 'ci/whitesource/whitesource-agent.config'
 
-      - name: Create release branch
+      - name: Create the release branch
         uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: "v${{ github.event.inputs.release_branch_name }}"
+          branch: "${{ github.event.inputs.release_branch_name }}"
 
       - name: Create next dev branch
         if: env.NEXT_DEV_VERSION != ''
@@ -113,4 +113,4 @@ jobs:
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{github.token}}
-          branches: "v${{ github.event.inputs.release_branch_name }}"
+          branches: "${{ github.ref_name }}"
