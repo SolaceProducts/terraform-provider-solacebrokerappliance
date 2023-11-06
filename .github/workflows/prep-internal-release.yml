@@ -27,7 +27,7 @@ jobs:
           fi
           if echo "${{ github.ref_name }}" | grep ^dev ; then
             # set next dev version GH env, otherwise set it empty
-            echo "NEXT_DEV_VERSION=dev$(echo \"${{ github.ref_name }}\" | awk -F. -v OFS=. '{$NF += 1 ; print}')" >> $GITHUB_ENV
+            echo "NEXT_DEV_VERSION=$(echo ${{ github.ref_name }} | awk -F. -v OFS=. '{$NF += 1 ; print}')" >> $GITHUB_ENV
           fi
 
       - name: Code format, dependencies, checks
