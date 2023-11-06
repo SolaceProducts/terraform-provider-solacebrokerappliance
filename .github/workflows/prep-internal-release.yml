@@ -97,7 +97,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: ${{ github.event.inputs.release_branch_name }}
+          branch: "v${{ github.event.inputs.release_branch_name }}"
 
       - name: Create next dev branch
         if: env.NEXT_DEV_VERSION != ''
