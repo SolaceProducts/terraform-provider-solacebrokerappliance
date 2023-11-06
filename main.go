@@ -55,7 +55,7 @@ func main() {
 	} else {
 		var debug bool
 		flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
-		                flag.Parse()
+		flag.Parse()
 		registry, ok := os.LookupEnv("SOLACEBROKER_REGISTRY_OVERRIDE")
 		if !ok {
 			registry = "registry.terraform.io"

@@ -19,7 +19,7 @@ package broker
 import (
 	"fmt"
 	dschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	           rschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	rschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"reflect"
 )
 

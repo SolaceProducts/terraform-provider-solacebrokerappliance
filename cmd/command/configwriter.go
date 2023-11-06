@@ -31,7 +31,7 @@ var terraformTemplate *template.Template
 func init() {
 	var err error
 	terraformTemplateString, _ := templatefiles.ReadFile("templates/terraform.template")
-	                        terraformTemplate, err = template.New("Object Template").Parse(string(terraformTemplateString))
+	terraformTemplate, err = template.New("Object Template").Parse(string(terraformTemplateString))
 	if err != nil {
 		panic(err)
 	}
