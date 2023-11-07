@@ -25,7 +25,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"terraform-provider-solacebroker/internal/semp"
 )
@@ -93,13 +92,13 @@ func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadReq
 	sempData, err := client.RequestWithoutBody(ctx, http.MethodGet, sempPath)
 	if err != nil {
 		if errors.Is(err, semp.ErrResourceNotFound) {
-			tflog.Info(ctx, fmt.Sprintf("Detected missing resource %v, removing from state", sempPath))
-			response.State.RemoveResource(ctx)
+			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("Detected missing resource %v", sempPath), err)
 		} else if err == semp.ErrAPIUnreachable {
 			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", sempPath), err)
 		} else {
 			addErrorToDiagnostics(&response.Diagnostics, "SEMP call failed", err)
 		}
+		return
 	}
 	sempData["id"] = toId(sempPath)
 	responseData, err := ds.converter.ToTerraform(sempData)
