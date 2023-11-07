@@ -92,7 +92,7 @@ func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadReq
 	sempData, err := client.RequestWithoutBody(ctx, http.MethodGet, sempPath)
 	if err != nil {
 		if errors.Is(err, semp.ErrResourceNotFound) {
-			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("Detected missing resource %v", sempPath), err)
+			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("Detected missing data source %v", sempPath), errors.Unwrap(err))
 		} else if err == semp.ErrAPIUnreachable {
 			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", sempPath), err)
 		} else {
