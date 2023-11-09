@@ -75,15 +75,15 @@ jobs:
         run: |
           echo "Changed files: ${{ steps.check-changed-files.outputs.changed_files }}"
 
-      - name: Commit back any updated source code
-        if: steps.check-changed-files.outputs.files_changed == 'true'
-        uses: EndBug/add-and-commit@v9
-        with:
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          message: 'Updating generated source [skip ci]'
-          add: 'internal/broker/generated/*.go'
-          new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
+      # - name: Commit back any updated source code
+      #   if: steps.check-changed-files.outputs.files_changed == 'true'
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     committer_name: GitHub Actions
+      #     committer_email: actions@github.com
+      #     message: 'Updating generated source [skip ci]'
+      #     add: 'internal/broker/generated/*.go'
+      #     new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
 
       # - name: Create pull request
       #   if: steps.check-changed-files.outputs.files_changed == 'true'
