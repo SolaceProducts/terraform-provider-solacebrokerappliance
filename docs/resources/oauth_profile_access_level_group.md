@@ -56,7 +56,3 @@ This has been available since SEMP API version 2.24.
 "read-only" - User has read-only access to a Message VPN.
 "read-write" - User has read-write access to most Message VPN settings.
 </pre>
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

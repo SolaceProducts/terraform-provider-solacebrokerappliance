@@ -74,10 +74,6 @@ This has been available since SEMP API version 2.4.
  Available since SEMP API version 2.14.
 - `queue_respect_ttl_enabled` (Boolean) Enable or disable the respecting of the time-to-live (TTL) for messages in the MQTT Session Queue. When enabled, expired messages are discarded or moved to the DMQ. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`. Available since SEMP API version 2.14.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--queue_event_bind_count_threshold"></a>
 ### Nested Schema for `queue_event_bind_count_threshold`
 

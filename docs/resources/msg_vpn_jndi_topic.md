@@ -41,7 +41,3 @@ This has been available since SEMP API version 2.4.
 ### Optional
 
 - `physical_name` (String) The physical name of the JMS Topic. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `""`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

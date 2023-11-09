@@ -59,7 +59,3 @@ This has been available since SEMP API version 2.36.
 "direct" - Direct connection (no proxy).
 "http" - HTTP proxy.
 </pre>
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

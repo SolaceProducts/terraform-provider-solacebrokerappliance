@@ -43,7 +43,3 @@ This has been available since SEMP API version 2.27.
 - `attribute_value` (String) The value of the Attribute.
 - `client_username` (String) The name of the Client Username.
 - `msg_vpn_name` (String) The name of the Message VPN.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

@@ -37,7 +37,3 @@ This has been available since SEMP API version 2.0.
 
 - `msg_vpn_name` (String) The name of the Message VPN.
 - `sequenced_topic` (String) Topic for applying sequence numbers.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

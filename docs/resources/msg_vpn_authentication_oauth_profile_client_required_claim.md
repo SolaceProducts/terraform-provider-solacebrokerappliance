@@ -41,7 +41,3 @@ This has been available since SEMP API version 2.25.
 - `client_required_claim_value` (String) The required claim value.
 - `msg_vpn_name` (String) The name of the Message VPN.
 - `oauth_profile_name` (String) The name of the OAuth profile.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

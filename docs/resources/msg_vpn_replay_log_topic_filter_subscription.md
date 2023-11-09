@@ -40,7 +40,3 @@ This has been available since SEMP API version 2.27.
 - `msg_vpn_name` (String) The name of the Message VPN.
 - `replay_log_name` (String) The name of the Replay Log.
 - `topic_filter_subscription` (String) The topic of the Subscription.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

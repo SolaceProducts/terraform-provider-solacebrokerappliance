@@ -45,7 +45,3 @@ This has been available since SEMP API version 2.30.
 - `msg_vpn_name` (String) The name of the Message VPN.
 - `queue_binding_name` (String) The name of a queue in the Message VPN.
 - `rest_delivery_point_name` (String) The name of the REST Delivery Point.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

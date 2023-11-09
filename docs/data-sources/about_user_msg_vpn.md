@@ -44,4 +44,3 @@ This has been available since SEMP API version 2.4.
 "read-only" - Read only access.
 "read-write" - Read and write access.
 </pre>
-- `id` (String) Identifier attribute, for internal use only.

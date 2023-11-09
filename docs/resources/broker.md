@@ -393,10 +393,6 @@ This has been available since SEMP API version 2.13.
 - `web_manager_redirect_http_enabled` (Boolean) Enable or disable redirection of HTTP requests for the broker manager to HTTPS. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `true`. Available since SEMP API version 2.24.
 - `web_manager_redirect_http_override_tls_port` (Number) The HTTPS port that HTTP requests will be redirected towards in a HTTP 301 redirect response. Zero is a special value that means use the value specified for the SEMP TLS port value. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `0`. Available since SEMP API version 2.24.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--guaranteed_msging_event_cache_usage_threshold"></a>
 ### Nested Schema for `guaranteed_msging_event_cache_usage_threshold`
 

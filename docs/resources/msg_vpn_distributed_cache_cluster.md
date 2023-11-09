@@ -62,10 +62,6 @@ This has been available since SEMP API version 2.11.
 - `msg_lifetime` (Number) The message lifetime, in seconds. If a message remains cached for the duration of its lifetime, the Cache Instance will remove the message. A lifetime of 0 results in the message being retained indefinitely. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `0`.
 - `new_topic_advertisement_enabled` (Boolean) Enable or disable the advertising, onto the message bus, of new topics learned by each Cache Instance in the Cache Cluster. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--event_data_byte_rate_threshold"></a>
 ### Nested Schema for `event_data_byte_rate_threshold`
 
