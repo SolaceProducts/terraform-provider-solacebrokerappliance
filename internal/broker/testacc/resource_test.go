@@ -65,6 +65,8 @@ resource "solacebroker_msg_vpn" "test" {
 			{
 				ResourceName:      "solacebroker_msg_vpn.test",
 				ImportState:       true,
+				ImportStateId:     "test",
+				ImportStateVerifyIdentifierAttribute: "msg_vpn_name",
 				ImportStateVerify: true,
 				ImportStateVerifyIgnore: []string{
 					// These attributes need to be ignored from the test as they have broker-defaults and cannot be imported so that state will be null
