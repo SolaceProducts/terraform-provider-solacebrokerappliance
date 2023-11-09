@@ -28,7 +28,6 @@ import (
 
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -140,7 +139,6 @@ func isValueEqualsAttrDefault(attr *AttributeInfo, response tftypes.Value, broke
 }
 
 func toId(path string) string {
-	// the generated id will only be used for testing
 	return filepath.Base(path)
 }
 
@@ -285,17 +283,12 @@ func (r *brokerResource) Create(ctx context.Context, request resource.CreateRequ
 	}
 
 	var sempPath string
-	var id string
 	method := http.MethodPut
 	if r.postPathTemplate != "" {
 		method = http.MethodPost
 		sempPath, err = resolveSempPath(r.postPathTemplate, r.identifyingAttributes, request.Plan.Raw)
-		var idPath string
-		idPath, err = resolveSempPath(r.pathTemplate, r.identifyingAttributes, request.Plan.Raw)
-		id = toId(idPath)
 	} else {
 		sempPath, err = resolveSempPath(r.pathTemplate, r.identifyingAttributes, request.Plan.Raw)
-		id = toId(sempPath)
 	}
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Error generating SEMP path", err)
@@ -331,7 +324,6 @@ func (r *brokerResource) Create(ctx context.Context, request resource.CreateRequ
 	response.Private.SetKey(ctx, defaults, privatData)
 	// Set the response
 	response.State.Raw = request.Plan.Raw
-	response.State.SetAttribute(ctx, path.Root("id"), id)
 }
 
 func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -363,7 +355,6 @@ func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest,
 		}
 		return
 	}
-	sempData["id"] = toId(sempPath)
 	responseData, err := r.converter.ToTerraform(sempData)
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "SEMP response conversion failed", err)
@@ -415,7 +406,6 @@ func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequ
 		return
 	}
 	sempPath, err := resolveSempPath(r.pathTemplate, r.identifyingAttributes, request.Plan.Raw)
-	id := toId(sempPath)
 	if err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Error generating SEMP path", err)
 		return
@@ -450,7 +440,6 @@ func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequ
 	response.Private.SetKey(ctx, defaults, privatData)
 	// Set the response
 	response.State.Raw = request.Plan.Raw
-	response.State.SetAttribute(ctx, path.Root("id"), id)
 }
 
 func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
