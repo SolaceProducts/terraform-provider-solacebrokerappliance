@@ -30,6 +30,32 @@ jobs:
             echo "NEXT_DEV_VERSION=$(echo ${{ github.ref_name }} | awk -F. -v OFS=. '{$NF += 1 ; print}')" >> $GITHUB_ENV
           fi
 
+      - name: Checkout generator
+        uses: actions/checkout@v3
+        with:
+          repository: SolaceDev/broker-terraform-provider-generator
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: broker-terraform-provider-generator
+          ref: "ApplianceSupport"
+
+      - name: Build and install generator
+        run: |
+          pushd broker-terraform-provider-generator
+          go mod tidy
+          go install .
+          ls ~/go/bin
+          popd
+
+      - name: Generate provider code
+        run: |
+          SWAGGER_SPEC_NAME=`ls ci/swagger_spec`
+          echo "Generating code using spec $SWAGGER_SPEC_NAME"
+          BASE=`pwd`
+          pushd internal/broker/generated
+          rm ./*
+          SEMP_V2_SWAGGER_CONFIG_EXTENDED_JSON="$BASE/ci/swagger_spec/$SWAGGER_SPEC_NAME" ~/go/bin/broker-terraform-provider-generator all
+          popd
+
       - name: Code format, dependencies, checks
         run: |
           make fmt
@@ -94,23 +120,24 @@ jobs:
           projectName: ${{ github.event.repository.name }}
           configFile: 'ci/whitesource/whitesource-agent.config'
 
-      - name: Create the release branch
-        uses: peterjgrainger/action-create-branch@v2.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: "${{ github.event.inputs.release_branch_name }}"
+      # - name: Create the release branch
+      #   uses: peterjgrainger/action-create-branch@v2.4.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     branch: "${{ github.event.inputs.release_branch_name }}"
 
-      - name: Create next dev branch
-        if: env.NEXT_DEV_VERSION != ''
-        uses: peterjgrainger/action-create-branch@v2.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: ${{ env.NEXT_DEV_VERSION }}
+      # - name: Create next dev branch
+      #   if: env.NEXT_DEV_VERSION != ''
+      #   uses: peterjgrainger/action-create-branch@v2.4.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     branch: ${{ env.NEXT_DEV_VERSION }}
 
-      - name: Delete last dev branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{github.token}}
-          branches: "${{ github.ref_name }}"
+      # - name: Delete last dev branch
+      #   uses: dawidd6/action-delete-branch@v3
+      #   with:
+      #     github_token: ${{github.token}}
+      #     branches: "${{ github.ref_name }}"
+
