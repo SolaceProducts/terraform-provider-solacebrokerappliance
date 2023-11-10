@@ -72,9 +72,7 @@ Some attributes don't have a default value. In this case their value will be det
 
 ## Importing Resources
 
-When [importing resources to Terraform](https://developer.hashicorp.com/terraform/language/import#syntax) an `id` is required. Note that this `id` is not the same as the internal `id` attribute of resources.
-
-The `id` to be used shall be constructed as a path from the highest parent object down to the resource.
+When [importing resources to Terraform](https://developer.hashicorp.com/terraform/language/import#syntax) an `id` is required. This `id` shall be constructed as a path from the highest parent object down to the resource.
 
 For example, when importing a `solacebroker_msg_vpn_queue_subscription`, the parent relationship is `msg_vpn` > `msg_vpn_queue` > `msg_vpn_queue_subscription`. To construct the `id`, concatenate the identifications of parents and the particular resource identification, separated by `/` (slash). Also note that elements containing `/` must be URL-encoded.
 
