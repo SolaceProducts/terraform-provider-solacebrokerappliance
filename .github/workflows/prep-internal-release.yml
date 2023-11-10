@@ -35,12 +35,12 @@ jobs:
         with:
           repository: SolaceDev/broker-terraform-provider-generator
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: broker-terraform-provider-generator
+          path: /tmp/broker-terraform-provider-generator
           ref: "ApplianceSupport"
 
       - name: Build and install generator
         run: |
-          pushd broker-terraform-provider-generator
+          pushd /tmp/broker-terraform-provider-generator
           go mod tidy
           go install .
           ls ~/go/bin
