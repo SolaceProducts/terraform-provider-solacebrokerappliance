@@ -52,7 +52,3 @@ This has been available since SEMP API version 2.0.
 "substitution-expressions" - Evaluate substitution expressions on the request target.
 </pre>
  Available since SEMP API version 2.23.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

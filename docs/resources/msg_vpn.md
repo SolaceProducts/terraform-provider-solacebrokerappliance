@@ -267,10 +267,6 @@ Aliases may form a non-circular chain, cascading one to the next. Changes to thi
 - `service_web_tls_enabled` (Boolean) Enable or disable the use of TLS for the Web Transport service in the Message VPN. Disabling causes clients currently connected over TLS to be disconnected. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`.
 - `tls_allow_downgrade_to_plain_text_enabled` (Boolean) Enable or disable the allowing of TLS SMF clients to downgrade their connections to plain-text connections. Changing this will not affect existing connections. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--event_connection_count_threshold"></a>
 ### Nested Schema for `event_connection_count_threshold`
 

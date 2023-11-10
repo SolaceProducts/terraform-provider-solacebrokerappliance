@@ -46,7 +46,3 @@ This has been available since SEMP API version 2.4.
 "sync" - Messages are acknowledged when replicated (spooled remotely).
 "async" - Messages are acknowledged when pending replication (spooled locally).
 </pre>
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

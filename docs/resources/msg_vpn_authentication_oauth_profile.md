@@ -82,7 +82,3 @@ This has been available since SEMP API version 2.25.
 - `resource_server_validate_scope_enabled` (Boolean) Enable or disable verification of the scope claim in the access token or introspection response. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`.
 - `resource_server_validate_type_enabled` (Boolean) Enable or disable verification of the TYP field in the access token header. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`.
 - `username_claim_name` (String) The name of the username claim. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `"sub"`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

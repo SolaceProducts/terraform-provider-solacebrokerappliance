@@ -45,7 +45,3 @@ This has been available since SEMP API version 2.28.
 
 - `attribute_name` (String) Link Attribute to be tested. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
 - `attribute_value` (String) Expected attribute value. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

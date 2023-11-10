@@ -37,7 +37,3 @@ This has been available since SEMP API version 2.24.
 
 - `allowed_host` (String) An allowed value for the Host header.
 - `oauth_profile_name` (String) The name of the OAuth profile.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

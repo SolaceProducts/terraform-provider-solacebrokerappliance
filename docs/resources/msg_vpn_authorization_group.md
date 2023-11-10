@@ -49,7 +49,3 @@ This has been available since SEMP API version 2.0.
 - `enabled` (Boolean) Enable or disable the Authorization Group in the Message VPN. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.
 - `order_after_authorization_group_name` (String, Sensitive) Lower the priority to be less than this group. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4 (refer to the `Notes` section in the SEMP API `Config reference`). Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default is not applicable.
 - `order_before_authorization_group_name` (String, Sensitive) Raise the priority to be greater than this group. This attribute is absent from a GET and not updated when absent in a PUT, subject to the exceptions in note 4 (refer to the `Notes` section in the SEMP API `Config reference`). Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default is not applicable.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

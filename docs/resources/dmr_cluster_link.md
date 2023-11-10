@@ -97,10 +97,6 @@ This has been available since SEMP API version 2.11.
 - `transport_compressed_enabled` (Boolean) Enable or disable compression on the Link. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `false`.
 - `transport_tls_enabled` (Boolean) Enable or disable encryption (TLS) on the Link. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `false`.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--queue_event_spool_usage_threshold"></a>
 ### Nested Schema for `queue_event_spool_usage_threshold`
 

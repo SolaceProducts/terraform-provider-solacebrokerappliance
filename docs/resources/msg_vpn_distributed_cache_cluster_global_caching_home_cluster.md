@@ -43,7 +43,3 @@ This has been available since SEMP API version 2.11.
 - `cluster_name` (String) The name of the Cache Cluster.
 - `home_cluster_name` (String) The name of the remote Home Cache Cluster.
 - `msg_vpn_name` (String) The name of the Message VPN.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

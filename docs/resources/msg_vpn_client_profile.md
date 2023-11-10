@@ -110,10 +110,6 @@ This has been available since SEMP API version 2.0.
 - `tcp_max_window_size` (Number) The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. This setting is ignored on the software broker. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `256`.
 - `tls_allow_downgrade_to_plain_text_enabled` (Boolean) Enable or disable allowing a client using the Client Profile to downgrade an encrypted connection to plain text. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.8.
 
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
-
 <a id="nestedatt--event_client_provisioned_endpoint_spool_usage_threshold"></a>
 ### Nested Schema for `event_client_provisioned_endpoint_spool_usage_threshold`
 

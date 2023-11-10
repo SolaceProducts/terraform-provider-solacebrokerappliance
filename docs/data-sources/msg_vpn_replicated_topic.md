@@ -40,7 +40,6 @@ This has been available since SEMP API version 2.4.
 
 ### Read-Only
 
-- `id` (String) Identifier attribute, for internal use only.
 - `replication_mode` (String) The replication mode for the Replicated Topic. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `"async"`. The allowed values and their meaning are:
 
 <pre>

@@ -69,7 +69,3 @@ This has been available since SEMP API version 2.0.
 - `queue_binding` (String) The queue binding of the Bridge in the remote Message VPN. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `""`.
 - `tls_enabled` (Boolean) Enable or disable encryption (TLS) for the remote Message VPN connection. Modifying this attribute while the object (or the relevant part of the object) is administratively enabled may be service impacting as enabled will be temporarily set to false to apply the change. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `false`.
 - `unidirectional_client_profile` (String) The Client Profile for the unidirectional Bridge of the remote Message VPN. The Client Profile must exist in the local Message VPN, and it is used only for the TCP parameters. Note that the default client profile has a TCP maximum window size of 2 MB. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `"#client-profile"`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

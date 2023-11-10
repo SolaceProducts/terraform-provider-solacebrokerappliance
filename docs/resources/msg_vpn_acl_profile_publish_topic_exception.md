@@ -48,7 +48,3 @@ This has been available since SEMP API version 2.14.
 "smf" - Topic uses SMF syntax.
 "mqtt" - Topic uses MQTT syntax.
 </pre>
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

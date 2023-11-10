@@ -23,23 +23,21 @@ import (
 )
 
 func TestAccDataSource(t *testing.T) {
-    resource.Test(t, resource.TestCase{
-        PreCheck:                 func() { testAccPreCheck(t) },
-        ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-        Steps: []resource.TestStep{
-            // Read testing
-            {
-            Config: ProviderConfig + `
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Read testing
+			{
+				Config: ProviderConfig + `
 data "solacebroker_msg_vpn" "default" {
 		msg_vpn_name = "default"
 }
 `,
-            Check: resource.ComposeAggregateTestCheckFunc(
-                    resource.TestCheckResourceAttr("data.solacebroker_msg_vpn.default", "authentication_basic_enabled", "true"),
-                ),
-            },
-        },
-    })
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("data.solacebroker_msg_vpn.default", "authentication_basic_enabled", "true"),
+				),
+			},
+		},
+	})
 }
-
-

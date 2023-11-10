@@ -50,7 +50,3 @@ This has been available since SEMP API version 2.0.
 - `deliver_always_enabled` (Boolean) Enable or disable deliver-always for the Bridge remote subscription topic instead of a deliver-to-one remote priority. A given topic for the Bridge may be deliver-to-one or deliver-always but not both.
 - `msg_vpn_name` (String) The name of the Message VPN.
 - `remote_subscription_topic` (String) The topic of the Bridge remote subscription.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

@@ -38,7 +38,3 @@ This has been available since SEMP API version 2.19.
 ### Optional
 
 - `cert_content` (String) The PEM formatted content for the trusted root certificate of a domain Certificate Authority. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.

@@ -45,7 +45,3 @@ This has been available since SEMP API version 2.17.
 
 - `enabled` (Boolean) Enable or disable Virtual Hostname to Message VPN mapping. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `false`.
 - `msg_vpn_name` (String) The message VPN to which this virtual hostname is mapped. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
-
-### Read-Only
-
-- `id` (String) Identifier attribute, for internal use only.
