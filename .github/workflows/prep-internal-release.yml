@@ -35,17 +35,16 @@ jobs:
         with:
           repository: SolaceDev/broker-terraform-provider-generator
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: tmp/broker-terraform-provider-generator
+          path: broker-terraform-provider-generator
           ref: "ApplianceSupport"
 
-      - name: Build and install generator, then remove its source
+      - name: Build and install generator
         run: |
           pushd broker-terraform-provider-generator
           go mod tidy
           go install .
           ls ~/go/bin
           popd
-          rm -rf broker-terraform-provider-generator
 
       - name: Generate provider code
         run: |
@@ -56,6 +55,10 @@ jobs:
           rm ./*
           SEMP_V2_SWAGGER_CONFIG_EXTENDED_JSON="$BASE/ci/swagger_spec/$SWAGGER_SPEC_NAME" ~/go/bin/broker-terraform-provider-generator all
           popd
+
+      - name: Remove generator source
+        run: |
+          rm -rf broker-terraform-provider-generator
 
       - name: Code format, dependencies, checks
         run: |
