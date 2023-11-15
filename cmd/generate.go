@@ -103,10 +103,10 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 			command.LogCLIError(fmt.Sprintf("Broker platform \"%s\" does not match generator supported platform: %s", BrokerPlatformName[brokerPlatform], BrokerPlatformName[generated.Platform]))
 			os.Exit(1)
 		}
-		command.LogCLIInfo("Connection successful")
-		command.LogCLIInfo("Broker SEMP version is " + brokerSempVersion)
+		command.LogCLIInfo("Connection successful.")
+		command.LogCLIInfo(fmt.Sprintf("Broker SEMP version is %s, Generator SEMP version is %s", brokerSempVersion, generated.SempVersion))
 
-		command.LogCLIInfo("Attempt generation for broker object: " + brokerObjectType + " of " + providerSpecificIdentifier + " in file " + fileName)
+		command.LogCLIInfo("Attempting config generation for object and its child-objects: " + brokerObjectType + ", identifier: " + providerSpecificIdentifier + ", destination file: " + fileName)
 
 		object := &command.ObjectInfo{}
 
@@ -138,7 +138,7 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 			maps.Copy(generatedResource, generatedResourceChildren)
 		}
 
-		fmt.Println("\nReplacing hardcoded names of inter-object dependencies by references where required ...")
+		command.LogCLIInfo("Replacing hardcoded names of inter-object dependencies by references where required")
 		fixInterObjectDependencies(brokerResources)
 
 		// Format the results
@@ -159,9 +159,9 @@ This command would create a file my-messagevpn.tf that contains a resource defin
 		}
 		object.FileName = fileName
 
-		command.LogCLIInfo("Found all resources. Generation started for file " + fileName)
+		command.LogCLIInfo("Found all resources. Writing file " + fileName)
 		_ = command.GenerateTerraformFile(object)
-		command.LogCLIInfo(fileName + " created successfully.")
+		command.LogCLIInfo(fileName + " created successfully.\n")
 		os.Exit(0)
 	},
 }
