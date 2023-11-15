@@ -124,24 +124,24 @@ jobs:
           projectName: ${{ github.event.repository.name }}
           configFile: 'ci/whitesource/whitesource-agent.config'
 
-      # - name: Create the release branch
-      #   uses: peterjgrainger/action-create-branch@v2.4.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     branch: "${{ github.event.inputs.release_branch_name }}"
+      - name: Create the release branch
+        uses: peterjgrainger/action-create-branch@v2.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: "${{ github.event.inputs.release_branch_name }}"
 
-      # - name: Create next dev branch
-      #   if: env.NEXT_DEV_VERSION != ''
-      #   uses: peterjgrainger/action-create-branch@v2.4.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     branch: ${{ env.NEXT_DEV_VERSION }}
+      - name: Create next dev branch
+        if: env.NEXT_DEV_VERSION != ''
+        uses: peterjgrainger/action-create-branch@v2.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: ${{ env.NEXT_DEV_VERSION }}
 
-      # - name: Delete last dev branch
-      #   uses: dawidd6/action-delete-branch@v3
-      #   with:
-      #     github_token: ${{github.token}}
-      #     branches: "${{ github.ref_name }}"
+      - name: Delete last dev branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{github.token}}
+          branches: "${{ github.ref_name }}"
 

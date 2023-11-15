@@ -17,8 +17,12 @@
 package acctest
 
 import (
+	"context"
 	"testing"
 
+	"terraform-provider-solacebroker/internal/broker"
+
+	fwresource "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
@@ -86,4 +90,28 @@ resource "solacebroker_msg_vpn" "test" {
 			// Delete testing automatically occurs in TestCase
 		},
 	})
+}
+
+func TestAllResourceSchemas(t *testing.T) {
+	t.Parallel()
+
+	for  _, resource := range broker.Resources {
+		ctx := context.Background()
+		schemaRequest := fwresource.SchemaRequest{}
+		schemaResponse := &fwresource.SchemaResponse{}
+
+		// Instantiate the resource.Resource and call its Schema method
+		resource().Schema(ctx, schemaRequest, schemaResponse)
+
+		if schemaResponse.Diagnostics.HasError() {
+			t.Fatalf("Schema method diagnostics: %+v", schemaResponse.Diagnostics)
+		}
+
+		// Validate the schema
+		diagnostics := schemaResponse.Schema.ValidateImplementation(ctx)
+
+		if diagnostics.HasError() {
+			t.Fatalf("Schema validation diagnostics: %+v", diagnostics)
+		}
+	}
 }
