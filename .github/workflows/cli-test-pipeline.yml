@@ -110,7 +110,7 @@ jobs:
         run: |
           SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.qn another messageVpn.tf
           cat messageVpn.tf
-          grep -o 'solacebroker_msg_vpn_queue ' messageVpn.tf | wc -l |  grep 21
+          grep -o 'solacebroker_msg_vpn_queue" ' messageVpn.tf | wc -l |  grep 21
 
       - name: Create custom messageVPN with large config
         run: |
