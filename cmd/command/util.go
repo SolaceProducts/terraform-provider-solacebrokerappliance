@@ -274,7 +274,6 @@ func GenerateTerraformString(attributes []*broker.AttributeInfo, values []map[st
 				if reflect.TypeOf(attr.Default) != nil && fmt.Sprint(attr.Default) == fmt.Sprint(intValue) {
 					//attributes with default values will be skipped
 					attributesWithDefaultValue = append(attributesWithDefaultValue, attr.TerraformName)
-
 					continue
 				}
 				val := fmt.Sprintf("%v", intValue)

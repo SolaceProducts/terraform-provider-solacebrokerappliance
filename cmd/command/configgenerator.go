@@ -31,15 +31,10 @@ import (
 
 type BrokerObjectType string
 
-type IdentifyingAttribute struct {
-	key, value string
-}
-
 type GeneratorTerraformOutput struct {
 	TerraformOutput  map[string]ResourceConfig
 	SEMPDataResponse map[string]map[string]any
 }
-type BrokerObjectAttributes []IdentifyingAttribute
 
 var BrokerObjectRelationship = map[BrokerObjectType][]BrokerObjectType{}
 

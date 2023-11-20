@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/cookiejar"
 	"strings"
 	"time"
 
@@ -37,8 +36,6 @@ var (
 	ErrBadRequest       = errors.New("Bad request")
 	ErrAPIUnreachable   = errors.New("SEMP API unreachable")
 )
-
-var cookieJar, _ = cookiejar.New(nil)
 
 type Client struct {
 	*http.Client
