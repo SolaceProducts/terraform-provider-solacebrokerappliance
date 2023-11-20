@@ -85,9 +85,9 @@ resource "solacebroker_msg_vpn_queue" "q" {
 - `skip_api_check` (Boolean) Disable validation of the broker SEMP API for supported platform and minimum version. The default value is false.
 - `username` (String) The username to connect to the broker with.  Requires password and conflicts with bearer_token.
 
--> All provider configuration values can also be set as environment variables with the same name but uppercase and with the `SOLACEBROKER_` prefix.
+-> All provider configuration values can also be set as environment variables with the same name, but uppercase and with the `SOLACEBROKER_` prefix.
 For example, the password attribute can be set via the `SOLACEBROKER_PASSWORD` environment variable.  Values in the configuration take precedence over environment variables.
 
 # Release Notes and History
 
-For detailed Release Notes and release history, refer to the Releases section in the [Provider GitHub repository](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/releases).
+For detailed release notes and release history, refer to the Releases section in the [Provider GitHub repository](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/releases).

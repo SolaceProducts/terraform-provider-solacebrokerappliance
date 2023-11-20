@@ -18,13 +18,13 @@ The minimum required PubSub+ Event Broker Appliance version is 10.4.
 5. Open the `url` link in your browser to access the broker's web management UI. The credentials are the same as used in the Terraform config. Observe the new objects created: a new Message VPN and a messaging queue under that Message VPN.
 6. Run `terraform destroy` from your command line and observe that the Message VPN is deleted.
    
-Note that the provider also offers the unique ability to generate a config file from an already configured broker. For more information, refer to the [full documentation](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs).
+Note that the provider also offers the unique ability to generate a config file from an existing broker. For more information, refer to the [full documentation](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs).
 
 ## Documentation
 
 Full documentation is available on the [Terraform Providers Registry website](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs).
 
-It is recommended to familiarize yourself with Solace technology and broker management, refer to the [Resources section](#resources).
+We recommended that you familiarize yourself with Solace technology and broker management. For more information, refer to the [Resources section](#resources).
 
 ## Development
 
