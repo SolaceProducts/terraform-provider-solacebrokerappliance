@@ -6,7 +6,7 @@ page_title: "solacebrokerappliance Provider Guide"
 
 The `solacebrokerappliance` provider supports Terraform CLI operations including basic CRUD (create, read, update, and delete) and import.
 
-The provider leverages the [SEMP (Solace Element Management Protocol)](https://docs.solace.com/Admin/SEMP/Using-SEMP.htm) REST API to configure the PubSub+ event broker. The API reference is available from the [Solace PubSub+ Documentation](https://docs.solace.com/API-Developer-Online-Ref-Documentation/swagger-ui/appliance/config/index.html).
+The provider leverages the [SEMP (Solace Element Management Protocol)](https://docs.solace.com/Admin/SEMP/Using-SEMP.htm) REST API to configure the PubSub+ event broker. The API reference is available from the [Solace PubSub+ documentation](https://docs.solace.com/API-Developer-Online-Ref-Documentation/swagger-ui/appliance/config/index.html).
 
 This provider supports configuring appliances and will fail if applied against a software event broker. This check may be overridden by specifying the `skip_api_check = true` configuration argument.
 
@@ -36,7 +36,7 @@ A given version of the provider is built to support a specific version of the SE
 
 ## Object Relationships
 
-Broker inter-object references must be correctly encoded in Terraform configuration to have the apply operation work. This requires an understanding of the PubSub+ event broker objects. For more information about each object consult the [SEMP API reference](https://docs.solace.com/API-Developer-Online-Ref-Documentation/swagger-ui/appliance/config/index.html) and especially look for "Identifying" attributes that give a hint to required already configured objects.
+Broker inter-object references must be correctly encoded in Terraform configuration to have the apply operation work. This requires an understanding of the PubSub+ event broker objects. For more information about each object consult the [SEMP API reference](https://docs.solace.com/API-Developer-Online-Ref-Documentation/swagger-ui/appliance/config/index.html) and especially look for "Identifying" attributes that give a hint to required pre-existing objects.
 For example:
 
 ```terraform

@@ -40,10 +40,10 @@ This is not a Terraform command. One can download the provider binary and can ex
  <binary> generate <terraform resource address> <provider-specific identifier> <filename>
 
  where;
-	<binary> is the broker provider binary,
-	<terraform resource address> is the terraform resource address, for example http://localhost:8080,
-	<provider-specific identifier> are the similar to the Terraform Import command,this is the resource name and possible values to find a specific resource,
-	<filename> is the desirable name of the generated filename.
+	<binary> is the broker provider binary
+	<terraform resource address> is the terraform resource address, for example http://localhost:8080
+	<provider-specific identifier> is similar to the Terraform Import command. This is the resource name and possible values to find a specific resource
+	<filename> is the desirable name of the generated filename
 
 For example:
   terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf

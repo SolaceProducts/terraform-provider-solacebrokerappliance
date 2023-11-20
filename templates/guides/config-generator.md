@@ -16,7 +16,7 @@ You can run the provider binary directly with the `generate` command to generate
 
 - `<binary>` is the broker provider binary.
 - `<broker URL>` is the broker address, for example `https://mybroker.example.org:1943/`.
-- `<provider-specific identifier>` are the similar to the Terraform Import command. This is the resource name and possible values to find a specific resource.
+- `<provider-specific identifier>` is similar to the Terraform Import command. This is the resource name and possible values to find a specific resource.
 - `<filename>` is the desirable name of the generated filename.
 - There are also supported options, which mirror the configuration options for the provider object. These can be found [here](#supported-options).
 
@@ -24,12 +24,12 @@ This generator supports configuring appliances and will fail if applied against 
 
 ## Important notes
 
-The generated configuration shoud be reviewed for followings:
+You should review the generated configuration for the following:
 
-* Provider configuration values (url, username, etc.) may need to be updated.
-* Write-only attributes, such as passwords, are omitted from the config as they cannot be read from the broker configuration. They need to be added manually.
-* Default resources may be present that may be omitted.
-* The generator uses a naming scheme for the resources. This may be updated by manually replacing the generated names.
+* You may need to update provider configuration values (URL, username, etc.)
+* Write-only attributes, such as passwords, are omitted from the config as they cannot be read from the broker configuration. You need to add them manually.
+* Default resources may be present that you can omit.
+* The generator uses a naming scheme for the resources. You can update this by manually replacing the generated names.
 
 ## Usage
 
@@ -45,9 +45,8 @@ help        Help about any command
 version     Provides version information about the current binary
 ```
 
-To `generate` the configuration, make sure all ENVIRONMENT VARIABLES, which mirrors the configuration options for the
-provider object are set. The list of variables
-are listed [here](#supported-options).
+To `generate` the configuration, make sure all ENVIRONMENT VARIABLES, which mirror the configuration options for the
+provider object are set. You can find the list of variables [here](#supported-options).
 
 For example:
 `SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf`
@@ -65,8 +64,8 @@ Message VPN, `default`, assuming a msg_vpn_queue resource called `test` exists f
 
 ### Supported Options
 
-The following parameters can be set as ENVIRONMENT VARIABLES. When used as environment variable,
-each parameter must be preceded with _SOLACEBROKER__. For example for a PubSub+ broker using username and password
+The following parameters can be set as ENVIRONMENT VARIABLES. When used as an environment variable,
+each parameter must be preceded with _SOLACEBROKER__. An example for a PubSub+ broker using username and password
 _**admin/password**_
 would be:
 
@@ -89,8 +88,8 @@ The following issues may arise while using the generator.
 
 | Error           | SEMP call failed. unexpected status 401 (401 Unauthorized)                 |
 |-----------------|----------------------------------------------------------------------------|
-| Explanation     | Configurations to connect to the PubSub+ Broker not accurate.              |
-| Possible Action | Check and confirm, configuration details to PubSub+ Broker are accurate.   |
+| Explanation     | Configurations to connect to the PubSub+ broker not accurate.              |
+| Possible Action | Check and confirm, configuration details to PubSub+ broker are accurate.   |
 
 | Error           | SOLACEBROKER_xxx is mandatory but not available                                    |
 |-----------------|------------------------------------------------------------------------------------|
