@@ -431,6 +431,7 @@ func SanitizeHclStringValue(value string) string {
 	}
 	s := string(b)
 	output := s[1 : len(s)-1]
-	output = strings.ReplaceAll(output, "$", "$$")
+	output = strings.ReplaceAll(output, "${", "$${")
+	output = strings.ReplaceAll(output, "%{", "%%{")
 	return output
 }
