@@ -321,6 +321,26 @@ func TestSanitizeHclValue(t *testing.T) {
 		},
 		{
 			"SanitizeSubstituitionExpression",
+			args{name: "time/%{now()}"},
+			"time/%%{now()}",
+		},
+		{
+			"SanitizeSubstituitionExpression",
+			args{name: "time/$/test"},
+			"time/$/test",
+		},
+		{
+			"SanitizeSubstituitionExpression",
+			args{name: "time/%/test"},
+			"time/%/test",
+		},
+		{
+			"SanitizeSubstituitionExpression",
+			args{name: "${"},
+			"$${",
+		},
+		{
+			"SanitizeSubstituitionExpression",
 			args{name: "${utcDate(\"/\")}/${utcTime(\"/\")}/${BASE32(randomBytes(15))}"},
 			"$${utcDate(\\\"/\\\")}/$${utcTime(\\\"/\\\")}/$${BASE32(randomBytes(15))}",
 		},
