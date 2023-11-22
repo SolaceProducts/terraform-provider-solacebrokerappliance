@@ -30,11 +30,20 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_distributed_cache_cluster",
-		MarkdownDescription: "A Cache Cluster is a collection of one or more Cache Instances that subscribe to exactly the same topics. Cache Instances are grouped together in a Cache Cluster for the purpose of fault tolerance and load balancing. As published messages are received, the message broker message bus sends these live data messages to the Cache Instances in the Cache Cluster. This enables client cache requests to be served by any of Cache Instances in the Cache Cluster.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\ncache_name|x|||\ncluster_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since 2.11.",
+		MarkdownDescription: "A Cache Cluster is a collection of one or more Cache Instances that subscribe to exactly the same topics. Cache Instances are grouped together in a Cache Cluster for the purpose of fault tolerance and load balancing. As published messages are received, the message broker message bus sends these live data messages to the Cache Instances in the Cache Cluster. This enables client cache requests to be served by any of Cache Instances in the Cache Cluster.\n\n\nAttribute|Identifying\n:---|:---:\ncache_name|x\ncluster_name|x\nmsg_vpn_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.11.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/distributedCaches/{cacheName}/clusters/{clusterName}",
 		Version:             0,
 		Attributes: []*broker.AttributeInfo{
+			{
+				BaseType:      broker.String,
+				SempName:      "id",
+				TerraformName: "id",
+				Type:          types.StringType,
+				TerraformType: tftypes.String,
+				Converter:     broker.SimpleConverter[string]{TerraformType: tftypes.String},
+				Default:       "",
+			},
 			{
 				BaseType:            broker.String,
 				SempName:            "cacheName",
@@ -109,6 +118,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 1.875e+08,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -125,6 +135,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 2.5e+08,
 					},
 				},
 			},
@@ -149,6 +160,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 36000,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -165,6 +177,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 48000,
 					},
 				},
 			},
@@ -189,6 +202,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -205,6 +219,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 80,
 					},
 				},
 			},
@@ -229,6 +244,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -245,6 +261,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 80,
 					},
 				},
 			},
@@ -269,6 +286,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 60,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -285,6 +303,7 @@ func init() {
 							),
 							int64validator.Between(0, 100),
 						},
+						Default: 80,
 					},
 				},
 			},
@@ -309,6 +328,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 1000,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -325,6 +345,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 25000,
 					},
 				},
 			},
@@ -349,6 +370,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 1000,
 					},
 					{
 						BaseType:            broker.Int64,
@@ -365,6 +387,7 @@ func init() {
 							),
 							int64validator.Between(0, 4294967295),
 						},
+						Default: 80000,
 					},
 				},
 			},

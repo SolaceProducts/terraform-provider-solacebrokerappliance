@@ -14,6 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package generated
 
-const version = "0.2.34"
+import "terraform-provider-solacebroker/internal/broker"
+
+const BasePath = "/SEMP/v2/config"
+const SempVersion = "2.38+"
+
+func init() {
+	broker.RegisterSempVersionDetails(BasePath, SempVersion)
+}
