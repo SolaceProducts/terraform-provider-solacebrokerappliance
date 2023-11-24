@@ -95,7 +95,7 @@ resource "solacebroker_msg_vpn" "test" {
 func TestAllResourceSchemas(t *testing.T) {
 	t.Parallel()
 
-	for  _, resource := range broker.Resources {
+	for _, resource := range broker.Resources {
 		ctx := context.Background()
 		schemaRequest := fwresource.SchemaRequest{}
 		schemaResponse := &fwresource.SchemaResponse{}
