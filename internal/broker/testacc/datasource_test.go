@@ -47,9 +47,9 @@ data "solacebroker_msg_vpn" "default" {
 }
 
 func TestAllDataSourceSchemas(t *testing.T) {
-  t.Parallel()
+	t.Parallel()
 
-	for  _, dataSource := range broker.DataSources {
+	for _, dataSource := range broker.DataSources {
 		ctx := context.Background()
 		schemaRequest := fwredatasource.SchemaRequest{}
 		schemaResponse := &fwredatasource.SchemaResponse{}
