@@ -70,7 +70,7 @@ resource "solacebroker_msg_vpn_queue" "q" {
 
 ### Required
 
-- `url` (String) The base URL of the event broker, for example `https://mybroker.example.org:1943/`. The trailing / can be omitted.
+- `url` (String) The base URL of the event broker, for example `https://mybroker.example.org:<semp-service-port>/`. The trailing / can be omitted.
 
 ### Optional
 

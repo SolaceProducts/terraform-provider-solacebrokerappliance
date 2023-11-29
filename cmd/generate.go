@@ -33,7 +33,7 @@ import (
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate --url=<terraform resource address> <provider-specific identifier> <filename>",
-	Short: "Generates a Terraform configuration file for a specified PubSub+ Broker object and all child objects known to the provider",
+	Short: "Generates a Terraform configuration file for a specified PubSub+ event broker object and all child objects known to the provider",
 	Long: `The generate command on the provider binary generates a Terraform configuration file for the specified object and all child objects known to the provider.
 This is not a Terraform command. One can download the provider binary and can execute that binary with the "generate" command to generate a Terraform configuration file from the current configuration of a PubSub+ event broker.
 
@@ -41,12 +41,13 @@ This is not a Terraform command. One can download the provider binary and can ex
 
  where;
 	<binary> is the broker provider binary
-	<terraform resource address> is the terraform resource address, for example http://localhost:8080
+	<terraform resource address> is the broker SEMP API address, for example http://<host>:<semp-service-port>
 	<provider-specific identifier> is similar to the Terraform Import command. This is the resource name and possible values to find a specific resource
 	<filename> is the desirable name of the generated filename
 
-For example:
-  terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf
+Example:
+  SOLACEBROKER_USERNAME=adminuser SOLACEBROKER_PASSWORD=pass \
+	terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf
 
 This command would create a file my-messagevpn.tf that contains a resource definition for the default message VPN and any child objects, assuming the appropriate broker credentials were set in environment variables.`,
 

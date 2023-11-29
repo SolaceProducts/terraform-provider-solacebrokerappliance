@@ -16,7 +16,7 @@ Terraform uses the [snake case](https://en.wikipedia.org/wiki/Snake_case) naming
 
 ## Broker SEMP API Access
 
-The broker SEMP service, by default at port 8080 for HTTP and TLS port 1943 for HTTPS, must be accessible to the console running Terraform CLI.
+The broker SEMP service, by default at port 80 for HTTP and TLS port 443 for HTTPS, must be accessible to the console running Terraform CLI.
 
 The supported access credentials are basic authentication using username and password, and OAuth using a token. The two options are mutually exclusive and the provider will fail if both are configured.
 

@@ -15,7 +15,7 @@ You can run the provider binary directly with the `generate` command to generate
 `<binary> generate <broker URL> <provider-specific identifier> <filename>`
 
 - `<binary>` is the broker provider binary.
-- `<broker URL>` is the broker address, for example `https://mybroker.example.org:1943/`.
+- `<broker URL>` is the broker address, for example `https://mybroker.example.org:443/`.
 - `<provider-specific identifier>` is similar to the Terraform Import command. This is the resource name and possible values to find a specific resource.
 - `<filename>` is the desirable name of the generated filename.
 - There are also supported options, which mirror the configuration options for the provider object. These can be found [here](#supported-options).
@@ -49,7 +49,7 @@ To `generate` the configuration, make sure all ENVIRONMENT VARIABLES, which mirr
 provider object are set. You can find the list of variables [here](#supported-options).
 
 For example:
-`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://localhost:8080 solacebroker_msg_vpn.mq default my-messagevpn.tf`
+`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://<host>:443 solacebroker_msg_vpn.mq default my-messagevpn.tf`
 
 This command would create a file `my-messagevpn.tf` that contains a resource definition for the default Message VPN resource and
 any child objects, assuming the appropriate broker credentials were set in environment variables.
@@ -57,7 +57,7 @@ any child objects, assuming the appropriate broker credentials were set in envir
 Note: For objects with no child object, the file will only contain a resource definition for that object.
 
 For example:
-`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://localhost:8080 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf`
+`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://<host>:443 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf`
 
 This command would create a file `my-message-vpn-queue.tf` that contains the msg_vpn_queue resource , `test`  for the
 Message VPN, `default`, assuming a msg_vpn_queue resource called `test` exists for the Message VPN, `default`.
