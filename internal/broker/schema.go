@@ -32,6 +32,8 @@ import (
 
 var DataSources []func() datasource.DataSource
 
+var Entities []EntityInputs
+
 func RegisterDataSource(inputs EntityInputs) {
 	DataSources = append(DataSources, newBrokerDataSourceGenerator(inputs))
 }
@@ -40,6 +42,17 @@ var Resources []func() resource.Resource
 
 func RegisterResource(inputs EntityInputs) {
 	Resources = append(Resources, newBrokerResourceGenerator(inputs))
+	Entities = append(Entities, inputs)
+}
+
+var SempDetail SempVersionDetail
+
+func RegisterSempVersionDetails(sempAPIBasePath string, sempVersion string, platform string) {
+	SempDetail = SempVersionDetail{
+		BasePath:    sempAPIBasePath,
+		SempVersion: sempVersion,
+		Platform:    platform,
+	}
 }
 
 func addObjectConverters(attributes []*AttributeInfo) {
@@ -179,6 +192,7 @@ func newBrokerEntity(inputs EntityInputs, isResource bool) brokerEntity[schema.S
 			pathTemplate:          inputs.PathTemplate,
 			postPathTemplate:      inputs.PostPathTemplate,
 			terraformName:         inputs.TerraformName,
+			objectType:            inputs.ObjectType,
 			identifyingAttributes: identifyingAttributes,
 			attributes:            inputs.Attributes,
 			converter:             NewObjectConverter(inputs.TerraformName, inputs.Attributes),

@@ -1,0 +1,47 @@
+name: Test Provider
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build & test Terraform provider
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.20"
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform latest
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Build provider
+        run: |
+          go mod tidy
+          go fmt
+          make install
+          ~/go/bin/terraform-provider-solacebrokerappliance version
+          ~/go/bin/terraform-provider-solacebrokerappliance help
+
+  Plugin-Integration-Test:
+    needs: build
+    uses: ./.github/workflows/provider-test-pipeline.yml
+    secrets: inherit
+
+  Plugin-Acceptance-Test:
+    needs: build
+    uses: ./.github/workflows/provider-acceptance-test.yml
+    secrets: inherit
+
+  CLI-Integration-Test:
+    needs: build
+    uses: ./.github/workflows/cli-test-pipeline.yml
+    secrets: inherit

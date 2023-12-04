@@ -5,7 +5,7 @@ subcategory: ""
 description: |-
   The API Description object provides metadata about the SEMP API.
   A SEMP client authorized with a minimum access scope/level of "global/none" is required to perform this operation.
-  This has been available since 2.4.
+  This has been available since SEMP API version 2.4.
 ---
 
 # solacebroker_about_api (Data Source)
@@ -16,7 +16,7 @@ The API Description object provides metadata about the SEMP API.
 
 A SEMP client authorized with a minimum access scope/level of "global/none" is required to perform this operation.
 
-This has been available since 2.4.
+This has been available since SEMP API version 2.4.
 
 
 
@@ -27,5 +27,3 @@ This has been available since 2.4.
 
 - `platform` (String) The platform running the SEMP API.
 - `semp_version` (String) The version of the SEMP API.
-
-

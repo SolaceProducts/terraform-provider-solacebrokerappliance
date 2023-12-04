@@ -13,7 +13,7 @@ description: |-
   remoteauthenticationclientcertcontent||x||x
   remoteauthenticationclientcertpassword||x||
   A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation.
-  This has been available since 2.0.
+  This has been available since SEMP API version 2.0.
 ---
 
 # solacebroker_msg_vpn_bridge (Data Source)
@@ -34,7 +34,7 @@ remote_authentication_client_cert_password||x||
 
 A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation.
 
-This has been available since 2.0.
+This has been available since SEMP API version 2.0.
 
 
 
@@ -76,5 +76,3 @@ This has been available since 2.0.
 "da" - Ignore priority and deliver always.
 </pre>
 - `tls_cipher_suite_list` (String) The colon-separated list of cipher suites supported for TLS connections to the remote Message VPN. The value "default" implies all supported suites ordered from most secure to least secure. Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `"default"`.
-
-

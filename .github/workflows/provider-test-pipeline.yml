@@ -1,0 +1,71 @@
+name: Provider Test Pipeline
+
+on: workflow_call
+
+jobs:
+  test:
+    name: Run Provider setup and tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.20"
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform latest
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Setup test broker
+        run: |
+          mkdir -p $HOME/solace; chmod 777 $HOME/solace
+          docker run -d -p 8080:8080 -p 55555:55555 --shm-size=1g --env username_admin_globalaccesslevel=admin --env username_admin_password=admin --name=solace \
+            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard
+          while ! curl -s localhost:8080 | grep aurelia ; do sleep 1 ; done
+
+      - name: Use local provider
+        run: |
+          echo "
+          provider_installation {
+            dev_overrides {
+              \"registry.terraform.io/solaceproducts/solacebrokerappliance\" = \"${HOME}/go/bin\"
+            }
+            direct {}
+          }" > ~/.terraformrc
+
+      - name: Build provider
+        run: |
+          go mod tidy
+          make install
+          ls ~/go/bin
+
+      - name: Check provider available
+        run: |
+          pushd ci/broker_vpn_q
+          terraform plan
+          popd
+          
+
+      - name: Test provider on test broker
+        run: |
+          pushd ci/broker_vpn_q
+          # Create
+          terraform plan
+          terraform apply -auto-approve
+          sleep 1
+          # Modify
+          cat ../broker_vpn_q2/testconfig2.tf >> testconfig.tf
+          terraform plan
+          terraform apply -auto-approve
+          sleep 1
+          # Delete
+          terraform destroy -auto-approve
+          sleep 1
+          # import
+          terraform apply -auto-approve
+          sleep 1
+          rm terraform.tfstate*
+          terraform import solacebroker_msg_vpn.newone new
+          popd

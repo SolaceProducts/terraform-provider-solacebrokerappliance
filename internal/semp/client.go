@@ -18,13 +18,23 @@ package semp
 
 import (
 	"bytes"
+	"context"
+	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+)
+
+var (
+	ErrResourceNotFound = errors.New("Resource not found")
+	ErrBadRequest       = errors.New("Bad request")
+	ErrAPIUnreachable   = errors.New("SEMP API unreachable")
 )
 
 type Client struct {
@@ -39,6 +49,8 @@ type Client struct {
 	requestMinInterval time.Duration
 	rateLimiter        <-chan time.Time
 }
+
+var Cookies = map[string]*http.Cookie{}
 
 type Option func(*Client)
 
@@ -70,13 +82,14 @@ func RequestLimits(requestTimeoutDuration, requestMinInterval time.Duration) Opt
 	}
 }
 
-func NewClient(url string, options ...Option) *Client {
-	if !strings.HasSuffix(url, "/") {
-		url += "/"
-	}
-	url += "SEMP/v2/config"
+func NewClient(url string, insecure_skip_verify bool, cookiejar http.CookieJar, options ...Option) *Client {
+	customTransport := http.DefaultTransport.(*http.Transport)
+	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure_skip_verify}
 	client := &Client{
-		Client:           http.DefaultClient,
+		Client: &http.Client{
+			Transport: customTransport,
+			Jar:       cookiejar,
+		},
 		url:              url,
 		retries:          3,
 		retryMinInterval: time.Second,
@@ -86,7 +99,7 @@ func NewClient(url string, options ...Option) *Client {
 		o(client)
 	}
 	if client.requestMinInterval > 0 {
-		client.rateLimiter = time.Tick(client.requestMinInterval)
+		client.rateLimiter = time.NewTicker(client.requestMinInterval).C
 	} else {
 		ch := make(chan time.Time)
 		// closing the channel will make receiving from the channel non-blocking (the value received will be the
@@ -94,29 +107,42 @@ func NewClient(url string, options ...Option) *Client {
 		close(ch)
 		client.rateLimiter = ch
 	}
+
 	return client
 }
 
-func (c *Client) RequestWithBody(method, url string, body any) (map[string]any, error) {
+func (c *Client) RequestWithBody(ctx context.Context, method, url string, body any) (map[string]any, error) {
 	data, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest(method, c.url+url, bytes.NewBuffer(data))
+	request, err := http.NewRequestWithContext(ctx, method, c.url+url, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
-	dumpData(fmt.Sprintf("%v to %v", request.Method, request.URL), data)
-	return c.doRequest(request)
+	dumpData(ctx, fmt.Sprintf("%v to %v", request.Method, request.URL), data)
+	rawBody, err := c.doRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	return parseResponseAsObject(ctx, request, rawBody)
 }
 
-func (c *Client) doRequest(request *http.Request) (map[string]any, error) {
+func (c *Client) doRequest(request *http.Request) ([]byte, error) {
 	// the value doesn't matter, it is waiting for the value that matters
 	<-c.rateLimiter
 	if request.Method != http.MethodGet {
 		request.Header.Set("Content-Type", "application/json")
 	}
-	request.SetBasicAuth(c.username, c.password)
+	// Prefer OAuth even if Basic Auth credentials provided
+	if c.bearerToken != "" {
+		// TODO: add log
+		request.Header.Set("Authorization", "Bearer "+c.bearerToken)
+	} else if c.username != "" {
+		request.SetBasicAuth(c.username, c.password)
+	} else {
+		return nil, fmt.Errorf("either username or bearer token must be provided to access the broker")
+	}
 	attemptsRemaining := c.retries + 1
 	retryWait := c.retryMinInterval
 	var response *http.Response
@@ -129,6 +155,8 @@ loop:
 		} else {
 			switch response.StatusCode {
 			case http.StatusOK:
+				break loop
+			case http.StatusBadRequest:
 				break loop
 			case http.StatusTooManyRequests:
 				// ignore the too many requests body and any errors that happen while reading it
@@ -150,38 +178,126 @@ loop:
 	if response == nil {
 		return nil, err
 	}
-	rawBody, err := io.ReadAll(response.Body)
-	if response.StatusCode != http.StatusOK {
+	rawBody, _ := io.ReadAll(response.Body)
+	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusBadRequest {
 		return nil, fmt.Errorf("could not perform request: status %v (%v) during %v to %v, response body:\n%s", response.StatusCode, response.Status, request.Method, request.URL, rawBody)
 	}
-	data := map[string]any{}
-	err = json.Unmarshal(rawBody, &data)
-	if err != nil {
-		return nil, fmt.Errorf("could not parse response body from %v to %v, response body was:\n%s", request.Method, request.URL, rawBody)
+	if _, err := io.Copy(io.Discard, response.Body); err != nil {
+		return nil, fmt.Errorf("could not perform request: status %v (%v) during %v to %v, response body:\n%s", response.StatusCode, response.Status, request.Method, request.URL, rawBody)
 	}
-	dumpData("response", rawBody)
-	rawData, ok := data["data"]
-	if ok {
-		data, ok = rawData.(map[string]any)
-	}
-	if !ok {
-		return nil, nil
-	}
-	return data, nil
+	defer response.Body.Close()
+	return rawBody, nil
 }
 
-func (c *Client) RequestWithoutBody(method, url string) (map[string]interface{}, error) {
-	request, err := http.NewRequest(method, c.url+url, nil)
+func parseResponseAsObject(ctx context.Context, request *http.Request, dataResponse []byte) (map[string]any, error) {
+	data := map[string]any{}
+	err := json.Unmarshal(dataResponse, &data)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse response body from %v to %v, response body was:\n%s", request.Method, request.URL, dataResponse)
+	}
+	dumpData(ctx, "response", dataResponse)
+	rawData, ok := data["data"]
+	if ok {
+		// Valid data
+		data, _ = rawData.(map[string]any)
+		return data, nil
+	} else {
+		// Analize response metadata details
+		rawData, ok = data["meta"]
+		if ok {
+			data, _ = rawData.(map[string]any)
+			if data["responseCode"].(float64) == http.StatusOK {
+				// this is valid response for delete
+				return nil, nil
+			}
+			description := data["error"].(map[string]interface{})["description"].(string)
+			status := data["error"].(map[string]interface{})["status"].(string)
+			if status == "NOT_FOUND" {
+				// resource not found is a special type we want to return
+				return nil, fmt.Errorf("request failed from %v to %v, %v, %v, %w", request.Method, request.URL, description, status, ErrResourceNotFound)
+			}
+			tflog.Error(ctx, fmt.Sprintf("SEMP request returned %v, %v", description, status))
+			return nil, fmt.Errorf("request failed for %v using %v, %v, %v", request.URL, request.Method, description, status)
+		}
+	}
+	return nil, fmt.Errorf("could not parse response details from %v to %v, response body was:\n%s", request.Method, request.URL, dataResponse)
+}
+
+func parseResponseForGenerator(c *Client, ctx context.Context, basePath string, method string, request *http.Request, dataResponse []byte, appendToResult []map[string]any) ([]map[string]any, error) {
+	data := map[string]any{}
+	err := json.Unmarshal(dataResponse, &data)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse response body from %v to %v, response body was:\n%s", request.Method, request.URL, dataResponse)
+	}
+	responseData := []map[string]any{}
+	dumpData(ctx, "response", dataResponse)
+	rawData, ok := data["data"]
+	if ok {
+		switch rawData.(type) {
+		case []interface{}:
+			responseDataRaw, _ := rawData.([]interface{})
+			for _, t := range responseDataRaw {
+				responseData = append(responseData, t.(map[string]any))
+			}
+		case map[string]interface{}:
+			responseDataRaw, _ := rawData.(map[string]any)
+			responseData = append(responseData, responseDataRaw)
+		}
+		metaData, hasMeta := data["meta"]
+		appendToResult = append(appendToResult, responseData...)
+		if hasMeta {
+			pageData, hasPaging := metaData.(map[string]any)["paging"]
+			if hasPaging {
+				nextPage := fmt.Sprint(pageData.(map[string]any)["nextPageUri"])
+				nextPageUrl := strings.Split(nextPage, basePath)
+				print("..")
+				return c.RequestWithoutBodyForGenerator(ctx, basePath, method, nextPageUrl[1], appendToResult)
+			}
+		}
+		return appendToResult, nil
+	} else {
+		rawData, ok = data["meta"]
+		if ok {
+			data, _ = rawData.(map[string]any)
+			responseData = append(responseData, data)
+			errorCode, errorCodeExist := data["responseCode"]
+			if errorCodeExist && fmt.Sprint(errorCode) == "400" {
+				return responseData, ErrBadRequest
+			}
+			return responseData, ErrResourceNotFound
+		}
+	}
+	return nil, nil
+}
+
+func (c *Client) RequestWithoutBody(ctx context.Context, method, url string) (map[string]interface{}, error) {
+	request, err := http.NewRequestWithContext(ctx, method, c.url+url, nil)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Fprintf(os.Stderr, "===== %v to %v =====\n", request.Method, request.URL)
-	return c.doRequest(request)
+	tflog.Debug(ctx, fmt.Sprintf("===== %v to %v =====", request.Method, request.URL))
+	rawBody, err := c.doRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	return parseResponseAsObject(ctx, request, rawBody)
 }
 
-func dumpData(tag string, data []byte) {
+func (c *Client) RequestWithoutBodyForGenerator(ctx context.Context, basePath string, method string, url string, appendToResult []map[string]any) ([]map[string]interface{}, error) {
+	request, err := http.NewRequestWithContext(ctx, method, c.url+url, nil)
+	if err != nil {
+		return nil, err
+	}
+	rawBody, err := c.doRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	return parseResponseForGenerator(c, ctx, basePath, method, request, rawBody, appendToResult)
+}
+
+func dumpData(ctx context.Context, tag string, data []byte) {
 	var in any
 	_ = json.Unmarshal(data, &in)
 	out, _ := json.MarshalIndent(in, "", "\t")
-	fmt.Fprintf(os.Stderr, "===== %v =====\n%s\n", tag, out)
+	tflog.Debug(ctx, fmt.Sprintf("===== %v =====\n%s\n", tag, out))
 }

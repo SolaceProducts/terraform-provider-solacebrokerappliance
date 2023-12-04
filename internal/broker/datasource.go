@@ -18,11 +18,15 @@ package broker
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"net/http"
+
+	"terraform-provider-solacebroker/internal/semp"
 )
 
 func newBrokerDataSource(inputs EntityInputs) brokerEntity[schema.Schema] {
@@ -61,13 +65,14 @@ func (ds *brokerDataSource) Configure(_ context.Context, request datasource.Conf
 	}
 	config, ok := request.ProviderData.(*providerData)
 	if !ok {
-		response.Diagnostics = diag.Diagnostics{diag.NewErrorDiagnostic("Unexpected resource configuration", fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, config))}
+		d := diag.NewErrorDiagnostic("Unexpected datasource configuration", fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, config))
+		response.Diagnostics.Append(d)
 		return
 	}
 	ds.providerData = config
 }
 
-func (ds *brokerDataSource) Read(_ context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
 	client, d := client(ds.providerData)
 	if d != nil {
 		response.Diagnostics.Append(d)
@@ -75,21 +80,29 @@ func (ds *brokerDataSource) Read(_ context.Context, request datasource.ReadReque
 			return
 		}
 	}
-
-	path, err := resolveSempPath(ds.pathTemplate, ds.identifyingAttributes, request.Config.Raw)
-	if err != nil {
-		response.Diagnostics = generateDiagnostics("Error generating SEMP path", err)
+	if err := checkBrokerRequirements(ctx, client); err != nil {
+		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
 	}
-	sempData, err := client.RequestWithoutBody(http.MethodGet, path)
+	sempPath, err := resolveSempPath(ds.pathTemplate, ds.identifyingAttributes, request.Config.Raw)
 	if err != nil {
-		response.Diagnostics = generateDiagnostics("SEMP call failed", err)
+		addErrorToDiagnostics(&response.Diagnostics, "Error generating SEMP path", err)
 		return
 	}
-
+	sempData, err := client.RequestWithoutBody(ctx, http.MethodGet, sempPath)
+	if err != nil {
+		if errors.Is(err, semp.ErrResourceNotFound) {
+			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("Detected missing data source %v", sempPath), errors.Unwrap(err))
+		} else if err == semp.ErrAPIUnreachable {
+			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", sempPath), err)
+		} else {
+			addErrorToDiagnostics(&response.Diagnostics, "SEMP call failed", err)
+		}
+		return
+	}
 	responseData, err := ds.converter.ToTerraform(sempData)
 	if err != nil {
-		response.Diagnostics = generateDiagnostics("SEMP response conversion failed", err)
+		addErrorToDiagnostics(&response.Diagnostics, "SEMP response conversion failed", err)
 		return
 	}
 
