@@ -2,7 +2,6 @@
 [![Actions Status](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/actions/workflows/core-pipeline-main-branch-only.yml/badge.svg?branch=main)](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/actions?query=workflow:%22Test+Provider%22+branch:main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/solaceproducts/terraform-provider-solacebrokerappliance)](https://goreportcard.com/report/github.com/solaceproducts/terraform-provider-solacebrokerappliance)
 
-
 This provider, maintained by Solace, is a plugin for Terraform that enables you to configure PubSub+ Event Broker Appliances.
 
 The provider is available from the [Terraform Providers Registry](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest).
