@@ -4,11 +4,11 @@ page_title: "solacebroker_broker Resource - solacebroker"
 subcategory: ""
 description: |-
   This object contains global configuration for the message broker.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  tlsservercertcontent||x||x
-  tlsservercertpassword||x||
-  A SEMP client authorized with a minimum access scope/level of "global/none" is required to perform this operation. Requests which include the following attributes require greater access scope/level:
+  Attribute|Write-Only|Opaque
+  :---|:---:|:---:
+  tlsservercertcontent|x|x
+  tlsservercertpassword|x|
+  A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation. Requests which include the following attributes may require greater access scope/level than "vpn/read-only":
   Attribute|Access Scope/Level
   :---|:---:
   authclientcertrevocationcheckmode|global/read-only
@@ -126,12 +126,7 @@ description: |-
   tlsciphersuitesecureshelllist|global/read-only
   tlscrimeexploitprotectionenabled|global/read-only
   tlsservercertcontent|global/read-only
-  tlsstandarddomaincertificateauthoritiesenabled|vpn/read-only
-  tlsticketlifetime|global/read-only
-  webmanagerallowunencryptedwizardsenabled|vpn/read-only
-  webmanagercustomization|vpn/read-only
-  webmanagerredirecthttpenabled|vpn/read-only
-  webmanagerredirecthttpoverridetls_port|vpn/read-only
+  tlsticket_lifetime|global/read-only
   This has been available since SEMP API version 2.13.
 ---
 
@@ -140,14 +135,14 @@ description: |-
 This object contains global configuration for the message broker.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-tls_server_cert_content||x||x
-tls_server_cert_password||x||
+Attribute|Write-Only|Opaque
+:---|:---:|:---:
+tls_server_cert_content|x|x
+tls_server_cert_password|x|
 
 
 
-A SEMP client authorized with a minimum access scope/level of "global/none" is required to perform this operation. Requests which include the following attributes require greater access scope/level:
+A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation. Requests which include the following attributes may require greater access scope/level than "vpn/read-only":
 
 
 Attribute|Access Scope/Level
@@ -267,12 +262,7 @@ tls_cipher_suite_msg_backbone_list|global/read-only
 tls_cipher_suite_secure_shell_list|global/read-only
 tls_crime_exploit_protection_enabled|global/read-only
 tls_server_cert_content|global/read-only
-tls_standard_domain_certificate_authorities_enabled|vpn/read-only
 tls_ticket_lifetime|global/read-only
-web_manager_allow_unencrypted_wizards_enabled|vpn/read-only
-web_manager_customization|vpn/read-only
-web_manager_redirect_http_enabled|vpn/read-only
-web_manager_redirect_http_override_tls_port|vpn/read-only
 
 
 

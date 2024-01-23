@@ -4,10 +4,10 @@ page_title: "solacebroker_msg_vpn_queue Resource - solacebroker"
 subcategory: ""
 description: |-
   A Queue acts as both a destination that clients can publish messages to, and as an endpoint that clients can bind consumers to and consume messages from.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  msgvpnname|x|||
-  queue_name|x|||
+  Attribute|Identifying
+  :---|:---:
+  msgvpnname|x
+  queue_name|x
   A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.0.
 ---
@@ -17,10 +17,10 @@ description: |-
 A Queue acts as both a destination that clients can publish messages to, and as an endpoint that clients can bind consumers to and consume messages from.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-msg_vpn_name|x|||
-queue_name|x|||
+Attribute|Identifying
+:---|:---:
+msg_vpn_name|x
+queue_name|x
 
 
 
