@@ -4,10 +4,10 @@ page_title: "solacebroker_oauth_profile_resource_server_required_claim Resource 
 subcategory: ""
 description: |-
   Additional claims to be verified in the access token.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  oauthprofilename|x|||
-  resourceserverrequiredclaimname|x|||
+  Attribute|Identifying
+  :---|:---:
+  oauthprofilename|x
+  resourceserverrequiredclaimname|x
   A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.24.
 ---
@@ -17,10 +17,10 @@ description: |-
 Additional claims to be verified in the access token.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-oauth_profile_name|x|||
-resource_server_required_claim_name|x|||
+Attribute|Identifying
+:---|:---:
+oauth_profile_name|x
+resource_server_required_claim_name|x
 
 
 

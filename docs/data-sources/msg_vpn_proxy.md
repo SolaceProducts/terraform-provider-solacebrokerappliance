@@ -4,11 +4,11 @@ page_title: "solacebroker_msg_vpn_proxy Data Source - solacebroker"
 subcategory: ""
 description: |-
   Proxy objects define the connection parameters for a proxy server. To use a proxy for a particular connection such as a REST Consumer, select the proxy by name in the configuration for that object.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  authenticationbasicpassword||x||x
-  msgvpnname|x|||
-  proxy_name|x|||
+  Attribute|Identifying|Write-Only|Opaque
+  :---|:---:|:---:|:---:
+  authenticationbasicpassword||x|x
+  msgvpnname|x||
+  proxy_name|x||
   A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.36.
 ---
@@ -18,11 +18,11 @@ description: |-
 Proxy objects define the connection parameters for a proxy server. To use a proxy for a particular connection such as a REST Consumer, select the proxy by name in the configuration for that object.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-authentication_basic_password||x||x
-msg_vpn_name|x|||
-proxy_name|x|||
+Attribute|Identifying|Write-Only|Opaque
+:---|:---:|:---:|:---:
+authentication_basic_password||x|x
+msg_vpn_name|x||
+proxy_name|x||
 
 
 
