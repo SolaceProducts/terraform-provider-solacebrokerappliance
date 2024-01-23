@@ -18,7 +18,6 @@ package broker
 
 import (
 	"context"
-	"net/http/cookiejar"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -31,8 +30,6 @@ import (
 
 var _ provider.Provider = &BrokerProvider{}
 var ProviderVersion string
-
-var Cookiejar, _ = cookiejar.New(nil)
 
 type BrokerProvider struct {
 	Version string
@@ -105,13 +102,19 @@ func (p *BrokerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
 	ctx = tflog.SetField(ctx, "solacebroker_url", strings.Trim(config.Url.String(), "\""))
 	ctx = tflog.SetField(ctx, "solacebroker_provider_version", p.Version)
+	tflog.Debug(ctx, "Creating SEMP client")
+	client, d := client(&config)
+	if d != nil {
+		resp.Diagnostics.Append(d)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
 	tflog.Info(ctx, "Solacebroker provider client config success")
-
-	resp.ResourceData = &config
-	resp.DataSourceData = &config
+	resp.ResourceData = client
+	resp.DataSourceData = client
 	forceBrokerRequirementsCheck()
 }
 

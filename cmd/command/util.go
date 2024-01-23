@@ -261,7 +261,7 @@ func GenerateTerraformString(attributes []*broker.AttributeInfo, values []map[st
 						attributesWithDefaultValue = append(attributesWithDefaultValue, attr.TerraformName)
 						continue
 					} else {
-						fmt.Println("Applying workaround: not ignoring default for `msg_vpn` attribute `authentication_basic_type`")
+						LogCLIInfo("Applying workaround: not ignoring default for `msg_vpn` attribute `authentication_basic_type`")
 					}
 				}
 				val := "\"" + SanitizeHclStringValue(valuesRes.(string)) + "\""

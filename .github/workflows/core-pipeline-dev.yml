@@ -1,4 +1,6 @@
 name: Build Terraform Provider in Development phase
+# Branch naming convention assumes dev branches start with "dev" then semver release name,
+#          internal QA release candidate branches start with "v" then semver release name.
 
 on:
   push:
@@ -13,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.20"
+          go-version: "1.21"
 
       - name: Check out code
         uses: actions/checkout@v4
@@ -51,47 +53,55 @@ jobs:
 
       - name: Build provider
         run: |
-          go mod tidy
-          go fmt
+          make dep
+          make fmt
           make install
           ~/go/bin/terraform-provider-solacebrokerappliance version
           ~/go/bin/terraform-provider-solacebrokerappliance help
 
       - name: Test Provider and generate documentations
         run: |
-          make test-coverage
+          make testacc
           make generate-docs
 
+      - name: Ensure version reflects release candidate version
+        run: |
+          if echo "${{ github.ref_name }}" | grep ^dev || echo "${{ github.ref_name }}" | grep ^v ; then
+            VERSION=$(echo "${{ github.ref_name }}" | cut -d'v' -f2)
+            sed -i "s/version =.*$/version = \"${VERSION}\"/g" version.go
+          fi
+
       - name: Check changed files
-        uses: tj-actions/verify-changed-files@v14
+        uses: tj-actions/verify-changed-files@v17
         id: check-changed-files
         with:
           files: |
-            internal/broker/generated
-            docs
+            !broker-terraform-provider-generator
 
       - name: Run step only when any of the above files change.
         if: steps.check-changed-files.outputs.files_changed == 'true'
         run: |
           echo "Changed files: ${{ steps.check-changed-files.outputs.changed_files }}"
 
-      # - name: Commit back any updated source code
-      #   if: steps.check-changed-files.outputs.files_changed == 'true'
-      #   uses: EndBug/add-and-commit@v9
-      #   with:
-      #     committer_name: GitHub Actions
-      #     committer_email: actions@github.com
-      #     message: 'Updating generated source [skip ci]'
-      #     add: 'internal/broker/generated/*.go'
-      #     new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
+      - name: Commit back any updated source code
+        if: steps.check-changed-files.outputs.files_changed == 'true'
+        uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          message: 'Updating generated source'
+          add: ". ':!broker-terraform-provider-generator'"
+          new_branch: GeneratedSourceUpdates-${{ github.ref_name }}
 
-      # - name: Create pull request
-      #   if: steps.check-changed-files.outputs.files_changed == 'true'
-      #   run: |
-      #     CURRENT_BRANCH=${GITHUB_REF_NAME}
-      #     gh pr create -B ${CURRENT_BRANCH} -H "GeneratedSourceUpdates-${CURRENT_BRANCH}" --title "Merge generated source updates into ${CURRENT_BRANCH}" --body 'Created by Github action'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create pull request
+        if: steps.check-changed-files.outputs.files_changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_BRANCH=${GITHUB_REF_NAME}
+          gh pr create -B ${CURRENT_BRANCH} -H "GeneratedSourceUpdates-${CURRENT_BRANCH}" --title "Merge generated source updates into ${CURRENT_BRANCH}" --body 'Created by Github action'
+          echo Review and approve PR before push can continue
+          exit 1 // force actions stop here
 
   Plugin-Integration-Test:
     needs: build

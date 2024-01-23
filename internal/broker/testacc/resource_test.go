@@ -75,6 +75,7 @@ resource "solacebroker_msg_vpn" "test" {
 				ImportStateVerifyIgnore: []string{
 					// These attributes need to be ignored from the test as they have broker-defaults and cannot be imported so that state will be null
 					"max_connection_count",
+					"max_kafka_broker_connection_count",
 					"max_subscription_count",
 					"max_transacted_session_count",
 					"max_transaction_count",

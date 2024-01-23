@@ -24,7 +24,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 
 	"terraform-provider-solacebroker/internal/semp"
 )
@@ -63,23 +62,19 @@ func (ds *brokerDataSource) Configure(_ context.Context, request datasource.Conf
 	if request.ProviderData == nil {
 		return
 	}
-	config, ok := request.ProviderData.(*providerData)
+	client, ok := request.ProviderData.(*semp.Client)
 	if !ok {
-		d := diag.NewErrorDiagnostic("Unexpected datasource configuration", fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, config))
-		response.Diagnostics.Append(d)
+		response.Diagnostics.AddError(
+			"Unexpected datasource configuration",
+			fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, client),
+		)
 		return
 	}
-	ds.providerData = config
+	ds.client = client
 }
 
 func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	client, d := client(ds.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
-			return
-		}
-	}
+	client := ds.client
 	if err := checkBrokerRequirements(ctx, client); err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
@@ -93,8 +88,6 @@ func (ds *brokerDataSource) Read(ctx context.Context, request datasource.ReadReq
 	if err != nil {
 		if errors.Is(err, semp.ErrResourceNotFound) {
 			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("Detected missing data source %v", sempPath), errors.Unwrap(err))
-		} else if err == semp.ErrAPIUnreachable {
-			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", sempPath), err)
 		} else {
 			addErrorToDiagnostics(&response.Diagnostics, "SEMP call failed", err)
 		}

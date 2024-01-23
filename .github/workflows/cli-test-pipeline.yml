@@ -10,7 +10,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.20"
+          go-version: "1.21"
 
       - name: Check out code
         uses: actions/checkout@v4
@@ -21,8 +21,8 @@ jobs:
       - name: Setup Test broker
         run: |
           mkdir -p $HOME/solace; chmod 777 $HOME/solace
-          docker run -d -p 8080:8080 -p 55555:55555 --shm-size=1g --env username_admin_globalaccesslevel=admin --env username_admin_password=admin --name=solace \
-            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard
+          docker run -d -p 8080:8080 -p 55555:55555 --shm-size=1g --env username_admin_globalaccesslevel=admin --env username_admin_password=admin --env system_scaling_maxkafkabridgecount="10" --name=solace \
+            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard:"10.6.1.52"
           while ! curl -s localhost:8080 | grep aurelia ; do sleep 1 ; done
 
       - name: Use local provider
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build provider
         run: |
-          go mod tidy
+          make dep
           make install
           ls ~/go/bin
           terraform-provider-solacebrokerappliance -h
