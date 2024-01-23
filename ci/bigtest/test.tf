@@ -47,8 +47,6 @@ resource "solacebroker_broker" "broker" {
   guaranteed_msging_event_transaction_count_threshold                  = { "clear_percent" = 40, "set_percent" = 50 }
   guaranteed_msging_max_cache_usage                                    = 11
   guaranteed_msging_max_msg_spool_usage                                = 1600
-  guaranteed_msging_msg_spool_sync_mirrored_msg_ack_timeout            = 10001
-  guaranteed_msging_msg_spool_sync_mirrored_spool_file_ack_timeout     = 10002
   guaranteed_msging_transaction_replication_compatibility_mode         = "transacted"
   oauth_profile_default                                                = "test"
   service_amqp_enabled                                                 = true
@@ -58,12 +56,8 @@ resource "solacebroker_broker" "broker" {
   service_health_check_listen_port                                     = 10002
   service_health_check_tls_enabled                                     = true
   service_health_check_tls_listen_port                                 = 10003
-  service_mate_link_enabled                                            = false
-  service_mate_link_listen_port                                        = 10004
   service_mqtt_enabled                                                 = true
   service_msg_backbone_enabled                                         = false
-  service_redundancy_enabled                                           = false
-  service_redundancy_first_listen_port                                 = 10005
   service_rest_event_outgoing_connection_count_threshold               = { "clear_percent" = 40, "set_percent" = 50 }
   service_rest_incoming_enabled                                        = true
   service_rest_outgoing_enabled                                        = true
