@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "about_user_msg_vpn",
-		MarkdownDescription: "This provides information about the Message VPN access level for the username used to access the SEMP API.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/none\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
+		MarkdownDescription: "This provides information about the Message VPN access level for the username used to access the SEMP API.\n\n\nAttribute|Identifying\n:---|:---:\nmsg_vpn_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/none\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
 		ObjectType:          broker.DataSourceObject,
 		PathTemplate:        "/about/user/msgVpns/{msgVpnName}",
 		Version:             0,

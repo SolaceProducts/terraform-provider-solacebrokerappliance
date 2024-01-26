@@ -4,10 +4,10 @@ page_title: "solacebroker_oauth_profile Resource - solacebroker"
 subcategory: ""
 description: |-
   OAuth profiles specify how to securely authenticate to an OAuth provider.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  clientsecret||x||x
-  oauthprofile_name|x|||
+  Attribute|Identifying|Write-Only|Opaque
+  :---|:---:|:---:|:---:
+  clientsecret||x|x
+  oauthprofile_name|x||
   A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.24.
 ---
@@ -17,10 +17,10 @@ description: |-
 OAuth profiles specify how to securely authenticate to an OAuth provider.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-client_secret||x||x
-oauth_profile_name|x|||
+Attribute|Identifying|Write-Only|Opaque
+:---|:---:|:---:|:---:
+client_secret||x|x
+oauth_profile_name|x||
 
 
 

@@ -4,10 +4,10 @@ page_title: "solacebroker_msg_vpn_jndi_queue Data Source - solacebroker"
 subcategory: ""
 description: |-
   The message broker provides an internal JNDI store for provisioned Queue objects that clients can access through JNDI lookups.
-  Attribute|Identifying|Write-Only|Deprecated|Opaque
-  :---|:---:|:---:|:---:|:---:
-  msgvpnname|x|||
-  queue_name|x|||
+  Attribute|Identifying
+  :---|:---:
+  msgvpnname|x
+  queue_name|x
   A SEMP client authorized with a minimum access scope/level of "vpn/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.4.
 ---
@@ -17,10 +17,10 @@ description: |-
 The message broker provides an internal JNDI store for provisioned Queue objects that clients can access through JNDI lookups.
 
 
-Attribute|Identifying|Write-Only|Deprecated|Opaque
-:---|:---:|:---:|:---:|:---:
-msg_vpn_name|x|||
-queue_name|x|||
+Attribute|Identifying
+:---|:---:
+msg_vpn_name|x
+queue_name|x
 
 
 

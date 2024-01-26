@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_mqtt_session_subscription",
-		MarkdownDescription: "An MQTT session contains a client's QoS 0 and QoS 1 subscription sets. On creation, a subscription defaults to QoS 0.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nmqtt_session_client_id|x|||\nmqtt_session_virtual_router|x|||\nmsg_vpn_name|x|||\nsubscription_topic|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
+		MarkdownDescription: "An MQTT session contains a client's QoS 0 and QoS 1 subscription sets. On creation, a subscription defaults to QoS 0.\n\n\nAttribute|Identifying\n:---|:---:\nmqtt_session_client_id|x\nmqtt_session_virtual_router|x\nmsg_vpn_name|x\nsubscription_topic|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/mqttSessions/{mqttSessionClientId},{mqttSessionVirtualRouter}/subscriptions/{subscriptionTopic}",
 		Version:             0,

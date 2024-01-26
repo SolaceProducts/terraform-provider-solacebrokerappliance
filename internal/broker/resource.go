@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -62,6 +63,7 @@ var (
 var (
 	skipApiCheck      = false
 	apiAlreadyChecked = false
+	lock              sync.Mutex
 )
 
 func newBrokerResource(inputs EntityInputs) brokerEntity[schema.Schema] {
@@ -85,6 +87,11 @@ func forceBrokerRequirementsCheck() {
 
 func checkBrokerRequirements(ctx context.Context, client *semp.Client) error {
 	if !skipApiCheck && !apiAlreadyChecked {
+		lock.Lock()
+		defer lock.Unlock()
+		if apiAlreadyChecked {
+			return nil
+		}
 		path := "/about/api"
 		result, err := client.RequestWithoutBody(ctx, http.MethodGet, path)
 		if err != nil {
@@ -254,23 +261,19 @@ func (r *brokerResource) Configure(_ context.Context, request resource.Configure
 	if request.ProviderData == nil {
 		return
 	}
-	config, ok := request.ProviderData.(*providerData)
+	client, ok := request.ProviderData.(*semp.Client)
 	if !ok {
-		d := diag.NewErrorDiagnostic("Unexpected resource configuration", fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, config))
-		response.Diagnostics.Append(d)
+		response.Diagnostics.AddError(
+			"Unexpected resource configuration",
+			fmt.Sprintf("Unexpected type %T for provider data; expected %T.", request.ProviderData, client),
+		)
 		return
 	}
-	r.providerData = config
+	r.client = client
 }
 
 func (r *brokerResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	client, d := client(r.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
-			return
-		}
-	}
+	client := r.client
 	if err := checkBrokerRequirements(ctx, client); err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
@@ -327,13 +330,7 @@ func (r *brokerResource) Create(ctx context.Context, request resource.CreateRequ
 }
 
 func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	client, d := client(r.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
-			return
-		}
-	}
+	client := r.client
 	if err := checkBrokerRequirements(ctx, client); err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
@@ -348,8 +345,6 @@ func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest,
 		if errors.Is(err, semp.ErrResourceNotFound) {
 			tflog.Info(ctx, fmt.Sprintf("Detected missing resource %v, removing from state", sempPath))
 			response.State.RemoveResource(ctx)
-		} else if err == semp.ErrAPIUnreachable {
-			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", sempPath), err)
 		} else {
 			addErrorToDiagnostics(&response.Diagnostics, "SEMP call failed", err)
 		}
@@ -389,13 +384,7 @@ func (r *brokerResource) Read(ctx context.Context, request resource.ReadRequest,
 }
 
 func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	client, d := client(r.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
-			return
-		}
-	}
+	client := r.client
 	if err := checkBrokerRequirements(ctx, client); err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
@@ -443,13 +432,7 @@ func (r *brokerResource) Update(ctx context.Context, request resource.UpdateRequ
 }
 
 func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	client, d := client(r.providerData)
-	if d != nil {
-		response.Diagnostics.Append(d)
-		if response.Diagnostics.HasError() {
-			return
-		}
-	}
+	client := r.client
 	if err := checkBrokerRequirements(ctx, client); err != nil {
 		addErrorToDiagnostics(&response.Diagnostics, "Broker check failed", err)
 		return
@@ -479,10 +462,7 @@ func (r *brokerResource) Delete(ctx context.Context, request resource.DeleteRequ
 	// request delete
 	_, err = client.RequestWithoutBody(ctx, http.MethodDelete, path)
 	if err != nil {
-		if err == semp.ErrAPIUnreachable {
-			addErrorToDiagnostics(&response.Diagnostics, fmt.Sprintf("SEMP call failed. HOST not reachable. %v", path), err)
-			return
-		} else if !errors.Is(err, semp.ErrResourceNotFound) {
+		if !errors.Is(err, semp.ErrResourceNotFound) {
 			addErrorToDiagnostics(&response.Diagnostics, "SEMP call failed", err)
 			return
 		}

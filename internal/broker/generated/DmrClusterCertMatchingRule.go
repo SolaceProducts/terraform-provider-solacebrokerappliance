@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "dmr_cluster_cert_matching_rule",
-		MarkdownDescription: "A Cert Matching Rule is a collection of conditions and attribute filters that all have to be satisfied for certificate to be acceptable as authentication for a given link.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\ndmr_cluster_name|x|||\nrule_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.28.",
+		MarkdownDescription: "A Cert Matching Rule is a collection of conditions and attribute filters that all have to be satisfied for certificate to be acceptable as authentication for a given link.\n\n\nAttribute|Identifying\n:---|:---:\ndmr_cluster_name|x\nrule_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.28.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/dmrClusters/{dmrClusterName}/certMatchingRules/{ruleName}",
 		Version:             0,

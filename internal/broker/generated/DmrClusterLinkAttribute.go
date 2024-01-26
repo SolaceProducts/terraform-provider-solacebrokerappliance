@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "dmr_cluster_link_attribute",
-		MarkdownDescription: "A Link Attribute is a key+value pair that can be used to locate a DMR Cluster Link, for example when using client certificate mapping.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nattribute_name|x|||\nattribute_value|x|||\ndmr_cluster_name|x|||\nremote_node_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.28.",
+		MarkdownDescription: "A Link Attribute is a key+value pair that can be used to locate a DMR Cluster Link, for example when using client certificate mapping.\n\n\nAttribute|Identifying\n:---|:---:\nattribute_name|x\nattribute_value|x\ndmr_cluster_name|x\nremote_node_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.28.",
 		ObjectType:          broker.ReplaceOnlyObject,
 		PathTemplate:        "/dmrClusters/{dmrClusterName}/links/{remoteNodeName}/attributes/{attributeName},{attributeValue}",
 		PostPathTemplate:    "/dmrClusters/{dmrClusterName}/links/{remoteNodeName}/attributes",

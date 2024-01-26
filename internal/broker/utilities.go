@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -184,7 +184,7 @@ func client(providerData *providerData) (*semp.Client, diag.Diagnostic) {
 	client := semp.NewClient(
 		url,
 		insecureSkipVerify,
-		Cookiejar,
+		true, // this is a client for the provider
 		semp.BasicAuth(username, password),
 		semp.BearerToken(bearerToken),
 		semp.Retries(uint(retries), retryMinInterval, retryMaxInterval),

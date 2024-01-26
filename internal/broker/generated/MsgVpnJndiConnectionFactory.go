@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_jndi_connection_factory",
-		MarkdownDescription: "The message broker provides an internal JNDI store for provisioned Connection Factory objects that clients can access through JNDI lookups.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nconnection_factory_name|x|||\nmsg_vpn_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
+		MarkdownDescription: "The message broker provides an internal JNDI store for provisioned Connection Factory objects that clients can access through JNDI lookups.\n\n\nAttribute|Identifying\n:---|:---:\nconnection_factory_name|x\nmsg_vpn_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"vpn/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.4.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/jndiConnectionFactories/{connectionFactoryName}",
 		Version:             0,

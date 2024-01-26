@@ -13,7 +13,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.20"
+          go-version: "1.21"
 
       - name: Check out code
         uses: actions/checkout@v4
@@ -25,8 +25,6 @@ jobs:
 
       - name: Build provider
         run: |
-          go mod tidy
-          go fmt
           make install
           ~/go/bin/terraform-provider-solacebrokerappliance version
           ~/go/bin/terraform-provider-solacebrokerappliance help

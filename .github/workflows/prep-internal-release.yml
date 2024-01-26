@@ -1,3 +1,4 @@
+# Launched manually
 on:
   workflow_dispatch:
     inputs:
@@ -15,7 +16,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.20"
+          go-version: "1.21"
 
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -80,7 +81,7 @@ jobs:
           sed -i "s/version =.*$/version = \"${VERSION}\"/g" version.go
 
       - name: Check changed files
-        uses: tj-actions/verify-changed-files@v14
+        uses: tj-actions/verify-changed-files@v17
         id: check-changed-files
 
       - name: Run step only when any of the files change
@@ -105,7 +106,7 @@ jobs:
           CURRENT_BRANCH=${GITHUB_REF_NAME}
           gh pr create -B ${CURRENT_BRANCH} -H "GeneratedSourceUpdates-${CURRENT_BRANCH}" --title "Merge generated source updates into release candidate ${CURRENT_BRANCH}" --body 'Created by Github action'
           echo Review and approve PR before release can continue
-          exit 1 // force actions fail here
+          exit 1 // force actions stop here
 
       - name: Prep product release for Whitesource
         run: |
@@ -131,17 +132,28 @@ jobs:
         with:
           branch: "${{ github.event.inputs.release_branch_name }}"
 
+      # - name: Create next dev branch
+      #   if: env.NEXT_DEV_VERSION != ''
+      #   uses: peterjgrainger/action-create-branch@v2.4.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     branch: ${{ env.NEXT_DEV_VERSION }}
+
       - name: Create next dev branch
         if: env.NEXT_DEV_VERSION != ''
-        uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: ${{ env.NEXT_DEV_VERSION }}
+        run: |
+          git checkout -b ${{ env.NEXT_DEV_VERSION }}
+          VERSION=$(echo "${{ env.NEXT_DEV_VERSION }}" | cut -d'v' -f2)
+          sed -i "s/version =.*$/version = \"${VERSION}\"/g" version.go
+          git commit -a -m "Uprev'd version to ${VERSION}"
+          git push --set-upstream origin ${{ env.NEXT_DEV_VERSION }}
 
       - name: Delete last dev branch
+        if: env.NEXT_DEV_VERSION != ''
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{github.token}}
           branches: "${{ github.ref_name }}"
-

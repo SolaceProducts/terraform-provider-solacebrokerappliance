@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,8 +25,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/cookiejar"
 	"strings"
 	"time"
+
+	"github.com/hashicorp/go-retryablehttp"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -34,11 +37,14 @@ import (
 var (
 	ErrResourceNotFound = errors.New("Resource not found")
 	ErrBadRequest       = errors.New("Bad request")
-	ErrAPIUnreachable   = errors.New("SEMP API unreachable")
 )
 
+var cookieJar, _ = cookiejar.New(nil)
+
+var firstRequest = true
+
 type Client struct {
-	*http.Client
+	*retryablehttp.Client
 	url                string
 	username           string
 	password           string
@@ -47,6 +53,7 @@ type Client struct {
 	retryMinInterval   time.Duration
 	retryMaxInterval   time.Duration
 	requestMinInterval time.Duration
+	requestTimeout     time.Duration
 	rateLimiter        <-chan time.Time
 }
 
@@ -77,19 +84,23 @@ func Retries(numRetries uint, retryMinInterval, retryMaxInterval time.Duration) 
 
 func RequestLimits(requestTimeoutDuration, requestMinInterval time.Duration) Option {
 	return func(client *Client) {
-		client.Client.Timeout = requestTimeoutDuration
+		client.requestTimeout = requestTimeoutDuration
 		client.requestMinInterval = requestMinInterval
 	}
 }
 
-func NewClient(url string, insecure_skip_verify bool, cookiejar http.CookieJar, options ...Option) *Client {
-	customTransport := http.DefaultTransport.(*http.Transport)
-	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure_skip_verify}
+func NewClient(url string, insecure_skip_verify bool, providerClient bool, options ...Option) *Client {
+	tr := &http.Transport{
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: insecure_skip_verify},
+		MaxIdleConnsPerHost: 10,
+	}
+	retryClient := retryablehttp.NewClient()
+	retryClient.HTTPClient.Transport = tr
+	if !providerClient {
+		retryClient.Logger = nil
+	}
 	client := &Client{
-		Client: &http.Client{
-			Transport: customTransport,
-			Jar:       cookiejar,
-		},
+		Client:           retryClient,
 		url:              url,
 		retries:          3,
 		retryMinInterval: time.Second,
@@ -98,6 +109,11 @@ func NewClient(url string, insecure_skip_verify bool, cookiejar http.CookieJar, 
 	for _, o := range options {
 		o(client)
 	}
+	client.Client.RetryMax = int(client.retries)
+	client.Client.RetryWaitMin = client.retryMinInterval
+	client.Client.RetryWaitMax = client.retryMaxInterval
+	client.HTTPClient.Timeout = client.requestTimeout
+	client.HTTPClient.Jar, _ = cookiejar.New(nil)
 	if client.requestMinInterval > 0 {
 		client.rateLimiter = time.NewTicker(client.requestMinInterval).C
 	} else {
@@ -107,7 +123,7 @@ func NewClient(url string, insecure_skip_verify bool, cookiejar http.CookieJar, 
 		close(ch)
 		client.rateLimiter = ch
 	}
-
+	firstRequest = true
 	return client
 }
 
@@ -121,16 +137,21 @@ func (c *Client) RequestWithBody(ctx context.Context, method, url string, body a
 		return nil, err
 	}
 	dumpData(ctx, fmt.Sprintf("%v to %v", request.Method, request.URL), data)
-	rawBody, err := c.doRequest(request)
+	rawBody, err := c.doRequest(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	return parseResponseAsObject(ctx, request, rawBody)
 }
 
-func (c *Client) doRequest(request *http.Request) ([]byte, error) {
-	// the value doesn't matter, it is waiting for the value that matters
-	<-c.rateLimiter
+func (c *Client) doRequest(ctx context.Context, request *http.Request) ([]byte, error) {
+	if !firstRequest {
+		// the value doesn't matter, it is waiting for the value that matters
+		<-c.rateLimiter
+	} else {
+		// only skip rate limiter for the first request
+		firstRequest = false
+	}
 	if request.Method != http.MethodGet {
 		request.Header.Set("Content-Type", "application/json")
 	}
@@ -143,49 +164,20 @@ func (c *Client) doRequest(request *http.Request) ([]byte, error) {
 	} else {
 		return nil, fmt.Errorf("either username or bearer token must be provided to access the broker")
 	}
-	attemptsRemaining := c.retries + 1
-	retryWait := c.retryMinInterval
 	var response *http.Response
 	var err error
-loop:
-	for attemptsRemaining != 0 {
-		response, err = c.Do(request)
-		if err != nil {
-			response = nil // make sure response is nil
-		} else {
-			switch response.StatusCode {
-			case http.StatusOK:
-				break loop
-			case http.StatusBadRequest:
-				break loop
-			case http.StatusTooManyRequests:
-				// ignore the too many requests body and any errors that happen while reading it
-				_, _ = io.ReadAll(response.Body)
-				// just continue
-			default:
-				// ignore errors while reading the error response body
-				body, _ := io.ReadAll(response.Body)
-				return nil, fmt.Errorf("unexpected status %v (%v) during %v to %v, body:\n%s", response.StatusCode, response.Status, request.Method, request.URL, body)
-			}
-		}
-		time.Sleep(retryWait)
-		retryWait *= 2
-		if retryWait > c.retryMaxInterval {
-			retryWait = c.retryMaxInterval
-		}
-		attemptsRemaining--
-	}
-	if response == nil {
+	response, err = c.StandardClient().Do(request)
+	if err != nil || response == nil {
 		return nil, err
 	}
-	rawBody, _ := io.ReadAll(response.Body)
-	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusBadRequest {
+	defer response.Body.Close()
+	rawBody, err := io.ReadAll(response.Body)
+	if err != nil || (response.StatusCode != http.StatusOK && response.StatusCode != http.StatusBadRequest) {
 		return nil, fmt.Errorf("could not perform request: status %v (%v) during %v to %v, response body:\n%s", response.StatusCode, response.Status, request.Method, request.URL, rawBody)
 	}
 	if _, err := io.Copy(io.Discard, response.Body); err != nil {
-		return nil, fmt.Errorf("could not perform request: status %v (%v) during %v to %v, response body:\n%s", response.StatusCode, response.Status, request.Method, request.URL, rawBody)
+		return nil, fmt.Errorf("response processing error: during %v to %v", request.Method, request.URL)
 	}
-	defer response.Body.Close()
 	return rawBody, nil
 }
 
@@ -276,7 +268,7 @@ func (c *Client) RequestWithoutBody(ctx context.Context, method, url string) (ma
 		return nil, err
 	}
 	tflog.Debug(ctx, fmt.Sprintf("===== %v to %v =====", request.Method, request.URL))
-	rawBody, err := c.doRequest(request)
+	rawBody, err := c.doRequest(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -288,7 +280,7 @@ func (c *Client) RequestWithoutBodyForGenerator(ctx context.Context, basePath st
 	if err != nil {
 		return nil, err
 	}
-	rawBody, err := c.doRequest(request)
+	rawBody, err := c.doRequest(ctx, request)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 package broker
 
 import (
-	"net/http/cookiejar"
 	"os"
 	"strings"
-	"terraform-provider-solacebroker/cmd/command"
+	terraform "terraform-provider-solacebroker/cmd/command"
 	"terraform-provider-solacebroker/internal/broker"
 	"terraform-provider-solacebroker/internal/semp"
 	"time"
@@ -59,11 +58,10 @@ func CliClient(url string) *semp.Client {
 		terraform.LogCLIError("\nError: Unable to parse provider attribute. " + err.Error())
 		os.Exit(1)
 	}
-	jar, _ := cookiejar.New(nil)
 	client := semp.NewClient(
 		getFullSempAPIURL(url),
 		insecure_skip_verify,
-		jar,
+		false, // this is a client for the generator
 		semp.BasicAuth(username, password),
 		semp.BearerToken(bearerToken),
 		semp.Retries(uint(retries), retryMinInterval, retryMaxInterval),

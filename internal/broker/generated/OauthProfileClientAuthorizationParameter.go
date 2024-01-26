@@ -1,6 +1,6 @@
 // terraform-provider-solacebroker
 //
-// Copyright 2023 Solace Corporation. All rights reserved.
+// Copyright 2024 Solace Corporation. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "oauth_profile_client_authorization_parameter",
-		MarkdownDescription: "Additional parameters to be passed to the OAuth authorization endpoint.\n\n\nAttribute|Identifying|Write-Only|Deprecated|Opaque\n:---|:---:|:---:|:---:|:---:\nauthorization_parameter_name|x|||\noauth_profile_name|x|||\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.24.",
+		MarkdownDescription: "Additional parameters to be passed to the OAuth authorization endpoint.\n\n\nAttribute|Identifying\n:---|:---:\nauthorization_parameter_name|x\noauth_profile_name|x\n\n\n\nA SEMP client authorized with a minimum access scope/level of \"global/read-only\" is required to perform this operation.\n\nThis has been available since SEMP API version 2.24.",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/oauthProfiles/{oauthProfileName}/clientAuthorizationParameters/{authorizationParameterName}",
 		Version:             0,
