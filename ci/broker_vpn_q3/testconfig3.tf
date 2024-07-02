@@ -52,7 +52,7 @@ resource "solacebroker_msg_vpn_queue" "qds" {
 
 resource "solacebroker_msg_vpn_queue" "qedddss" {
   msg_vpn_name    = solacebroker_msg_vpn.another.msg_vpn_name
-  queue_name      = "green"
+  queue_name      = "#green"
   ingress_enabled = true
   egress_enabled  = true
   max_msg_size    = 54321
@@ -244,4 +244,18 @@ resource "solacebroker_msg_vpn_queue_subscription" "ok9" {
   msg_vpn_name       = solacebroker_msg_vpn_queue.ok9.msg_vpn_name
   queue_name         = solacebroker_msg_vpn_queue.ok9.queue_name
   subscription_topic = "foo/ok9"
+}
+
+resource "solacebroker_msg_vpn_queue" "q" {
+  msg_vpn_name    = solacebroker_msg_vpn.another.msg_vpn_name
+  queue_name      = "aperfectly/$/valid/$topic/$$"
+  # ingress_enabled = true
+  egress_enabled  = true
+  max_msg_size    = 54321
+}
+
+resource "solacebroker_msg_vpn_queue_subscription" "foo2" {
+  msg_vpn_name       = solacebroker_msg_vpn_queue.q.msg_vpn_name
+  queue_name         = solacebroker_msg_vpn_queue.q.queue_name
+  subscription_topic = "foo/barr"
 }
