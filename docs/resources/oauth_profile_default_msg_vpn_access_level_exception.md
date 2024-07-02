@@ -3,30 +3,26 @@
 page_title: "solacebroker_oauth_profile_default_msg_vpn_access_level_exception Resource - solacebroker"
 subcategory: ""
 description: |-
+  This resource is not supported in production by Solace in this version, see provider limitations.
   Default message VPN access-level exceptions.
-  Attribute|Identifying
-  :---|:---:
-  msgvpnname|x
-  oauthprofilename|x
   A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.24.
+  The import identifier for this resource is {oauth_profile_name}/{msg_vpn_name}, where {&lt;attribute&gt;} represents the value of the attribute and it must be URL-encoded.
 ---
 
 # solacebroker_oauth_profile_default_msg_vpn_access_level_exception (Resource)
 
+> This resource is not supported in production by Solace in this version, see [provider limitations](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs#limitations).
+
 Default message VPN access-level exceptions.
-
-
-Attribute|Identifying
-:---|:---:
-msg_vpn_name|x
-oauth_profile_name|x
 
 
 
 A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
 
 This has been available since SEMP API version 2.24.
+
+The import identifier for this resource is `{oauth_profile_name}/{msg_vpn_name}`, where {&lt;attribute&gt;} represents the value of the attribute and it must be URL-encoded.
 
 
 

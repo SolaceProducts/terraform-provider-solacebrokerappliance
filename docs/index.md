@@ -6,7 +6,7 @@ description: |-
 
 # Solace PubSub+ Event Broker Appliance (solacebrokerappliance) Provider
 
-This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest).
 
 The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/appliance/)
 efficiently streams event-driven information between applications, IoT devices and user interfaces running in cloud, on-premises, and hybrid environments 
@@ -20,7 +20,7 @@ to dynamically share events across the distributed enterprise.
 The _solacebrokerappliance_ provider enables you to configure a PubSub+ Event Broker Appliance using Terraform.
 
 -> This _solacebrokerappliance_ provider uses the same [preferred local name](https://developer.hashicorp.com/terraform/language/providers/requirements#local-names) `"solacebroker"` as 
-the [_solacebroker_ provider](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+the [_solacebroker_ provider](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest).
 This allows Terraform modules to be written that can target either provider. Note that such modules must only use features that are available in both providers.
 
 This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured appliance.
