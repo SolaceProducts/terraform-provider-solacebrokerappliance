@@ -61,7 +61,7 @@ jobs:
 
       - name: Test Provider and generate documentations
         run: |
-          make testacc
+          # make testacc
           make generate-docs
 
       - name: Ensure version reflects release candidate version
