@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: "1.22"
 
       - name: Check out code
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p $HOME/solace; chmod 777 $HOME/solace
           docker run -d -p 8080:8080 -p 55555:55555 --shm-size=1g --env username_admin_globalaccesslevel=admin --env username_admin_password=admin --env system_scaling_maxkafkabridgecount="10" --name=solace \
-            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard:"10.6.1.52"
+            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard:"10.8.1.126"
           while ! curl -s localhost:8080 | grep aurelia ; do sleep 1 ; done
 
       - name: Set up Terraform latest - public
@@ -68,17 +68,17 @@ jobs:
       - name: Test basic provider
         run: |
           pushd ci/broker_vpn_q
-          terraform plan
+          SOLACEBROKER_SKIP_API_CHECK=true terraform plan
           sleep 1
-          terraform apply -auto-approve
+          SOLACEBROKER_SKIP_API_CHECK=true terraform apply -auto-approve
           sleep 1
-          terraform destroy -auto-approve
+          SOLACEBROKER_SKIP_API_CHECK=true terraform destroy -auto-approve
           popd
 
       - name: Test basic config generator
         run: |
           pushd ci/broker_vpn_q
-          SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true $(find .terraform/ | grep terraform-provider) generate --url=http://localhost:8080 solacebroker_msg_vpn.test default messageVpn.tf
+          SOLACEBROKER_SKIP_API_CHECK=true SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin $(find .terraform/ | grep terraform-provider) generate --url=http://localhost:8080 solacebroker_msg_vpn.test default messageVpn.tf
           popd
 
 

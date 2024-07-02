@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: "1.22"
 
       - name: Check out code
         uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p $HOME/solace; chmod 777 $HOME/solace
           docker run -d -p 8080:8080 -p 55555:55555 --shm-size=1g --env username_admin_globalaccesslevel=admin --env username_admin_password=admin --env system_scaling_maxkafkabridgecount="10" --name=solace \
-            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard:"10.6.1.52"
+            --mount type=bind,source=$HOME/solace,destination=/var/lib/solace,ro=false solace/solace-pubsub-standard:"10.8.1.126"
           while ! curl -s localhost:8080 | grep aurelia ; do sleep 1 ; done
 
       - name: Use local provider
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build provider
         run: |
-          make dep
+          make test-coverage
           make install
           ls ~/go/bin
           terraform-provider-solacebrokerappliance -h
@@ -78,10 +78,14 @@ jobs:
           fi
           exit 1
 
-      - name: Generate sample Terraform for message vpn client
+      - name: Failure to Generate sample Terraform due to invalid provider specific identifiers2
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true  terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn_rest_delivery_point.my-rdp default messageVpn.tf
-          cat messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true  terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn_rest_delivery_point.my-rdp default messageVpn.tf || error_code=$?
+          if [ $error_code -eq 1 ]; then
+            echo "\nExpected failure accurate"
+            exit 0
+          fi
+          exit 1
 
       - name: Generate sample Terraform for message vpn
         run: |
@@ -91,13 +95,11 @@ jobs:
       - name: Test generated terraform on broker
         run: |
           # Create
-          sed -i '/# username       = "admin"/c\username       = "admin"' messageVpn.tf
-          sed -i '/# password       = "admin"/c\password       = "admin"\n  skip_api_check  = true' messageVpn.tf
-          terraform plan
-          terraform apply -auto-approve
+          TF_VAR_broker_url=http://localhost:8080 TF_VAR_broker_username=admin TF_VAR_broker_password=admin terraform plan
+          TF_VAR_broker_url=http://localhost:8080 TF_VAR_broker_username=admin TF_VAR_broker_password=admin terraform apply -auto-approve
           sleep 1
 
-      - name: Create custom messageVPN with 21 messageVpn queues (Paging Test)
+      - name: Create custom messageVPN with 22 messageVpn queues (Paging Test)
         run: |
           pushd ci/broker_vpn_q3
           # Create
@@ -106,11 +108,16 @@ jobs:
           sleep 1
           popd
 
-      - name: Confirm all 21 queues are present with paging (Paging Test)
+      - name: Confirm all 22 queues are present with paging (Paging Test)
         run: |
           SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true  terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.qn another messageVpn.tf
           cat messageVpn.tf
-          grep -o 'solacebroker_msg_vpn_queue" ' messageVpn.tf | wc -l |  grep 21
+          grep -o 'solacebroker_msg_vpn_queue" ' messageVpn.tf | wc -l |  grep 22
+
+      - name: Test escape characters in resources
+        run: |
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true  terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn_queue_subscription.test another/aperfectly%2F%24%2Fvalid%2F%24topic%2F%24%24/foo%2Fbarr messageVpn.tf
+          cat messageVpn.tf
 
       - name: Create custom messageVPN with large config
         run: |
@@ -125,6 +132,8 @@ jobs:
         run: |
           SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebrokerappliance SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true  terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.test test messageVpn.tf
           cat messageVpn.tf
+          # also confirm comment is generated when ancillary object is refereced
+          cat messageVpn.tf | grep depends_on
 
       - name: Generate some resources( only msg_vpn_queue) for custom messageVPN file
         run: |

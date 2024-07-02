@@ -17,6 +17,8 @@
 package broker
 
 import (
+	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -85,6 +87,10 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 			continue
 		}
 		attrRequiresReplace := isResource && (requiresReplace || attr.RequiresReplace)
+		markdownDescription := attr.MarkdownDescription
+		if attrRequiresReplace && !attr.Identifying {
+			markdownDescription += " Note that this attribute requires replacement of the resource when updated."
+		}
 		if len(attr.Attributes) != 0 {
 			childTypes := map[string]tftypes.Type{}
 			for _, cAttr := range attr.Attributes {
@@ -102,8 +108,8 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 		case String:
 			tfAttributes[attr.TerraformName] = schema.StringAttribute{
 				Description:         attr.Description,
-				MarkdownDescription: attr.MarkdownDescription,
-				Required:            attr.Required && isResource || attr.Identifying,
+				MarkdownDescription: markdownDescription,
+				Required:            attr.Required && isResource || !isResource && attr.Identifying,
 				Optional:            !attr.Required && isResource,
 				Computed:            !attr.Identifying && !isResource,
 				Sensitive:           attr.Sensitive,
@@ -114,8 +120,8 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 		case Int64:
 			tfAttributes[attr.TerraformName] = schema.Int64Attribute{
 				Description:         attr.Description,
-				MarkdownDescription: attr.MarkdownDescription,
-				Required:            attr.Required && isResource || attr.Identifying,
+				MarkdownDescription: markdownDescription,
+				Required:            attr.Required && isResource || !isResource && attr.Identifying,
 				Optional:            !attr.Required && isResource,
 				Computed:            !attr.Identifying && !isResource,
 				Sensitive:           attr.Sensitive,
@@ -126,8 +132,8 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 		case Bool:
 			tfAttributes[attr.TerraformName] = schema.BoolAttribute{
 				Description:         attr.Description,
-				MarkdownDescription: attr.MarkdownDescription,
-				Required:            attr.Required && isResource || attr.Identifying,
+				MarkdownDescription: markdownDescription,
+				Required:            attr.Required && isResource || !isResource && attr.Identifying,
 				Optional:            !attr.Required && isResource,
 				Computed:            !attr.Identifying && !isResource,
 				Sensitive:           attr.Sensitive,
@@ -139,8 +145,8 @@ func terraformAttributeMap(attributes []*AttributeInfo, isResource bool, require
 			tfAttributes[attr.TerraformName] = schema.SingleNestedAttribute{
 				Attributes:          terraformAttributeMap(attr.Attributes, isResource, requiresReplace || attr.RequiresReplace),
 				Description:         attr.Description,
-				MarkdownDescription: attr.MarkdownDescription,
-				Required:            attr.Required && isResource || attr.Identifying,
+				MarkdownDescription: markdownDescription,
+				Required:            attr.Required && isResource || !isResource && attr.Identifying,
 				Optional:            !attr.Required && isResource,
 				Computed:            !attr.Identifying && !isResource,
 				Sensitive:           attr.Sensitive,
@@ -168,9 +174,11 @@ func newBrokerEntity(inputs EntityInputs, isResource bool) brokerEntity[schema.S
 	addObjectConverters(inputs.Attributes)
 	tfAttributes := terraformAttributeMap(inputs.Attributes, isResource, inputs.ObjectType == ReplaceOnlyObject)
 	var identifyingAttributes []*AttributeInfo
+	identifyingAttributesMap := map[string]string{}
 	for _, attr := range inputs.Attributes {
 		if attr.Identifying {
 			identifyingAttributes = append(identifyingAttributes, attr)
+			identifyingAttributesMap["{"+attr.SempName+"}"] = "{" + attr.TerraformName + "}"
 		}
 	}
 	sort.Slice(identifyingAttributes, func(i, j int) bool {
@@ -180,12 +188,40 @@ func newBrokerEntity(inputs EntityInputs, isResource bool) brokerEntity[schema.S
 		jIndex := strings.Index(inputs.PathTemplate, "{"+jAttr.SempName+"}")
 		return iIndex < jIndex
 	})
+	unsupportedResourceWarning := ""
+	// Add unsupported warning for any resource not contained within a message vpn
+	if !strings.HasPrefix(inputs.TerraformName, "msg_vpn") {
+		unsupportedResourceWarning = "> This resource is not supported in production by Solace in this version, see [provider limitations](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs#limitations).\n\n"
+	}
+	identifierInfo := ""
+	if isResource {
+		identifiersString := ""
+		pathTemplate := inputs.PathTemplate
+		if pathTemplate != "/" {
+			rex := regexp.MustCompile(`{[^{}]*}`)
+			matches := rex.FindAllStringSubmatch(pathTemplate, -1)
+			// Construct identifiers string from matches, separated by /
+			identifiers := make([]string, len(matches))
+			for i, match := range matches {
+				tfIdentifier, ok := identifyingAttributesMap[match[0]]
+				if !ok {
+					panic(fmt.Sprintf("No terraform identifier found for %s", match[0]))
+				}
+				identifiers[i] = tfIdentifier
+			}
+			identifiersString = fmt.Sprintf("`%s`, where {&lt;attribute&gt;} represents the value of the attribute and it must be URL-encoded.", strings.Join(identifiers, "/"))
+		} else {
+			// broker object
+			identifiersString = "`\"\"` (empty string)"
+		}
+		identifierInfo = fmt.Sprintf("\n\nThe import identifier for this resource is %s", identifiersString)
+	}
 	s := schema.Schema{
 		Attributes:          tfAttributes,
 		Description:         inputs.Description,
-		MarkdownDescription: inputs.MarkdownDescription,
+		MarkdownDescription: unsupportedResourceWarning + inputs.MarkdownDescription + identifierInfo,
 		DeprecationMessage:  inputs.DeprecationMessage,
-		Version:             inputs.Version,
+		Version:             inputs.Version, // This will be replaced by the major version from ProviderVersion in resource.go
 	}
 	return brokerEntity[schema.Schema]{
 		schema: s,
