@@ -3,30 +3,26 @@
 page_title: "solacebroker_oauth_profile Resource - solacebroker"
 subcategory: ""
 description: |-
+  This resource is not supported in production by Solace in this version, see provider limitations.
   OAuth profiles specify how to securely authenticate to an OAuth provider.
-  Attribute|Identifying|Write-Only|Opaque
-  :---|:---:|:---:|:---:
-  clientsecret||x|x
-  oauthprofile_name|x||
   A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
   This has been available since SEMP API version 2.24.
+  The import identifier for this resource is {oauth_profile_name}, where {&lt;attribute&gt;} represents the value of the attribute and it must be URL-encoded.
 ---
 
 # solacebroker_oauth_profile (Resource)
 
+> This resource is not supported in production by Solace in this version, see [provider limitations](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest/docs#limitations).
+
 OAuth profiles specify how to securely authenticate to an OAuth provider.
-
-
-Attribute|Identifying|Write-Only|Opaque
-:---|:---:|:---:|:---:
-client_secret||x|x
-oauth_profile_name|x||
 
 
 
 A SEMP client authorized with a minimum access scope/level of "global/read-only" is required to perform this operation.
 
 This has been available since SEMP API version 2.24.
+
+The import identifier for this resource is `{oauth_profile_name}`, where {&lt;attribute&gt;} represents the value of the attribute and it must be URL-encoded.
 
 
 
@@ -91,6 +87,7 @@ This has been available since SEMP API version 2.24.
 "client" - The broker is in the OAuth client role.
 "resource-server" - The broker is in the OAuth resource server role.
 </pre>
+- `proxy_name` (String) The name of the proxy to use for discovery, user info, jwks, and introspection requests. Leave empty for no proxy. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`. Available since SEMP API version 2.41.
 - `resource_server_parse_access_token_enabled` (Boolean) Enable or disable parsing of the access token as a JWT. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `true`.
 - `resource_server_required_audience` (String) The required audience value. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
 - `resource_server_required_issuer` (String) The required issuer value. Changes to this attribute are synchronized to HA mates via config-sync. The default value is `""`.
