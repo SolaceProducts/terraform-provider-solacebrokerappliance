@@ -69,12 +69,13 @@ jobs:
           terraform import solacebroker_msg_vpn.newone new
           popd
 
-      - name: Test broker object attributes override
-        run: |
-          pushd ci/brokertest
-          terraform apply -auto-approve
-          terraform plan | grep "No changes"
-          popd
+      # This test requires an appliance as software broker does not have the same defaults
+      # - name: Test broker object attributes override
+      #   run: |
+      #     pushd ci/brokertest
+      #     terraform apply -auto-approve
+      #     terraform plan | grep "No changes"
+      #     popd
 
       - name: Test larger config
         run: |

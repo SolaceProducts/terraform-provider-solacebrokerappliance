@@ -103,8 +103,8 @@ jobs:
         run: |
           pushd ci/broker_vpn_q3
           # Create
-          SOLACEBROKER_SKIP_API_CHECK=true terraform plan
-          SOLACEBROKER_SKIP_API_CHECK=true terraform apply -auto-approve
+          terraform plan
+          terraform apply -auto-approve
           sleep 1
           popd
 
