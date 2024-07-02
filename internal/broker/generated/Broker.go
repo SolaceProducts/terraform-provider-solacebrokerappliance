@@ -308,7 +308,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Struct,
@@ -1252,7 +1252,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Int64,
@@ -1369,7 +1369,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Int64,
@@ -1392,7 +1392,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Int64,
@@ -1415,7 +1415,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Bool,
@@ -1529,7 +1529,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Bool,
@@ -1539,7 +1539,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Bool,
@@ -1865,7 +1865,7 @@ func init() {
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
-				Default:             true,
+				Default:             false,
 			},
 			{
 				BaseType:            broker.Int64,
