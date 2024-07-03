@@ -41,6 +41,7 @@ resource "solacebroker_msg_vpn" "test" {
 		max_egress_flow_count = 997
 		max_endpoint_count = 998
 		max_ingress_flow_count = 999
+		max_subscription_count = 500000
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -58,6 +59,7 @@ resource "solacebroker_msg_vpn" "test" {
 		max_egress_flow_count = 997
 		max_endpoint_count = 998
 		max_ingress_flow_count = 999
+		max_subscription_count = 500000
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
