@@ -68,11 +68,11 @@ jobs:
       - name: Test basic provider
         run: |
           pushd ci/broker_vpn_q
-          SOLACEBROKER_SKIP_API_CHECK=true terraform plan
+          terraform plan
           sleep 1
-          SOLACEBROKER_SKIP_API_CHECK=true terraform apply -auto-approve
+          terraform apply -auto-approve
           sleep 1
-          SOLACEBROKER_SKIP_API_CHECK=true terraform destroy -auto-approve
+          terraform destroy -auto-approve
           popd
 
       - name: Test basic config generator
