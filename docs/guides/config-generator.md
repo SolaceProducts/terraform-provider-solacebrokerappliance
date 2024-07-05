@@ -4,83 +4,74 @@ page_title: "Command-line Terraform Configuration Generator Guide"
 
 # Command-Line Terraform Configuration Generator
 
-Normally, provider binaries are not run standalone, they are started and their services are used by Terraform CLI.
+Normally, provider binaries are not run standalone, they are started, and their services are used by Terraform CLI.
 
-The `solacebrokerappliance` provider, however, includes an additional feature where you can run its binary outside of Terraform CLI. In this case, you can use the "generate" command on the provider binary to generate a Terraform HLC configuration file for a specified object and all child objects known to the provider.
+The `solacebrokerappliance` provider, however, includes an additional feature where you can run its binary outside of Terraform CLI. In this case, you can use the "generate" command on the provider binary to generate a Terraform HCL configuration file for a specified object and all its child objects known to the provider.
 
 You can [locate](https://terra-farm.github.io/main/installation.html) the provider binary in the `.terraform/providers` directory of an existing Terraform configuration directory that uses the `solacebrokerappliance` provider.
 
-You can run the provider binary directly with the `generate` command to generate a Terraform configuration file from the current configuration of a PubSub+ broker.
-
-`<binary> generate <broker URL> <provider-specific identifier> <filename>`
-
-- `<binary>` is the broker provider binary.
-- `<broker URL>` is the broker address, for example `https://mybroker.example.org:443/`.
-- `<provider-specific identifier>` is similar to the Terraform Import command. This is the resource name and possible values to find a specific resource.
-- `<filename>` is the desirable name of the generated filename.
-- There are also supported options, which mirror the configuration options for the provider object. These can be found [here](#supported-options).
-
-This generator supports configuring appliances and will fail if applied against a software event broker. This check may be overridden by setting the `SOLACEBROKER_SKIP_API_CHECK=true` environment variable.
-
-## Important notes
+## Important Reminders and Tips
 
 You should review the generated configuration for the following:
 
-* You may need to update provider configuration values (URL, username, etc.)
-* Write-only attributes, such as passwords, are omitted from the config as they cannot be read from the broker configuration. You need to add them manually.
+* The provider block values in the generated configuration (URL, username, etc.) are exposed via Terraform input variables. Certain write-only and related attribute values may also be assigned from input variables. We recommend that you check the variables created by the generator: you will need to assign value to those variables when applying the configuration or Terraform will prompt for the variable value.
+* Certain optional write-only attributes may not be included in the generated configuration if the generator cannot determine if they were configured. You may need to manually add these attributes.
 * Default resources may be present that you can omit.
+* You my need to add a "depends_on" meta-argument between generated objects. For details, see the "System Provisioned Objects" section.
 * The generator uses a naming scheme for the resources. You can update this by manually replacing the generated names.
+
+This generator supports obtaining the configuration of appliances and will fail if applied against a software event broker. This check may be overridden by setting the SOLACEBROKER_SKIP_API_CHECK=true environment variable.
 
 ## Usage
 
-```shell
-terraform-provider-solacebrokerappliance -h
+`<binary> generate [flags] <terraform resource address> <provider-specific identifier> <filename>`
 
-Usage:
-    terraform-provider-solacebrokerappliance [command]
+* `<binary>` is the appliance provider binary.
+* `[flags]` are the [supported parameters](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs/guides/config-generator#supported-parameters), which mirror the [configuration options for the provider object](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs#schema), for example `--url=https://localhost:1943`. Parameters can alternatively be set via environment variables, for this example through setting `SOLACEBROKER_URL`.
+* `<terraform resource address>` is the address of the specified object instance in the generated configuration, in the form of `<resource_type>.<resource_name>` (for example `solacebroker_msg_vpn.myvpn`). 
+* `<provider-specific identifier>` is the import identifier of the specified object instance as in the Terraform Import command. The import identifier is available from the documentation of each resource type.
+* `<filename>` is the name of the generated file.
 
-Available Commands:
-generate    Generates a Terraform configuration file for a specified PubSub+ Broker object and all child objects known to the provider
-help        Help about any command
-version     Provides version information about the current binary
+Example:
+```bash
+SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf
 ```
 
-To `generate` the configuration, make sure all ENVIRONMENT VARIABLES, which mirror the configuration options for the
-provider object are set. You can find the list of variables [here](#supported-options).
+This command generates the configuration for queue `test` in Message VPN `default`, and the configuration of all children, for example all subscriptions that have been configured for this queue.
 
-For example:
-`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://<host>:443 solacebroker_msg_vpn.mq default my-messagevpn.tf`
+### Supported Parameters
 
-This command would create a file `my-messagevpn.tf` that contains a resource definition for the default Message VPN resource and
-any child objects, assuming the appropriate broker credentials were set in environment variables.
+The following parameters can be set as flags or environment variables (flags take precedence if both defined):
 
-Note: For objects with no child object, the file will only contain a resource definition for that object.
+| Parameter                      | Required | Flag                  | Environment Variable          | Default |
+|------------------------------- |-----------|-----------------------|------------------------------|---------|
+| url | Yes | --url | SOLACEBROKER_URL | None |
+| username (Note1)          | Yes       | --username  | SOLACEBROKER_USERNAME       | None    |
+| password (Note1)         | No        | --password            | SOLACEBROKER_PASSWORD       | None    |
+| bearer-token (Note1)     | No        | --bearer-token        | SOLACEBROKER_BEARER_TOKEN   | None    |
+| insecure-skip-verify | No     | --insecure-skip-verify | SOLACEBROKER_INSECURE_SKIP_VERIFY | false |
+| request-min-interval | No    | --request-min-interval | SOLACEBROKER_REQUEST_MIN_INTERVAL | 100ms |
+| request-timeout-duration | No | --request-timeout-duration | SOLACEBROKER_REQUEST_TIMEOUT_DURATION | 1m |
+| retries           | No        | --retries             | SOLACEBROKER_RETRIES        | 10    |
+| retry-min-interval | No     | --retry-min-interval   | SOLACEBROKER_RETRY_MIN_INTERVAL | 3s |
+| retry-max-interval | No     | --retry-max-interval   | SOLACEBROKER_RETRY_MAX_INTERVAL | 30s |
+| skip-api-check    | No        | --skip-api-check      | SOLACEBROKER_SKIP_API_CHECK | false    |
 
-For example:
-`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=https://<host>:443 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf`
+Note1: Only one authentication method can be used at a time: either bearer-token or username/password.
 
-This command would create a file `my-message-vpn-queue.tf` that contains the msg_vpn_queue resource , `test`  for the
-Message VPN, `default`, assuming a msg_vpn_queue resource called `test` exists for the Message VPN, `default`.
+## Attribute Generation
 
-### Supported Options
+For each object, all attributes will be generated as attributes on the corresponding resource with the exception of:
+* attributes that are at the default value (as per the appliance version corresponding to the appliance provider)
+* write-only attributes that cannot be determined if they were configured (not coupled with another non write-only attribute)
 
-The following parameters can be set as ENVIRONMENT VARIABLES. When used as an environment variable,
-each parameter must be preceded with _SOLACEBROKER__. An example for a PubSub+ broker using username and password
-_**admin/password**_
-would be:
+Write-only attributes that are coupled with another non write-only attribute will be generated as variable references. Variables for coupled attributes that are not write-only will have a commented-out default value with the value of the attribute, which you can choose to uncomment. Having no default means that Terraform will prompt for the variable value.
 
-`SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=password`
+## System Provisioned Objects
 
-- `SOLACEBROKER_BEARER_TOKEN` (String, Sensitive, Mandatory if `password` not provided)
-- `SOLACEBROKER_INSECURE_SKIP_VERIFY` (Boolean) Disable validation of server SSL certificates, accept/ignore self-signed.
-- `SOLACEBROKER_PASSWORD` (String, Sensitive, Mandatory if `bearer_token` not provided)
-- `SOLACEBROKER_REQUEST_MIN_INTERVAL` (String)
-- `SOLACEBROKER_REQUEST_TIMEOUT_DURATION` (String)
-- `SOLACEBROKER_RETRIES` (Number)
-- `SOLACEBROKER_RETRY_MAX_INTERVAL` (String)
-- `SOLACEBROKER_RETRY_MIN_INTERVAL` (String)
-- `SOLACEBROKER_SKIP_API_CHECK` (String) Disable validation of the broker SEMP API for supported platform and minimum version.
-- `SOLACEBROKER_USERNAME` (String, Mandatory) The username for the broker request.
+System provisioned broker objects are created as a side-effect of creating other objects. These other objects are referred to as "parent objects". The generator is attempting to recognize system provisioned objects and omit them from the configuration or add a warning comment, as direct creation of such objects will fail.
+
+If an object's attribute is referencing a possible system-provisioned object, there may be a conflict at apply-time if the referenced object has not yet been created. The generator will also add a comment when recognizing such possible references and it may be necessary to add a "create first" relationship using the Terraform "depends_on" meta-argument from the referencing resource to the system-provisioned object's parent resource to ensure proper create sequence.
 
 ## Troubleshooting
 
@@ -88,13 +79,13 @@ The following issues may arise while using the generator.
 
 | Error           | SEMP call failed. unexpected status 401 (401 Unauthorized)                 |
 |-----------------|----------------------------------------------------------------------------|
-| Explanation     | Configurations to connect to the PubSub+ broker not accurate.              |
-| Possible Action | Check and confirm, configuration details to PubSub+ broker are accurate.   |
+| Explanation     | This indicates that the configuration details used to connect to the appliance are not accurate.  |
+| Possible Action | Verify that the configuration details used to connect to the appliance are accurate.   |
 
 | Error           | SOLACEBROKER_xxx is mandatory but not available                                    |
 |-----------------|------------------------------------------------------------------------------------|
-| Explanation     | A mandatory parameter which is required to connect to PubSub+ broker is missing.   |
-| Possible Action | Confirm if all [mandatory parameters](#supported-options) are correctly set.       |
+| Explanation     | This indicates that a mandatory parameter which is required to connect to the PubSub+ appliance is missing.   |
+| Possible Action | Verify that all [mandatory parameters](#supported-options) are correctly set.       |
 
 | Error           | Error: Too many provider specific identifiers. Required identifiers: [{xxx}] |
 |-----------------|------------------------------------------------------------------------------|
@@ -103,8 +94,8 @@ The following issues may arise while using the generator.
 
 | Error           | SEMP called failed. resource not found on path /xxx/xxx                                  |
 |-----------------|------------------------------------------------------------------------------------------|
-| Explanation     | This indicates the resource attributes attempted to be fetch could not be read.          |
-| Possible Action | Ensure identifiers values are consistent as set on the PubSub+ broker configured with.   |
+| Explanation     | This indicates the resource attributes attempted to be fetched could not be read.          |
+| Possible Action | Ensure identifiers values are consistent as set on the PubSub+ appliance configured with.   |
 
 | Error           | Error: Broker resource not found by terraform name xxx                                                     |
 |-----------------|------------------------------------------------------------------------------------------------------------|
@@ -113,5 +104,5 @@ The following issues may arise while using the generator.
 
 | Error           | Error: Broker check failed                                                                                  |
 |-----------------|-------------------------------------------------------------------------------------------------------------|
-| Explanation     | This indicates that broker platform does not match provider supported platform                              |
-| Possible Action | Ensure that an appliance provider is used against an appliance platform and not a software broker platform. |
+| Explanation     | This indicates that the specified event broker platform is not supported by the provider                              |
+| Possible Action | Ensure that a software broker provider binary is used against a software broker platform and not an appliance platform. |
