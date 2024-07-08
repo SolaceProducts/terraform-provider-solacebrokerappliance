@@ -27,14 +27,14 @@ This generator supports obtaining the configuration of appliances and will fail 
 `<binary> generate [flags] <terraform resource address> <provider-specific identifier> <filename>`
 
 * `<binary>` is the appliance provider binary.
-* `[flags]` are the [supported parameters](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs/guides/config-generator#supported-parameters), which mirror the [configuration options for the provider object](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs#schema), for example `--url=https://localhost:1943`. Parameters can alternatively be set via environment variables, for this example through setting `SOLACEBROKER_URL`.
+* `[flags]` are the [supported parameters](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs/guides/config-generator#supported-parameters), which mirror the [configuration options for the provider object](https://registry.terraform.io/providers/SolaceProducts/solacebrokerappliance/latest/docs#schema), for example `--url=https://<host>:443`. Parameters can alternatively be set via environment variables, for this example through setting `SOLACEBROKER_URL`.
 * `<terraform resource address>` is the address of the specified object instance in the generated configuration, in the form of `<resource_type>.<resource_name>` (for example `solacebroker_msg_vpn.myvpn`). 
 * `<provider-specific identifier>` is the import identifier of the specified object instance as in the Terraform Import command. The import identifier is available from the documentation of each resource type.
 * `<filename>` is the name of the generated file.
 
 Example:
 ```bash
-SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=https://localhost:8080 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf
+SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebroker generate --url=https://<host>:443 solacebroker_msg_vpn_queue.q default/test my-message-vpn-queue.tf
 ```
 
 This command generates the configuration for queue `test` in Message VPN `default`, and the configuration of all children, for example all subscriptions that have been configured for this queue.
@@ -104,5 +104,5 @@ The following issues may arise while using the generator.
 
 | Error           | Error: Broker check failed                                                                                  |
 |-----------------|-------------------------------------------------------------------------------------------------------------|
-| Explanation     | This indicates that the specified event broker platform is not supported by the provider                              |
-| Possible Action | Ensure that a software broker provider binary is used against a software broker platform and not an appliance platform. |
+| Explanation     | This indicates that the specified event broker platform is not supported by the provider.                   |
+| Possible Action | Ensure that a appliance provider binary is used against an appliance platform and not a software broker platform. |
