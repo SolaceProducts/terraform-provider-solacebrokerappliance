@@ -35,11 +35,11 @@ import (
 )
 
 var (
-	ErrResourceNotFound = errors.New("Resource not found")
-	ErrBadRequest       = errors.New("Bad request")
+	ErrResourceNotFound        = errors.New("resource not found")
+	ErrBadRequest              = errors.New("bad request")
+	ErrInvalidPath             = errors.New("invalid path")
+	ErrProviderParametersError = errors.New("provider parameters error")
 )
-
-var cookieJar, _ = cookiejar.New(nil)
 
 var firstRequest = true
 
@@ -49,13 +49,21 @@ type Client struct {
 	username           string
 	password           string
 	bearerToken        string
-	retries            uint
+	retries            int64
 	retryMinInterval   time.Duration
 	retryMaxInterval   time.Duration
 	requestMinInterval time.Duration
 	requestTimeout     time.Duration
 	rateLimiter        <-chan time.Time
 }
+
+const (
+	DefaultRetryMinInterval = 3 * time.Second
+	DefaultRetryMaxInterval = 30 * time.Second
+	DefaultRequestTimeout   = time.Minute
+	DefaultRequestInterval  = 100 * time.Millisecond
+	DefaultRetries          = 10
+)
 
 var Cookies = map[string]*http.Cookie{}
 
@@ -74,7 +82,7 @@ func BearerToken(bearerToken string) Option {
 	}
 }
 
-func Retries(numRetries uint, retryMinInterval, retryMaxInterval time.Duration) Option {
+func Retries(numRetries int64, retryMinInterval, retryMaxInterval time.Duration) Option {
 	return func(client *Client) {
 		client.retries = numRetries
 		client.retryMinInterval = retryMinInterval
@@ -136,15 +144,15 @@ func (c *Client) RequestWithBody(ctx context.Context, method, url string, body a
 	if err != nil {
 		return nil, err
 	}
-	dumpData(ctx, fmt.Sprintf("%v to %v", request.Method, request.URL), data)
-	rawBody, err := c.doRequest(ctx, request)
+	tflog.Debug(ctx, fmt.Sprintf("===== %v to %v =====", request.Method, request.URL))
+	rawBody, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
 	return parseResponseAsObject(ctx, request, rawBody)
 }
 
-func (c *Client) doRequest(ctx context.Context, request *http.Request) ([]byte, error) {
+func (c *Client) doRequest(request *http.Request) ([]byte, error) {
 	if !firstRequest {
 		// the value doesn't matter, it is waiting for the value that matters
 		<-c.rateLimiter
@@ -155,9 +163,7 @@ func (c *Client) doRequest(ctx context.Context, request *http.Request) ([]byte, 
 	if request.Method != http.MethodGet {
 		request.Header.Set("Content-Type", "application/json")
 	}
-	// Prefer OAuth even if Basic Auth credentials provided
 	if c.bearerToken != "" {
-		// TODO: add log
 		request.Header.Set("Authorization", "Bearer "+c.bearerToken)
 	} else if c.username != "" {
 		request.SetBasicAuth(c.username, c.password)
@@ -187,7 +193,6 @@ func parseResponseAsObject(ctx context.Context, request *http.Request, dataRespo
 	if err != nil {
 		return nil, fmt.Errorf("could not parse response body from %v to %v, response body was:\n%s", request.Method, request.URL, dataResponse)
 	}
-	dumpData(ctx, "response", dataResponse)
 	rawData, ok := data["data"]
 	if ok {
 		// Valid data
@@ -222,17 +227,16 @@ func parseResponseForGenerator(c *Client, ctx context.Context, basePath string, 
 		return nil, fmt.Errorf("could not parse response body from %v to %v, response body was:\n%s", request.Method, request.URL, dataResponse)
 	}
 	responseData := []map[string]any{}
-	dumpData(ctx, "response", dataResponse)
 	rawData, ok := data["data"]
 	if ok {
-		switch rawData.(type) {
+		switch rawData := rawData.(type) {
 		case []interface{}:
-			responseDataRaw, _ := rawData.([]interface{})
+			responseDataRaw := rawData
 			for _, t := range responseDataRaw {
 				responseData = append(responseData, t.(map[string]any))
 			}
 		case map[string]interface{}:
-			responseDataRaw, _ := rawData.(map[string]any)
+			responseDataRaw := rawData
 			responseData = append(responseData, responseDataRaw)
 		}
 		metaData, hasMeta := data["meta"]
@@ -242,7 +246,6 @@ func parseResponseForGenerator(c *Client, ctx context.Context, basePath string, 
 			if hasPaging {
 				nextPage := fmt.Sprint(pageData.(map[string]any)["nextPageUri"])
 				nextPageUrl := strings.Split(nextPage, basePath)
-				print("..")
 				return c.RequestWithoutBodyForGenerator(ctx, basePath, method, nextPageUrl[1], appendToResult)
 			}
 		}
@@ -251,12 +254,17 @@ func parseResponseForGenerator(c *Client, ctx context.Context, basePath string, 
 		rawData, ok = data["meta"]
 		if ok {
 			data, _ = rawData.(map[string]any)
-			responseData = append(responseData, data)
-			errorCode, errorCodeExist := data["responseCode"]
-			if errorCodeExist && fmt.Sprint(errorCode) == "400" {
-				return responseData, ErrBadRequest
+			description := data["error"].(map[string]interface{})["description"].(string)
+			status := data["error"].(map[string]interface{})["status"].(string)
+			if status == "NOT_FOUND" {
+				// resource not found is a special type we want to return
+				return nil, fmt.Errorf("%v, %v, %w", description, status, ErrResourceNotFound)
 			}
-			return responseData, ErrResourceNotFound
+			if status == "INVALID_PATH" {
+				// resource not found is a special type we want to return
+				return nil, fmt.Errorf("%v, %v, %w", description, status, ErrInvalidPath)
+			}
+			return nil, fmt.Errorf("%v, %v, %w", description, status, ErrBadRequest)
 		}
 	}
 	return nil, nil
@@ -268,7 +276,7 @@ func (c *Client) RequestWithoutBody(ctx context.Context, method, url string) (ma
 		return nil, err
 	}
 	tflog.Debug(ctx, fmt.Sprintf("===== %v to %v =====", request.Method, request.URL))
-	rawBody, err := c.doRequest(ctx, request)
+	rawBody, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -280,16 +288,9 @@ func (c *Client) RequestWithoutBodyForGenerator(ctx context.Context, basePath st
 	if err != nil {
 		return nil, err
 	}
-	rawBody, err := c.doRequest(ctx, request)
+	rawBody, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
 	return parseResponseForGenerator(c, ctx, basePath, method, request, rawBody, appendToResult)
-}
-
-func dumpData(ctx context.Context, tag string, data []byte) {
-	var in any
-	_ = json.Unmarshal(data, &in)
-	out, _ := json.MarshalIndent(in, "", "\t")
-	tflog.Debug(ctx, fmt.Sprintf("===== %v =====\n%s\n", tag, out))
 }

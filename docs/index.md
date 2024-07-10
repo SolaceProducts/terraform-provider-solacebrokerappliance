@@ -6,7 +6,7 @@ description: |-
 
 # Solace PubSub+ Event Broker Appliance (solacebrokerappliance) Provider
 
-This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+This provider specifically supports the configuration of Solace PubSub+ Appliances. The provider for the Solace Software Event Broker (solacebroker) is available from [here](https://registry.terraform.io/providers/solaceproducts/solacebroker/latest).
 
 The [Solace PubSub+ Platform](https://solace.com/products/platform/)'s [PubSub+ Event Broker Appliance](https://solace.com/products/event-broker/appliance/)
 efficiently streams event-driven information between applications, IoT devices and user interfaces running in cloud, on-premises, and hybrid environments 
@@ -20,12 +20,16 @@ to dynamically share events across the distributed enterprise.
 The _solacebrokerappliance_ provider enables you to configure a PubSub+ Event Broker Appliance using Terraform.
 
 -> This _solacebrokerappliance_ provider uses the same [preferred local name](https://developer.hashicorp.com/terraform/language/providers/requirements#local-names) `"solacebroker"` as 
-the [_solacebroker_ provider](https://registry.terraform.io/providers/SolaceProducts/solacebroker/latest).
+the [_solacebroker_ provider](https://registry.terraform.io/providers/solaceproducts/solacebrokerappliance/latest).
 This allows Terraform modules to be written that can target either provider. Note that such modules must only use features that are available in both providers.
 
 This provider also offers the possibility to generate an [HCL configuration](https://developer.hashicorp.com/terraform/language) file from a preconfigured appliance.
 
 Use the navigation to the left for more information in the guides and for the available provider resources and data sources.
+
+## Limitations
+
+> This version of the PubSub+ Terraform provider is generally available for production services contained within a Message VPN.  Use of any resource not contained within a Message VPN is not supported in production by Solace.
 
 ## Minimum appliance version
 
@@ -90,4 +94,4 @@ For example, the password attribute can be set via the `SOLACEBROKER_PASSWORD` e
 
 # Release Notes and History
 
-For detailed release notes and release history, refer to the Releases section in the [Provider GitHub repository](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/releases).
+For detailed release notes and release history, see [this link](https://products.solace.com/download/DSEMP_TERRAFORM_HW_BROKER_PROVIDER_RN) and the Releases section in the [Provider GitHub repository](https://github.com/SolaceProducts/terraform-provider-solacebrokerappliance/releases).
