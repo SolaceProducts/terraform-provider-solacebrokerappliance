@@ -94,7 +94,7 @@ jobs:
           echo "
           provider_installation {
             dev_overrides {
-              \"registry.terraform.io/solaceproducts/solacebroker\" = \"${HOME}/go/bin\"
+              \"registry.terraform.io/solaceproducts/solacebrokerappliance\" = \"${HOME}/go/bin\"
             }
             direct {}
           }" > ~/.terraformrc
@@ -105,7 +105,7 @@ jobs:
           make test-coverage
           make install
           ls ~/go/bin
-          terraform-provider-solacebroker -h
+          terraform-provider-solacebrokerappliance -h
 
       - name: Run provider test - create custom messageVPN with large config
         if: steps.check-changed-files.outputs.files_changed == 'true'
@@ -120,7 +120,7 @@ jobs:
       - name: Run generate test - generate complete large config file for custom messageVPN file
         if: steps.check-changed-files.outputs.files_changed == 'true'
         run: |
-          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebroker SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.test test messageVpn.tf
+          SOLACEBROKER_REGISTRY_OVERRIDE=registry.terraform.io/solaceproducts/solacebroker SOLACEBROKER_USERNAME=admin SOLACEBROKER_PASSWORD=admin SOLACEBROKER_SKIP_API_CHECK=true terraform-provider-solacebrokerappliance generate --url=http://localhost:8080 solacebroker_msg_vpn.test test messageVpn.tf
           cat messageVpn.tf
 
       - name: Run provider test - delete large config
