@@ -7,10 +7,10 @@ terraform {
 }
 
 provider "solacebroker" {
-  username = "admin"
-  password = "admin"
+  username       = "admin"
+  password       = "admin"
   url            = "http://localhost:8080"
-  skip_api_check  = true
+  skip_api_check = true
 }
 
 resource "solacebroker_broker" "broker" {
@@ -111,18 +111,18 @@ resource "solacebroker_client_cert_authority_ocsp_tls_trusted_common_name" "clie
 }
 
 resource "solacebroker_dmr_cluster" "dmr_cluster" {
-  dmr_cluster_name                                    = "test"
-  authentication_basic_enabled                        = false
-  authentication_basic_password                       = "test"
-  authentication_basic_type                           = "none"
-  authentication_client_cert_content                  = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDc3jddBxAZ8uIf\nxerFpPmS67xYO0PEyMfP0syQ7AoZ0XJGyHvl/t4sOEZr1a0F5p0TVw5lzmkzBPk1\n+HjGZ7eGgSMtYHe2QhHNHdyLJOGbMd4rzjvyhtnjrlePI+ucn6puhtMOGyF9Cj8i\nmemy5HxF2iDO1ZRsgS4sA3SGfn8AxL5Tk4aB8j7vQhZwEtZWRR2gH0sVBAXEsmuU\ny6Xl+SaM6dhDrEl3KOBikxL+Y5ax/yJSp9m7ReWvzFOLd3PEkRkPqbf0hSIH/Roy\nkoVFN7aJu89bf8VOWV7cCuVQ+4AbpkHaJMsqb2wQ2rVSQ5GOZhjqBCGrobA+Evg8\n9ZdRHATnAgMBAAECggEAJR5bY5D6TcIZ6okSiaDOKLjhcFqVaw7rNawRoRFqKSif\n8fFjkSWiJQBYJWtFpsY5A7UPwGBOIbrmPwHBGmb32uz9AnVB6Sl1YGlyVRgfqjtZ\nQTdpr7qmB7OXF4FL6YiT1ftmoOpCWIdOUPxY4C2yDPM5rEkMpqeXIOJ7xNahdXlL\nLm+E0qxy2yt3khGhhKeObIiYpiln6z3VrRk5GA9U8aq0HP15IXBlxbfT9uzBZfbs\n4KlHCMOYEDE2+5r5R38kRCgMjkOuNAo38oMRIeEVlzbvq85WWFHs1kt/N8855zLt\nyDbnIn8SY6+fxeCGpecDef45Qb4xfAmRDLTLyJOFMQKBgQDuIPrW+YzGacBBLDWM\nzISw3jf9JsR4IWCD3zeSUAYjkHYwnBnyXfqZyGaMaQrE7GE16Wl20wVjEHeTJgdR\n+NZZ8ZpmHAHjfifSUjxn7t7M9Qo6VTp8W5LoaSs2HY4ylsSOK6RUPkXEIKAGvf7I\nf3VvdjJuWo0X04HPoC7u/rwMqwKBgQDtcZ2VfvoBYtIk6CpfAhRmhrPo2hJpyDB1\ny9MPmsYhCiB+/HcYsUt8zXUlCaOP1m/5tz58hSzTytvoB60Z+aXtG9I4XS3Wjhmd\nrEtuV0WiCA92vqKUVXWYnGy8L8pr6UXPgBezFvjHQKZzIoKByPCJckrEqCl8VUxh\nUcAvPVUwtQKBgHJxxTxWORMOtghcf+wISulaE1yGKjx2BhW6zNFzxk+HWVYpX8r8\n4bjQ+IAY58UWue2YHUivSFKBEobU6wW5awNVO1hBs6Kq+eZ6AXAN/GRSjDTWy0ID\nHMq36L2cXL/xd8vAK70VJKCK8X3sCCxCHaWRD9G7kT3XN/caTBQutx/7AoGAMB4j\nIiWOQnOlRGdsFr7UJYbMtLZknt07vNNmXTYvSojD1xgQhod/VbZJNA1FASQiowdY\neWF/mRf2AopzsNzfnDJUIqn3XRCE7mf5DU5QRSq+/4BYcBj1cMzaWDSTH9UxGYDK\nzLcuCSr30ENBEU4IOMJZlorBhXm/tcUcXjZeqjUCgYEAwpOFx8KHazph2ial9954\ndq0IZZrhrLPoaLQVwLnUITpvKw1ORxdzLH8VNvRTcPF6XRt7BcV8aRcENW7R0Ozd\nQa4T12AxqCFp2tdD7juOMJoFVwr5Cq5DyN935QP7PiGhqBRJYkXvBMCezFD7XloC\njjroojuJIsIhfhgvoKj37oE=\n-----END PRIVATE KEY-----\n-----BEGIN CERTIFICATE-----\nMIIIAjCCBuqgAwIBAgIJALYF/Umvsgf3MA0GCSqGSIb3DQEBCwUAME8xCzAJBgNV\nBAYTAkNBMRAwDgYDVQQIDAdPbnRhcmlvMQ8wDQYDVQQHDAZPdHRhd2ExDzANBgNV\nBAoMBlNvbGFjZTEMMAoGA1UEAwwDYWZ3MCAXDTIzMDMwNzE3MDExMloYDzIxMjMw\nMjExMTcwMTEyWjB1MQswCQYDVQQGEwJDQTEQMA4GA1UECAwHT250YXJpbzEPMA0G\nA1UEBwwGT3R0YXdhMQ8wDQYDVQQKDAZTb2xhY2UxDDAKBgNVBAMMA2FmdzEkMCIG\nCSqGSIb3DQEJARYVdm1yLTEzMi05NkBzb2xhY2UuY29tMIIBIjANBgkqhkiG9w0B\nAQEFAAOCAQ8AMIIBCgKCAQEA3N43XQcQGfLiH8XqxaT5kuu8WDtDxMjHz9LMkOwK\nGdFyRsh75f7eLDhGa9WtBeadE1cOZc5pMwT5Nfh4xme3hoEjLWB3tkIRzR3ciyTh\nmzHeK8478obZ465XjyPrnJ+qbobTDhshfQo/IpnpsuR8RdogztWUbIEuLAN0hn5/\nAMS+U5OGgfI+70IWcBLWVkUdoB9LFQQFxLJrlMul5fkmjOnYQ6xJdyjgYpMS/mOW\nsf8iUqfZu0Xlr8xTi3dzxJEZD6m39IUiB/0aMpKFRTe2ibvPW3/FTlle3ArlUPuA\nG6ZB2iTLKm9sENq1UkORjmYY6gQhq6GwPhL4PPWXURwE5wIDAQABo4IEtzCCBLMw\nCQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwggSXBgNVHREEggSOMIIEiocEwKiEYIcQ\n/YAAAAAAASgBkgFoATIAloIEZTk2bYIJZTk2bS5pcHY0ggllOTZtLmlwdjaCgf1l\nOTZtLmNvbS5zb2xhY2UtdGVzdC52bXItbXVsdGktY2xvdWQuQWFhYWFhYWFhYS5C\nYmJiYmJiYmJiLkNjY2NjY2NjY2MuRGRkZGRkZGRkZC5FZWVlZWVlZWVlLkZmZmZm\nZmZmZmYuR2dnZ2dnZ2dnZy5IaGhoaGhoaGhoLklpaWlpaWlpaWkuSmpqampqampq\nai5La2tra2tra2trLkxsbGxsbGxsbGwuTW1tbW1tbW1tbS5Obm5ubm5ubm5uLk9v\nb29vb29vb28uUHBwcHBwcHBwcC5RcXFxcXFxcXFxLlJycnJycnJycnIuU3Nzc3Nz\nc3Nzcy5UdHR0dHR0goH9ZTk2bS5jb20uc29sYWNlLXRlc3Qudm1yLW11bHRpLWNs\nb3VkLkFhYWFhYWFhYWEuQmJiYmJiYmJiYi5DY2NjY2NjY2NjLkRkZGRkZGRkZGQu\nRWVlZWVlZWVlZS5GZmZmZmZmZmZmLkdnZ2dnZ2dnZ2cuSGhoaGhoaGhoaC5JaWlp\naWlpaWlpLkpqampqampqamouS2tra2tra2tray5MbGxsbGxsbGxsLk1tbW1tbW1t\nbW0uTm5ubm5ubm5ubi5Pb29vb29vb29vLlBwcHBwcHBwcHAuUXFxcXFxcXFxcS5S\ncnJycnJycnJyLlNzc3Nzc3Nzc3MuVHR0dHR0dIIMZTk2bS5zb2x0ZXN0ghFlOTZt\nLmlwdjQuc29sdGVzdIIRZTk2bS5pcHY2LnNvbHRlc3SCgf1lOTZtLmNvbS5zb2xh\nY2UtdGVzdC52bXItbXVsdGktY2xvdWQuQWFhYWFhYWFhYS5CYmJiYmJiYmJiLkNj\nY2NjY2NjY2MuRGRkZGRkZGRkZC5FZWVlZWVlZWVlLkZmZmZmZmZmZmYuR2dnZ2dn\nZ2dnZy5IaGhoaGhoaGhoLklpaWlpaWlpaWkuSmpqampqampqai5La2tra2tra2tr\nLkxsbGxsbGxsbGwuTW1tbW1tbW1tbS5Obm5ubm5ubm5uLk9vb29vb29vb28uUHBw\ncHBwcHBwcC5RcXFxcXFxcXFxLlJycnJycnJycnIuU3Nzc3Nzc3Nzcy5zb2x0ZXN0\ngoH9ZTk2bS5jb20uc29sYWNlLXRlc3Qudm1yLW11bHRpLWNsb3VkLkFhYWFhYWFh\nYWEuQmJiYmJiYmJiYi5DY2NjY2NjY2NjLkRkZGRkZGRkZGQuRWVlZWVlZWVlZS5G\nZmZmZmZmZmZmLkdnZ2dnZ2dnZ2cuSGhoaGhoaGhoaC5JaWlpaWlpaWlpLkpqampq\nampqamouS2tra2tra2tray5MbGxsbGxsbGxsLk1tbW1tbW1tbW0uTm5ubm5ubm5u\nbi5Pb29vb29vb29vLlBwcHBwcHBwcHAuUXFxcXFxcXFxcS5ScnJycnJycnJyLlNz\nc3Nzc3Nzc3Muc29sdGVzdIIKdm1yLTEzMi05NoIUdm1yLTEzMi05Ni5zb2wtbG9j\nYWwwDQYJKoZIhvcNAQELBQADggEBALw9t+131ytbltmPk8LKmYNo/tWWsJgwcxGu\npzconod45Ibia2Sep1yNll2Oqx1/Te6vk93WmHnP2F01N/o9mWZSMbsw2mxWi+EJ\nd5TSvr14Elb7/6bsc8b82SF3UIFVlBe2ng3M6a0r/g3UG2Nq7O4EoRwt8msIUfI+\nW2k1YOOplaejxKwbIOxBe4qpagdwtwOWvmjM//IrRCI+GiXZ7UfO5nG0Dzy85lX2\n80mOjL5WX1c9QalW/c4tU/W2gBXt+/GlZ9M0WFSmiBfexSp75G8/tVCfbwV+XUBw\nX8aEQnKCo/w72bD2C52Di/OnxteRT+NFdNMafngPpPTHk9hnRgU=\n-----END CERTIFICATE-----"
-  authentication_client_cert_enabled                  = false
-  authentication_client_cert_password                 = "test"
-  direct_only_enabled                                 = true
-  enabled                                             = true
-  tls_server_cert_max_chain_depth                     = 4
-  tls_server_cert_validate_date_enabled               = false
-  tls_server_cert_validate_name_enabled               = false
+  dmr_cluster_name                      = "test"
+  authentication_basic_enabled          = false
+  authentication_basic_password         = "test"
+  authentication_basic_type             = "none"
+  authentication_client_cert_content    = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDc3jddBxAZ8uIf\nxerFpPmS67xYO0PEyMfP0syQ7AoZ0XJGyHvl/t4sOEZr1a0F5p0TVw5lzmkzBPk1\n+HjGZ7eGgSMtYHe2QhHNHdyLJOGbMd4rzjvyhtnjrlePI+ucn6puhtMOGyF9Cj8i\nmemy5HxF2iDO1ZRsgS4sA3SGfn8AxL5Tk4aB8j7vQhZwEtZWRR2gH0sVBAXEsmuU\ny6Xl+SaM6dhDrEl3KOBikxL+Y5ax/yJSp9m7ReWvzFOLd3PEkRkPqbf0hSIH/Roy\nkoVFN7aJu89bf8VOWV7cCuVQ+4AbpkHaJMsqb2wQ2rVSQ5GOZhjqBCGrobA+Evg8\n9ZdRHATnAgMBAAECggEAJR5bY5D6TcIZ6okSiaDOKLjhcFqVaw7rNawRoRFqKSif\n8fFjkSWiJQBYJWtFpsY5A7UPwGBOIbrmPwHBGmb32uz9AnVB6Sl1YGlyVRgfqjtZ\nQTdpr7qmB7OXF4FL6YiT1ftmoOpCWIdOUPxY4C2yDPM5rEkMpqeXIOJ7xNahdXlL\nLm+E0qxy2yt3khGhhKeObIiYpiln6z3VrRk5GA9U8aq0HP15IXBlxbfT9uzBZfbs\n4KlHCMOYEDE2+5r5R38kRCgMjkOuNAo38oMRIeEVlzbvq85WWFHs1kt/N8855zLt\nyDbnIn8SY6+fxeCGpecDef45Qb4xfAmRDLTLyJOFMQKBgQDuIPrW+YzGacBBLDWM\nzISw3jf9JsR4IWCD3zeSUAYjkHYwnBnyXfqZyGaMaQrE7GE16Wl20wVjEHeTJgdR\n+NZZ8ZpmHAHjfifSUjxn7t7M9Qo6VTp8W5LoaSs2HY4ylsSOK6RUPkXEIKAGvf7I\nf3VvdjJuWo0X04HPoC7u/rwMqwKBgQDtcZ2VfvoBYtIk6CpfAhRmhrPo2hJpyDB1\ny9MPmsYhCiB+/HcYsUt8zXUlCaOP1m/5tz58hSzTytvoB60Z+aXtG9I4XS3Wjhmd\nrEtuV0WiCA92vqKUVXWYnGy8L8pr6UXPgBezFvjHQKZzIoKByPCJckrEqCl8VUxh\nUcAvPVUwtQKBgHJxxTxWORMOtghcf+wISulaE1yGKjx2BhW6zNFzxk+HWVYpX8r8\n4bjQ+IAY58UWue2YHUivSFKBEobU6wW5awNVO1hBs6Kq+eZ6AXAN/GRSjDTWy0ID\nHMq36L2cXL/xd8vAK70VJKCK8X3sCCxCHaWRD9G7kT3XN/caTBQutx/7AoGAMB4j\nIiWOQnOlRGdsFr7UJYbMtLZknt07vNNmXTYvSojD1xgQhod/VbZJNA1FASQiowdY\neWF/mRf2AopzsNzfnDJUIqn3XRCE7mf5DU5QRSq+/4BYcBj1cMzaWDSTH9UxGYDK\nzLcuCSr30ENBEU4IOMJZlorBhXm/tcUcXjZeqjUCgYEAwpOFx8KHazph2ial9954\ndq0IZZrhrLPoaLQVwLnUITpvKw1ORxdzLH8VNvRTcPF6XRt7BcV8aRcENW7R0Ozd\nQa4T12AxqCFp2tdD7juOMJoFVwr5Cq5DyN935QP7PiGhqBRJYkXvBMCezFD7XloC\njjroojuJIsIhfhgvoKj37oE=\n-----END PRIVATE KEY-----\n-----BEGIN CERTIFICATE-----\nMIIIAjCCBuqgAwIBAgIJALYF/Umvsgf3MA0GCSqGSIb3DQEBCwUAME8xCzAJBgNV\nBAYTAkNBMRAwDgYDVQQIDAdPbnRhcmlvMQ8wDQYDVQQHDAZPdHRhd2ExDzANBgNV\nBAoMBlNvbGFjZTEMMAoGA1UEAwwDYWZ3MCAXDTIzMDMwNzE3MDExMloYDzIxMjMw\nMjExMTcwMTEyWjB1MQswCQYDVQQGEwJDQTEQMA4GA1UECAwHT250YXJpbzEPMA0G\nA1UEBwwGT3R0YXdhMQ8wDQYDVQQKDAZTb2xhY2UxDDAKBgNVBAMMA2FmdzEkMCIG\nCSqGSIb3DQEJARYVdm1yLTEzMi05NkBzb2xhY2UuY29tMIIBIjANBgkqhkiG9w0B\nAQEFAAOCAQ8AMIIBCgKCAQEA3N43XQcQGfLiH8XqxaT5kuu8WDtDxMjHz9LMkOwK\nGdFyRsh75f7eLDhGa9WtBeadE1cOZc5pMwT5Nfh4xme3hoEjLWB3tkIRzR3ciyTh\nmzHeK8478obZ465XjyPrnJ+qbobTDhshfQo/IpnpsuR8RdogztWUbIEuLAN0hn5/\nAMS+U5OGgfI+70IWcBLWVkUdoB9LFQQFxLJrlMul5fkmjOnYQ6xJdyjgYpMS/mOW\nsf8iUqfZu0Xlr8xTi3dzxJEZD6m39IUiB/0aMpKFRTe2ibvPW3/FTlle3ArlUPuA\nG6ZB2iTLKm9sENq1UkORjmYY6gQhq6GwPhL4PPWXURwE5wIDAQABo4IEtzCCBLMw\nCQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwggSXBgNVHREEggSOMIIEiocEwKiEYIcQ\n/YAAAAAAASgBkgFoATIAloIEZTk2bYIJZTk2bS5pcHY0ggllOTZtLmlwdjaCgf1l\nOTZtLmNvbS5zb2xhY2UtdGVzdC52bXItbXVsdGktY2xvdWQuQWFhYWFhYWFhYS5C\nYmJiYmJiYmJiLkNjY2NjY2NjY2MuRGRkZGRkZGRkZC5FZWVlZWVlZWVlLkZmZmZm\nZmZmZmYuR2dnZ2dnZ2dnZy5IaGhoaGhoaGhoLklpaWlpaWlpaWkuSmpqampqampq\nai5La2tra2tra2trLkxsbGxsbGxsbGwuTW1tbW1tbW1tbS5Obm5ubm5ubm5uLk9v\nb29vb29vb28uUHBwcHBwcHBwcC5RcXFxcXFxcXFxLlJycnJycnJycnIuU3Nzc3Nz\nc3Nzcy5UdHR0dHR0goH9ZTk2bS5jb20uc29sYWNlLXRlc3Qudm1yLW11bHRpLWNs\nb3VkLkFhYWFhYWFhYWEuQmJiYmJiYmJiYi5DY2NjY2NjY2NjLkRkZGRkZGRkZGQu\nRWVlZWVlZWVlZS5GZmZmZmZmZmZmLkdnZ2dnZ2dnZ2cuSGhoaGhoaGhoaC5JaWlp\naWlpaWlpLkpqampqampqamouS2tra2tra2tray5MbGxsbGxsbGxsLk1tbW1tbW1t\nbW0uTm5ubm5ubm5ubi5Pb29vb29vb29vLlBwcHBwcHBwcHAuUXFxcXFxcXFxcS5S\ncnJycnJycnJyLlNzc3Nzc3Nzc3MuVHR0dHR0dIIMZTk2bS5zb2x0ZXN0ghFlOTZt\nLmlwdjQuc29sdGVzdIIRZTk2bS5pcHY2LnNvbHRlc3SCgf1lOTZtLmNvbS5zb2xh\nY2UtdGVzdC52bXItbXVsdGktY2xvdWQuQWFhYWFhYWFhYS5CYmJiYmJiYmJiLkNj\nY2NjY2NjY2MuRGRkZGRkZGRkZC5FZWVlZWVlZWVlLkZmZmZmZmZmZmYuR2dnZ2dn\nZ2dnZy5IaGhoaGhoaGhoLklpaWlpaWlpaWkuSmpqampqampqai5La2tra2tra2tr\nLkxsbGxsbGxsbGwuTW1tbW1tbW1tbS5Obm5ubm5ubm5uLk9vb29vb29vb28uUHBw\ncHBwcHBwcC5RcXFxcXFxcXFxLlJycnJycnJycnIuU3Nzc3Nzc3Nzcy5zb2x0ZXN0\ngoH9ZTk2bS5jb20uc29sYWNlLXRlc3Qudm1yLW11bHRpLWNsb3VkLkFhYWFhYWFh\nYWEuQmJiYmJiYmJiYi5DY2NjY2NjY2NjLkRkZGRkZGRkZGQuRWVlZWVlZWVlZS5G\nZmZmZmZmZmZmLkdnZ2dnZ2dnZ2cuSGhoaGhoaGhoaC5JaWlpaWlpaWlpLkpqampq\nampqamouS2tra2tra2tray5MbGxsbGxsbGxsLk1tbW1tbW1tbW0uTm5ubm5ubm5u\nbi5Pb29vb29vb29vLlBwcHBwcHBwcHAuUXFxcXFxcXFxcS5ScnJycnJycnJyLlNz\nc3Nzc3Nzc3Muc29sdGVzdIIKdm1yLTEzMi05NoIUdm1yLTEzMi05Ni5zb2wtbG9j\nYWwwDQYJKoZIhvcNAQELBQADggEBALw9t+131ytbltmPk8LKmYNo/tWWsJgwcxGu\npzconod45Ibia2Sep1yNll2Oqx1/Te6vk93WmHnP2F01N/o9mWZSMbsw2mxWi+EJ\nd5TSvr14Elb7/6bsc8b82SF3UIFVlBe2ng3M6a0r/g3UG2Nq7O4EoRwt8msIUfI+\nW2k1YOOplaejxKwbIOxBe4qpagdwtwOWvmjM//IrRCI+GiXZ7UfO5nG0Dzy85lX2\n80mOjL5WX1c9QalW/c4tU/W2gBXt+/GlZ9M0WFSmiBfexSp75G8/tVCfbwV+XUBw\nX8aEQnKCo/w72bD2C52Di/OnxteRT+NFdNMafngPpPTHk9hnRgU=\n-----END CERTIFICATE-----"
+  authentication_client_cert_enabled    = false
+  authentication_client_cert_password   = "test"
+  direct_only_enabled                   = true
+  enabled                               = true
+  tls_server_cert_max_chain_depth       = 4
+  tls_server_cert_validate_date_enabled = false
+  tls_server_cert_validate_name_enabled = false
 }
 
 resource "solacebroker_dmr_cluster_cert_matching_rule" "dmr_cluster_cert_matching_rule" {
@@ -669,6 +669,7 @@ resource "solacebroker_msg_vpn_jndi_connection_factory" "msg_vpn_jndi_connection
   transport_send_buffer_size                   = 65533
   transport_tcp_no_delay_enabled               = false
   xa_enabled                                   = true
+  messaging_payload_compression_level          = 5
 }
 
 resource "solacebroker_msg_vpn_jndi_queue" "msg_vpn_jndi_queue" {
@@ -751,7 +752,7 @@ resource "solacebroker_msg_vpn_queue" "msg_vpn_queue" {
   max_msg_spool_usage                           = 9999
   max_redelivery_count                          = 9
   max_ttl                                       = 9
-  owner                                         = "test"
+  owner                                         = "#kafka/tx/test"
   partition_count                               = 1
   partition_rebalance_delay                     = 6
   partition_rebalance_max_handoff_time          = 4
@@ -894,6 +895,8 @@ resource "solacebroker_msg_vpn_rest_delivery_point_rest_consumer" "msg_vpn_rest_
   retry_delay                                      = 4
   tls_cipher_suite_list                            = "default"
   tls_enabled                                      = true
+  authentication_oauth_client_proxy_name           = "test"
+  authentication_oauth_jwt_proxy_name              = "test"
 }
 
 resource "solacebroker_msg_vpn_rest_delivery_point_rest_consumer_oauth_jwt_claim" "msg_vpn_rest_delivery_point_rest_consumer_oauth_jwt_claim" {
