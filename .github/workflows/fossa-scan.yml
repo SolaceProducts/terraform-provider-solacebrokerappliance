@@ -62,7 +62,7 @@ jobs:
           echo "artifact_name=fossa-report-${revision//\//-}" >> $GITHUB_OUTPUT
 
       - name: Generate FOSSA Report (TXT - full)
-        uses: SolaceDev/solace-public-workflows/.github/actions/generate-fossa-report@55aba02b3ed20d1ec61684f19d660425362c2cf4 # main
+        uses: SolaceDev/solace-public-workflows/.github/actions/generate-fossa-report@668d31d070ebdbbb5d6f2bdd13d406697055ae3c # main
         with:
           fossa_api_key: ${{ secrets.FOSSA_API_KEY }}
           project_locator: ${{ github.repository_owner }}_${{ github.event.repository.name }}
