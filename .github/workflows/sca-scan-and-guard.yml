@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
 
-# The shared workflow needs these scopes and tracks main. TF 15-S (SOL-156451) replaces this file, so its zizmor findings are ignored here.
+# The shared workflow needs these scopes and tracks main. TF 15-A (SOL-156452) replaces this file, so its zizmor findings are ignored here.
 permissions:
   contents: read
   id-token: write # zizmor: ignore[excessive-permissions]
