@@ -30,7 +30,7 @@ import (
 func init() {
 	info := broker.EntityInputs{
 		TerraformName:       "msg_vpn_telemetry_profile",
-		MarkdownDescription: "Using the Telemetry Profile allows trace spans to be generated as messages are processed by the broker. The generated spans are stored persistently on the broker and may be consumed by the Solace receiver component of an OpenTelemetry Collector.\n\n\n\nThe minimum access scope/level required to perform this operation is \"vpn/read-only\".\n\nThis has been available since SEMP API version 2.31.",
+		MarkdownDescription: "Using the Telemetry Profile allows trace spans to be generated as messages are processed by the broker. The generated spans are stored persistently on the broker and may be consumed by the Solace receiver component of an OpenTelemetry Collector.\n\n\n\nThe minimum access scope/level required to perform this operation is \"vpn/read-only\".",
 		ObjectType:          broker.StandardObject,
 		PathTemplate:        "/msgVpns/{msgVpnName}/telemetryProfiles/{telemetryProfileName}",
 		Version:             0, // Placeholder: value will be replaced in the provider code
@@ -477,7 +477,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "receiverTcpSlowStartAfterIdleEnabled",
 				TerraformName:       "receiver_tcp_slow_start_after_idle_enabled",
-				MarkdownDescription: "Enable or disable whether TCP should revert to slow-start after an idle period, as recommended by RFC 5681 s4.1. Changes are applied to all existing connections.\n\nThe minimum access scope/level required to retrieve this attribute is \"vpn/read-only\". The minimum access scope/level required to change this attribute is \"vpn/read-write\". Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.48.",
+				MarkdownDescription: "Enable or disable whether TCP should revert to slow-start after an idle period, as recommended by RFC 5681 s4.1. Changes are applied to all existing connections.\n\nThe minimum access scope/level required to retrieve this attribute is \"vpn/read-only\". The minimum access scope/level required to change this attribute is \"vpn/read-write\". Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
@@ -513,7 +513,7 @@ func init() {
 				BaseType:            broker.Bool,
 				SempName:            "traceSendSpanGenerationEnabled",
 				TerraformName:       "trace_send_span_generation_enabled",
-				MarkdownDescription: "Enable or disable generation of send spans. For the most complete view of broker message processing, this should be enabled. If the information provided by send spans are not needed, send spans can be disabled to reduce the performance impact of tracing.\n\nThe minimum access scope/level required to retrieve this attribute is \"vpn/read-only\". The minimum access scope/level required to change this attribute is \"vpn/read-write\". Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`. Available since SEMP API version 2.36.",
+				MarkdownDescription: "Enable or disable generation of send spans. For the most complete view of broker message processing, this should be enabled. If the information provided by send spans are not needed, send spans can be disabled to reduce the performance impact of tracing.\n\nThe minimum access scope/level required to retrieve this attribute is \"vpn/read-only\". The minimum access scope/level required to change this attribute is \"vpn/read-write\". Changes to this attribute are synchronized to HA mates and replication sites via config-sync. The default value is `true`.",
 				Type:                types.BoolType,
 				TerraformType:       tftypes.Bool,
 				Converter:           broker.SimpleConverter[bool]{TerraformType: tftypes.Bool},
