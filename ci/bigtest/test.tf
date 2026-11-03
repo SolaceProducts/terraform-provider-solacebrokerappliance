@@ -76,6 +76,8 @@ resource "solacebroker_broker" "broker" {
   service_smf_routing_control_listen_port                              = 10008
   service_smf_tls_listen_port                                          = 10009
   service_tls_event_connection_count_threshold                         = { "clear_percent" = 40, "set_percent" = 50 }
+  # CI runs a software broker, which reports true; the appliance default (false) would show as drift.
+  service_web_transport_enabled                                        = true
   service_web_transport_plain_text_listen_port                         = 10010
   service_web_transport_tls_listen_port                                = 10011
   service_web_transport_web_url_suffix                                 = "test"
